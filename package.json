@@ -1,0 +1,26 @@
+{
+  "name": "portfolio",
+  "version": "0.0.0",
+  "description": "Thomas Greenstein's personal portfolio",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomasgpw/portfolio.git"
+  },
+  "keywords": [
+    "npm",
+    "angularui"
+  ],
+  "author": "Thomas Greenstein <thomasgpw@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thomasgpw/portfolio/issues"
+  },
+  "homepage": "https://github.com/thomasgpw/portfolio#readme"
+}
