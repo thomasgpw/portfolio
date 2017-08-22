@@ -6,9 +6,12 @@ import { Component, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent {
-@Output() goContent: EventEmitter<any> = new EventEmitter();
-  clickContent() {
-  	console.log("welcomeEmit")
-  	this.goContent.emit("goContent");
+@Output() goContentEvent: EventEmitter<any> = new EventEmitter();
+@Output() toggleShutterEvent: EventEmitter<any> = new EventEmitter();
+  shutterToggleFunc() {
+    this.toggleShutterEvent.emit(null);
+  }
+  goContentFunc() {
+  	this.goContentEvent.emit(null);
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'content',
@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./content.component.css']
 })
 export class ContentComponent {
-  title = 'content';
+	@Output() goShutterEvent = new EventEmitter<any>();
+	goShutterFunc() {
+		this.goShutterEvent.emit(null);
+	}
 }

@@ -1,34 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { UIRouterModule } from '@uirouter/angular';
+import { WelcomeModule } from './welcome/welcome.module';
+import { AboutModule } from './about/about.module';
 
 import { ShutterComponent } from './shutter.component';
-import { WelcomeComponent } from './welcome/welcome.component';
-import { AboutComponent } from './about/about.component';
-
-let welcomeState = {
-  name: 'welcome',
-  url:'',
-  component: WelcomeComponent
-}
-let aboutState = {
-  name: 'about',
-  component: AboutComponent
-}
 
 @NgModule({
   declarations: [
-    ShutterComponent,
-    WelcomeComponent,
-    AboutComponent
+    ShutterComponent
   ],
   imports: [
     CommonModule,
-    UIRouterModule.forRoot({
-    	states: [ welcomeState, aboutState ],
-    	otherwise: '',
-    	useHash: true
-    })
+    WelcomeModule,
+    AboutModule
   ],
   providers: [],
   exports: [

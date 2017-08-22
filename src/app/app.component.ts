@@ -1,14 +1,17 @@
 import { Component } from '@angular/core';
+import { NgIf } from '@angular/common';
 
+let shutterOpen:boolean = true;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
-
-  goContent() {
-  	console.log("app recieved")
+  appToggleFunc() {
+    shutterOpen = !shutterOpen;
+  }
+  checkShutterOpen () {
+  	if (shutterOpen) {return(true)} else{return(false)};
   }
 }

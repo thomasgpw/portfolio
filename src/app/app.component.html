@@ -1,2 +1,8 @@
-<shutter (goContent)="goContent()">Shutter loading</shutter>
-<content>Content loading</content>
+<shutter
+*ngIf="checkShutterOpen()"
+(goContentEvent)="appToggleFunc()"
+>Shutter loading</shutter>
+<content
+*ngIf="!checkShutterOpen()"
+(goShutterEvent)="appToggleFunc()"
+>Content loading</content>

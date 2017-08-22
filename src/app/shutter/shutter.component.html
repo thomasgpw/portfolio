@@ -1,3 +1,10 @@
-<div class="shutter" (goContent)="goContent()">
-  <ui-view (goContent)="goContent()">Shutter</ui-view>
+<div class="shutter" >
+  <welcome *ngIf="checkWelcomeOpen();"
+  (toggleShutterEvent)="toggleShutterFunc()"
+  (goContentEvent)="goContentFunc()">
+  </welcome>
+  <about *ngIf="!checkWelcomeOpen();"
+  (toggleShutterEvent)="toggleShutterFunc()"
+  (goContentEvent)="goContentFunc()">
+  </about>
 </div>
