@@ -1,1 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
+/* make our pages be full width and full height */
+/* positioned absolutely so that the pages can overlap each other as they enter and leave */
+html { /*overflow-x: hidden;*/ }
+body { padding:0; margin:0; }
+.page        {
+    bottom:0; 
+    padding-top:200px;
+    position:absolute; 
+    text-align:center;
+    top:0;  
+    width:100%;
+}
+
+.content {
+	z-index: -1;
+	background: green;
+}
+.shutter {
+	z-index: 0;
+}
+.about {
+	background: red;
+}
+.welcome {
+	background: blue;
+}
+
+.button {
+	cursor: pointer;
+}
