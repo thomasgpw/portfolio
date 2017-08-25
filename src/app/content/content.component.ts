@@ -1,5 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 
+import { worksList } from './works-list';
+
 @Component({
   selector: 'content',
   templateUrl: './content.component.html',
@@ -10,4 +12,5 @@ export class ContentComponent {
 	goShutterFunc() {
 		this.goShutterEvent.emit(null);
 	}
+	works = worksList;
 }
