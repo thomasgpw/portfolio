@@ -1,7 +1,7 @@
 <div class="page content">
   <h1>Content Screen</h1>
   <div class="button" (click)="goShutterFunc()">Up</div>
-  <work-wrapper *ngFor='let work of works' [work]="work" class="work-wrapper">
-    loading {{work.name}}
-  </work-wrapper>
+  <div *ngFor='let work of works' class="work-wrapper wwgrid" (click)="clickFunc()">
+    <work-wrapper [work]="work">loading {{work.name}}</work-wrapper>
+  </div>
 </div>
