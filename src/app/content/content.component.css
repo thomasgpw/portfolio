@@ -3,7 +3,15 @@
 	width: 25%;
 	margin: 2.5%;
 	float:left;
-	background: white;
 	border: 3px solid #777;
 	border-radius: 5%;
+}
+.wwGrid {
+	background: white;
+}
+.wwRow {
+	background: blue;
+}
+.wwActive {
+	background: red;
 }

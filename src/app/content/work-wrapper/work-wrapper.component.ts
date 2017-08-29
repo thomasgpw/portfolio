@@ -9,8 +9,19 @@ export class WorkWrapperComponent implements OnInit {
 
   @Input() work;
   constructor() { }
-
+  active = false;
   ngOnInit() {
+  }
+  activate() {
+  	this.active = true;
+  	return true;
+  }
+  deactivate() {
+  	this.active = false;
+  	return true;
+  }
+  clickInteract(e:Event){
+  	console.log(e);
   }
 
 }
