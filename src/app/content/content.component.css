@@ -1,17 +1,21 @@
 .work-wrapper{
-	height: 25%;
-	width: 25%;
 	margin: 2.5%;
 	float:left;
 	border: 3px solid #777;
 	border-radius: 5%;
 }
 .wwGrid {
+	height: 25%;
+	width: 25%;
 	background: white;
 }
 .wwRow {
+	height:10%;
+	width:10%;
 	background: blue;
 }
 .wwActive {
+	height: 80%;
+	width: 80%;
 	background: red;
 }

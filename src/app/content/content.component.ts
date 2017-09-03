@@ -27,18 +27,29 @@ export class ContentComponent {
       classes.remove("wwRow");
       classes.add("wwGrid");
   	}
+  	this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
+  		workWrapperComponentInstance.work.resizeCanvas();
+  	});
   }
   viewGrid(){
   	let activeEl = document.getElementsByClassName('wwActive')[0];
-	  console.log(activeEl);
-	  if(this.deactivateWork(activeEl)){
-  	  this.forceGridClass();
-  	  this.gridButton = false;
+	  if (activeEl) {
+	  	let allWorkWrapperComponents=[];
+	  	this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
+	  		allWorkWrapperComponents.push(workWrapperComponentInstance);
+	  	});
+		  if(this.deactivateWork(activeEl, allWorkWrapperComponents)){
+	  	  this.forceGridClass();
+	  	  this.gridButton = false;
+      }
     }
+  }
+  resizeWorks(){
+
   }
   activateWork(clickedEl: Element, clickedWorkWrapper:WorkWrapperComponent) {
     console.log(clickedWorkWrapper);
-		if (clickedWorkWrapper.activate()) {
+		if (clickedWorkWrapper.work.activate()) {
 		  let classes = clickedEl.classList;
 		  classes.remove('wwGrid');
 		  classes.remove('wwRow');
@@ -56,13 +67,9 @@ export class ContentComponent {
   	  this.gridButton = true;
 	  }
   }
-  deactivateWork(activeEl: Element){
-  	let allWorkWrapperComponents=[];
-  	this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
-  		allWorkWrapperComponents.push(workWrapperComponentInstance);
-  	});
-		let clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.work.id == activeEl.id)
-  	if(clickedWorkWrapper.deactivate()){
+  deactivateWork(activeEl: Element, allWorkWrapperComponents){
+		let clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workData.id == activeEl.id);
+  	if(clickedWorkWrapper.work.deactivate()){
 	  	let classes = activeEl.classList;
 	  	classes.remove("wwActive");
 	  	classes.add("wwRow");
@@ -70,26 +77,28 @@ export class ContentComponent {
   	}
   }
   workClickFunc(e:Event){
-  	let clickedEl = e.srcElement;
+  	let clickedEl = e.srcElement.closest('.work-wrapper');
   	let allWorkWrapperComponents=[];
   	this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
   		allWorkWrapperComponents.push(workWrapperComponentInstance);
   	});
-		let clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.work.id == clickedEl.id)
+		let clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workData.id == clickedEl.id)
   	if (clickedEl.classList.contains("wwActive")) {
-  		clickedWorkWrapper.clickInteract(e);
+  		clickedWorkWrapper.work.clickInteract(e);
   	}
   	else {
 	  	let activeEl = document.getElementsByClassName('wwActive')[0];
-	  	console.log(activeEl);
 	  	if(activeEl){
-				if(this.deactivateWork(activeEl)){
+				if(this.deactivateWork(activeEl, allWorkWrapperComponents)){
 				  this.activateWork(clickedEl, clickedWorkWrapper);
 			  }
 		  }
 		  else{
 		  	this.activateWork(clickedEl, clickedWorkWrapper);
 		  }
+		  this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
+  		  workWrapperComponentInstance.work.resizeCanvas();
+  	  });
 	  }
   }
 }

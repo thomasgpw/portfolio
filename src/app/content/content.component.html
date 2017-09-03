@@ -1,7 +1,7 @@
 <div class="page content">
   <div class="button" *ngIf="gridButton" (click)="viewGrid()">Grid Button</div>
   <div class="button" (click)="goShutterFunc()">Up</div>
-  <div *ngFor="let work of works; let i = index" [id]="i" class="work-wrapper wwGrid" (click)="workClickFunc($event)">
-    <work-wrapper [work]="work">loading {{work.name}}</work-wrapper>
+  <div *ngFor="let workData of works; let i = index" [id]="i" class="work-wrapper wwGrid" (click)="workClickFunc($event)">
+    <work-wrapper [workData]="workData">loading {{workData.name}}</work-wrapper>
   </div>
 </div>
