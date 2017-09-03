@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Work } from '../works/work';
+import { SpecificWork } from '../works/immediateellipse';
 
 @Component({
   selector: 'work-wrapper',
@@ -12,8 +13,6 @@ export class WorkWrapperComponent implements OnInit {
   constructor() {
   }
   ngOnInit() {
-  	// console.log(this.workData);
-  	console.log(document.getElementsByClassName("canvasWrapper")[this.workData.id]);
-  	this.work = new Work(document.getElementsByClassName("canvasWrapper")[this.workData.id]);
+  	this.work = new SpecificWork(document.getElementsByClassName("canvasWrapper")[this.workData.id]);
   }
 }
