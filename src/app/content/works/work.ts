@@ -24,7 +24,7 @@ export abstract class Work {
     this.w = w;
     this.h = h;
   };
-  resizeCanvas(){
+  resizeCanvas(): void {
   	let canvas = this.canvas;
   	let parentEl = canvas.parentElement.parentElement.parentElement;
   	let canvasstyle = canvas.style;
@@ -36,12 +36,12 @@ export abstract class Work {
   	console.log(parentEl.clientHeight);
   	console.log(canvasstyle.width);
   }
-  activate() {
+  activate(): true {
   	this.active = true;
   	this.resizeCanvas();
   	return true;
   }
-  deactivate() {
+  deactivate(): true {
   	this.active = false;
   	this.resizeCanvas();
   	return true;
@@ -49,25 +49,25 @@ export abstract class Work {
   init(context: CanvasRenderingContext2D,w: number,h: number): void {
     context.clearRect(0,0,w,h);
   }
-  save(context: CanvasRenderingContext2D,w: number,h: number) {
+  save(context: CanvasRenderingContext2D,w: number,h: number): ImageData {
   	return context.getImageData(0,0,w,h);
   }
-  load(context: CanvasRenderingContext2D, imageData:ImageData) {
+  load(context: CanvasRenderingContext2D, imageData:ImageData): void {
   	context.putImageData(imageData,0,0);
   }
-  undo(){
+  undo(): void {
   	this.redoCommandStack.push(this.commandStack.pop());
   	this.redoParamStack.push(this.paramStack.pop());
   	this.redrawAll();
   }
-  redo(){
+  redo(): void {
   	let redoneCommand = this.redoCommandStack.pop();
   	let redoneParam = this.redoParamStack.pop();
   	redoneCommand.apply(this, redoneParam);
   	this.commandStack.push(redoneCommand);
   	this.paramStack.push(redoneParam);
   }
-  redrawAll() {
+  redrawAll(): void {
   	let commandStack = this.commandStack;
   	let paramStack = this.paramStack;
   	for (let i = 0; i < commandStack.length; i++) {
@@ -75,4 +75,7 @@ export abstract class Work {
   	}
   }
   clickInteract(e:Event){ }
+  onMouseDown(e:Event){ }
+  onMouseMove(e:Event){ }
+  onMouseUp(){ }
 }
