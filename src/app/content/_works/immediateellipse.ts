@@ -2,7 +2,7 @@ import { Work } from './work';
 
 export class SpecificWork extends Work {
 
-  mouseDown = false;
+  pointerDown = false;
   startX: number;
   startY: number;
   constructor (parentElement: Element) {
@@ -12,24 +12,24 @@ export class SpecificWork extends Work {
   	super.init(context, w, h);
   	context.strokeStyle = "black";
   }
-  onMouseDown (e: MouseEvent): void {
-  	this.mouseDown = true;
+  onPointerDown (e: PointerEvent): void {
+  	this.pointerDown = true;
   	this.startX = e.offsetX;
   	this.startY = e.offsetY;
   }
-  onMouseMove (e: MouseEvent): void {
-  	if(this.mouseDown) {
+  onPointerMove (e: PointerEvent): void {
+  	if(this.pointerDown) {
   	  this.drawEllipse(this.context, e.offsetX, e.offsetY);
   	}
   }
-  onMouseUp (): void {
-  	this.mouseDown = false;
+  onPointerUp (): void {
+  	this.pointerDown = false;
   }
-  drawEllipse (context: CanvasRenderingContext2D, mouseX: number, mouseY: number) {
+  drawEllipse (context: CanvasRenderingContext2D, pointerX: number, pointerY: number) {
     let startX = this.startX;
     let startY = this.startY;
     context.beginPath();
-    context.ellipse(startX, startY, Math.abs(mouseX - startX), Math.abs(mouseY - startY), 0, 0, 2 * Math.PI, false);
+    context.ellipse(startX, startY, Math.abs(pointerX - startX), Math.abs(pointerY - startY), 0, 0, 2 * Math.PI, false);
     context.stroke();
     context.closePath();
   }

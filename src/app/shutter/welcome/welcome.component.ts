@@ -5,15 +5,15 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   selector: 'welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css'],
-  animations: [
-    trigger('enterExitRight', [
-      state('in', style({transform:'translateX(0)'})),
-      transition(':enter', [
-      	style({transform: 'translateX(100%)'}),
-      	animate(100)
-      ])
-    ])
-  ]
+  // animations: [
+  //   trigger('enterExitRight', [
+  //     state('in', style({transform:'translateX(0)'})),
+  //     transition(':enter', [
+  //     	style({transform: 'translateX(100%)'}),
+  //     	animate(100)
+  //     ])
+  //   ])
+  // ]
 })
 export class WelcomeComponent {
 @Output() goContentEvent: EventEmitter<any> = new EventEmitter();

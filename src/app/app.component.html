@@ -1,8 +1,10 @@
-<shutter
-*ngIf="checkShutterOpen()"
-(goContentEvent)="appToggleFunc()"
->Shutter loading</shutter>
-<content
-*ngIf="!checkShutterOpen()"
-(goShutterEvent)="appToggleFunc()"
->Content loading</content>
+<div *ngIf="checkShutterOpen()" class = "page" [@shutterView]>
+  <shutter (goContentEvent)="appToggleFunc()">
+  	Shutter loading
+  </shutter>
+</div>
+<div class = "page" *ngIf="!checkShutterOpen()" [@contentView]>
+  <content (goShutterEvent)="appToggleFunc()">
+    Content loading
+  </content>
+</div>

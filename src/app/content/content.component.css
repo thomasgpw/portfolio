@@ -12,10 +12,14 @@
 .wwRow {
 	height:10%;
 	width:10%;
+	position: absolute;
+	bottom:0;
 	background: blue;
 }
 .wwActive {
 	height: 80%;
 	width: 80%;
+	position: fixed;
+	top: 0%;
 	background: red;
 }

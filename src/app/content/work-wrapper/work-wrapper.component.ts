@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
-import { Work } from '../works/work';
-import { SpecificWork } from '../works/immediateellipse';
+import { Work } from '../_works/work';
+import { SpecificWork } from '../_works/immediateellipse';
 
 @Component({
   selector: 'work-wrapper',
@@ -15,13 +15,13 @@ export class WorkWrapperComponent implements OnInit {
   ngOnInit() {
   	this.work = new SpecificWork(document.getElementsByClassName("canvasWrapper")[this.workData.id]);
   }
-  @HostListener('mousedown', ['$event']) onMouseDown() {
-  	this.work.onMouseDown(event);
+  @HostListener('pointerdown', ['$event']) onPointerDown() {
+  	this.work.onPointerDown(event);
   }
-  @HostListener('mousemove', ['$event']) onMouseMove() {
-  	this.work.onMouseMove(event);
+  @HostListener('window: pointermove', ['$event']) onPointerMove() {
+  	this.work.onPointerMove(event);
   }
-  @HostListener('mouseup') onMouseUp() {
-  	this.work.onMouseUp();
+  @HostListener('window: pointerup') onPointerUp() {
+  	this.work.onPointerUp();
   }
 }

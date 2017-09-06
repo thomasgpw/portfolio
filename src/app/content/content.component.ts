@@ -54,6 +54,7 @@ export class ContentComponent {
 		  classes.remove('wwGrid');
 		  classes.remove('wwRow');
 		  classes.add('wwActive');
+		  (clickedEl as HTMLElement).style.left = "7.5%"
       let elArray = document.getElementsByClassName("work-wrapper");
       let elArrayLength = elArray.length
 		  for (let i = 0; i < elArrayLength; ++i) {
@@ -62,6 +63,7 @@ export class ContentComponent {
           let classes = loopEl.classList;
           classes.remove("wwGrid");
           classes.add("wwRow");
+          (loopEl as HTMLElement).style.left = ((parseInt(loopEl.id) * 15) + "%");
         }
   	  }
   	  this.gridButton = true;

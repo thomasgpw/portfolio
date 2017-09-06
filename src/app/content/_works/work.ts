@@ -75,7 +75,7 @@ export abstract class Work {
   	}
   }
   clickInteract(e:Event){ }
-  onMouseDown(e:Event){ }
-  onMouseMove(e:Event){ }
-  onMouseUp(){ }
+  onPointerDown(e:Event){ }
+  onPointerMove(e:Event){ }
+  onPointerUp(){ }
 }
