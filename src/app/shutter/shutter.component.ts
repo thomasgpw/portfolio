@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
-import { animateConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
+import { viewTransitionConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
 
 let welcomeOpen:boolean = true;
 @Component({
@@ -10,25 +10,23 @@ let welcomeOpen:boolean = true;
   styleUrls: ['./shutter.component.css'],
   animations: [
     trigger('welcomeView', [
-      state('*', onScreenXStyle),
-      transition(':enter', [
-        rightOfScreenStyle,
-        animate(animateConfig, onScreenXStyle)
+      state('true', onScreenXStyle),
+      state('false', rightOfScreenStyle),
+      transition('false => true', [
+        animate(viewTransitionConfig)
       ]),
-      transition(':leave', [
-        onScreenXStyle,
-        animate(animateConfig, rightOfScreenStyle)
+      transition('true => false', [
+        animate(viewTransitionConfig)
       ])
     ]),
     trigger('aboutView', [
-      state('*', onScreenXStyle),
-      transition(':enter', [
-        leftOfScreenStyle,
-        animate(animateConfig, onScreenXStyle)
+      state('true', onScreenXStyle),
+      state('false', leftOfScreenStyle),
+      transition('false => true', [
+        animate(viewTransitionConfig)
       ]),
-      transition(':leave', [
-        onScreenXStyle,
-        animate(animateConfig, leftOfScreenStyle)
+      transition('true => false', [
+        animate(viewTransitionConfig)
       ])
     ])
   ]
@@ -39,7 +37,13 @@ export class ShutterComponent {
   	welcomeOpen = !welcomeOpen
   }
   checkWelcomeOpen () {
-  	if (welcomeOpen) {return(true)} else{return(false)};
+    return welcomeOpen;
+  }
+  checkAboutOpen () {
+    return !welcomeOpen;
+  }
+  conlog(s){
+    console.log(s);
   }
   goContentFunc() {
   	this.goContentEvent.emit(null);

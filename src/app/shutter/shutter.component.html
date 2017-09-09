@@ -1,5 +1,8 @@
 <div class="shutter" >
-  <div *ngIf="checkWelcomeOpen();" [@welcomeView] class="page">
+  <div *ngIf="checkWelcomeOpen();" 
+  [@welcomeView]=checkWelcomeOpen().toString()
+  class="page"
+  >
 	  <welcome 
 	  (toggleShutterEvent)="toggleShutterFunc()"
 	  (goContentEvent)="goContentFunc()"
@@ -7,7 +10,10 @@
 		  welcome loading
 	  </welcome>
 	</div>
-  <div *ngIf="!checkWelcomeOpen();" [@aboutView] class="page">
+  <div *ngIf="checkAboutOpen();" 
+  [@aboutView]="checkAboutOpen().toString()"
+  class="page"
+  >
     <about
 	  (toggleShutterEvent)="toggleShutterFunc()"
 	  (goContentEvent)="goContentFunc()"

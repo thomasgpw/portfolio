@@ -14,28 +14,22 @@ body { padding:0; margin:0; }
 }
 
 .content {
-	background: green;
+	background: rgb(80,87,129);
 	overflow-y: auto;
 	overflow-x: auto;
+	z-index: -1;
 }
 .shutter {
+	z-index: 1;
 }
 .about {
-	background: red;
+	background: rgb(140,162,217);
 }
 .welcome {
-	background: blue;
+	background: rgb(116,134,180);
 }
 
 .button {
 	cursor: pointer;
 	/*position: fixed;*/
 }
-
-/*@keyframes slideInRight {
-	from { transform: translateX(100%); }
-	to { transform: translateX(0); }
-}
-.welcome.ng-enter {
-	animation: slideInRight 0.5s both ease-in;
-}*/

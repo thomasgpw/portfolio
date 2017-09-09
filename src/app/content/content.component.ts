@@ -1,12 +1,24 @@
 import { Component, Output, EventEmitter, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { trigger, state, animate, transition} from '@angular/animations';
 
+import { workTransitionConfig, gridWorkStyle, activeWorkStyle, rowWorkStyle } from '../_animations/styles'
 import { worksList } from './works-list';
 import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component'
 
 @Component({
   selector: 'content',
   templateUrl: './content.component.html',
-  styleUrls: ['./content.component.css']
+  styleUrls: ['./content.component.css'],
+  animations: [
+    trigger('workAnimations', [
+      state('wwGrid', gridWorkStyle),
+      state('wwActive', activeWorkStyle),
+      state('wwRow', rowWorkStyle),
+      transition('wwGrid<=>wwActive', animate(workTransitionConfig)),
+      transition('wwGrid<=>wwRow', animate(workTransitionConfig)),
+      transition('wwActive<=>wwRow', animate(workTransitionConfig))
+    ])
+  ]
 })
 export class ContentComponent {
   @Output() goShutterEvent = new EventEmitter<null>();
@@ -18,9 +30,19 @@ export class ContentComponent {
   goShutterFunc() {
     this.goShutterEvent.emit(null);
   }
+  getStatus(i:number){
+    let pattern = /^ww/;
+    let elClassList = document.getElementsByClassName("work-wrapper")[i].classList;
+    let elClassListLength = elClassList.length;
+    for (let c = 0; c < elClassListLength; ++c) {
+      if (elClassList[c].match(pattern)) {
+        return elClassList[c];
+      }
+    }
+  }
   forceGridClass() {
     let elArray = document.getElementsByClassName("work-wrapper");
-  	let elArrayLength = elArray.length
+  	let elArrayLength = elArray.length;
     for (let i = 0; i < elArrayLength; ++i) {
       let classes = elArray[i].classList;
       classes.remove("wwActive");
@@ -57,13 +79,17 @@ export class ContentComponent {
 		  (clickedEl as HTMLElement).style.left = "7.5%"
       let elArray = document.getElementsByClassName("work-wrapper");
       let elArrayLength = elArray.length
+      let rowOffset = 0;
 		  for (let i = 0; i < elArrayLength; ++i) {
         let loopEl = elArray[i];
         if (clickedEl.id != loopEl.id) {
           let classes = loopEl.classList;
           classes.remove("wwGrid");
           classes.add("wwRow");
-          (loopEl as HTMLElement).style.left = ((parseInt(loopEl.id) * 15) + "%");
+          (loopEl as HTMLElement).style.left = (((parseInt(loopEl.id) + rowOffset) * 15) + "%");
+        }
+        else {
+          rowOffset = -1;
         }
   	  }
   	  this.gridButton = true;
