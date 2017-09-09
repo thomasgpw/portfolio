@@ -1,7 +1,9 @@
 import { style } from '@angular/animations';
 
-export const viewTransitionConfig = '1s ease-in-out'
-export const workTransitionConfig = '1s ease-in-out'
+export const viewTransitionTime = 1000
+export const viewTransitionConfig = viewTransitionTime + 'ms ease-in-out'
+export const workTransitionTime = 1000
+export const workTransitionConfig = workTransitionTime + 'ms ease-in-out'
 
 export const onScreenYStyle = style({ transform: 'translateY(0)' })
 export const aboveScreenStyle = style({ transform: 'translateY(-100%)' })

@@ -1,21 +1,21 @@
 <div class="shutter" >
   <div *ngIf="checkWelcomeOpen();" 
-  [@welcomeView]=checkWelcomeOpen().toString()
+  [@welcomeView]=welcomeAnimate.toString()
   class="page"
   >
 	  <welcome 
-	  (toggleShutterEvent)="toggleShutterFunc()"
+	  (toggleShutterEvent)="goAboutFunc()"
 	  (goContentEvent)="goContentFunc()"
 	  >
 		  welcome loading
 	  </welcome>
 	</div>
   <div *ngIf="checkAboutOpen();" 
-  [@aboutView]="checkAboutOpen().toString()"
+  [@aboutView]="aboutAnimate.toString()"
   class="page"
   >
     <about
-	  (toggleShutterEvent)="toggleShutterFunc()"
+	  (toggleShutterEvent)="goWelcomeFunc()"
 	  (goContentEvent)="goContentFunc()"
 	  >
 	    about loading

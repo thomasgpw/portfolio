@@ -1,9 +1,8 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
-import { viewTransitionConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
+import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
 
-let welcomeOpen:boolean = true;
 @Component({
   selector: 'shutter',
   templateUrl: './shutter.component.html',
@@ -32,18 +31,36 @@ let welcomeOpen:boolean = true;
   ]
 })
 export class ShutterComponent {
-@Output() goContentEvent: EventEmitter<any> = new EventEmitter();
-  toggleShutterFunc () {
-  	welcomeOpen = !welcomeOpen
+  @Output() goContentEvent: EventEmitter<any> = new EventEmitter();
+
+  welcomeOpen:boolean = true;
+  aboutOpen:boolean = false;
+  welcomeAnimate:boolean = true;
+  aboutAnimate:boolean = false;
+
+  goWelcomeFunc () {
+  	this.welcomeOpen = true;
+    this.welcomeAnimate = true;
+    this.aboutAnimate = false;
+    window.setTimeout(this.turnOffAbout, viewTransitionTime);
+  }
+  goAboutFunc () {
+    this.aboutOpen = true;
+    this.aboutAnimate = true;
+    this.welcomeAnimate = false;
+    window.setTimeout(this.turnOffWelcome, viewTransitionTime);
+  }
+  turnOffAbout() {
+    this.aboutOpen = false;
+  }
+  turnOffWelcome() {
+    this.welcomeOpen = false;
   }
   checkWelcomeOpen () {
-    return welcomeOpen;
+    return this.welcomeOpen;
   }
   checkAboutOpen () {
-    return !welcomeOpen;
-  }
-  conlog(s){
-    console.log(s);
+    return this.aboutOpen;
   }
   goContentFunc() {
   	this.goContentEvent.emit(null);
