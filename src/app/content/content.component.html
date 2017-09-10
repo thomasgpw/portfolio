@@ -1,4 +1,4 @@
-<div class="page content">
+<div id="content" class="page content">
   <div class="button" *ngIf="gridButton" (click)="viewGrid()">Grid Button</div>
   <div class="button" (click)="goShutterFunc()">Up</div>
   <div *ngFor="let workData of works; let i = index" [id]="i" class="work-wrapper wwGrid" [@workAnimations]="getStatus(workData.id)" (click)="workClickFunc($event)">

@@ -1,9 +1,11 @@
-import { Component, Output, EventEmitter, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild, ViewChildren, QueryList, OnInit } from '@angular/core'
 import { trigger, state, animate, transition} from '@angular/animations';
 
+import { primaryColor, secondaryColor, tertiaryColor } from "../../colors";
 import { workTransitionConfig, gridWorkStyle, activeWorkStyle, rowWorkStyle } from '../_animations/styles'
 import { worksList } from './works-list';
 import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component'
+import { generateSvgTab } from '../../assets/generate-svg-tab'
 
 @Component({
   selector: 'content',
@@ -20,12 +22,19 @@ import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component'
     ])
   ]
 })
-export class ContentComponent {
+export class ContentComponent implements OnInit {
   @Output() goShutterEvent = new EventEmitter<null>();
   @ViewChildren(WorkWrapperComponent) allWorkWrapper: QueryList<WorkWrapperComponent>;
 
   works = worksList;
   gridButton = false;
+
+  ngOnInit() {
+    let contentEl = document.getElementById("content");
+    (contentEl as HTMLElement).style.backgroundColor = secondaryColor;
+    let tab = contentEl.appendChild(generateSvgTab(window.innerWidth, window.innerHeight));
+    tab.firstElementChild.setAttributeNS(null, "fill", primaryColor);
+  }
   
   goShutterFunc() {
     this.goShutterEvent.emit(null);

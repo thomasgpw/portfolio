@@ -14,7 +14,6 @@ body { padding:0; margin:0; }
 }
 
 .content {
-	background: rgb(80,87,129);
 	overflow-y: auto;
 	overflow-x: auto;
 	z-index: -1;
@@ -23,10 +22,10 @@ body { padding:0; margin:0; }
 	z-index: 1;
 }
 .about {
-	background: rgb(140,162,217);
+	z-index: -1;
 }
 .welcome {
-	background: rgb(116,134,180);
+	z-index: 1;
 }
 
 .button {

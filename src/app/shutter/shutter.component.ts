@@ -65,4 +65,7 @@ export class ShutterComponent {
   goContentFunc() {
   	this.goContentEvent.emit(null);
   }
+  conLog() {
+    console.log("start")
+  }
 }

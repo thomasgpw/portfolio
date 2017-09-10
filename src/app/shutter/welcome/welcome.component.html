@@ -1,5 +1,5 @@
-<div class="page welcome">
-  <h1>Welcome Screen</h1>
-  <div class="button" (click)="shutterToggleFunc()">Left</div>
-  <div class="button" (click)="goContentFunc()">Down</div>
+<div id="welcome" class="page welcome">
+  <h1>Welcome To You, From Me, Thomas</h1>
+  <img [src]="arrowPath" class="button button-about" (click)="shutterToggleFunc()">
+  <img [src]="arrowPath" class="button button-content" (click)="goContentFunc()">
 </div>

@@ -1,7 +1,7 @@
 <div class="shutter" >
   <div *ngIf="checkWelcomeOpen();" 
   [@welcomeView]=welcomeAnimate.toString()
-  class="page"
+  class="page welcome"
   >
 	  <welcome 
 	  (toggleShutterEvent)="goAboutFunc()"
@@ -12,7 +12,8 @@
 	</div>
   <div *ngIf="checkAboutOpen();" 
   [@aboutView]="aboutAnimate.toString()"
-  class="page"
+  (@aboutView.start)="conLog()"
+  class="page about"
   >
     <about
 	  (toggleShutterEvent)="goWelcomeFunc()"
