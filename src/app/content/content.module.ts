@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { InlineSVGModule } from 'ng-inline-svg';
 
 import { WorkWrapperModule } from './work-wrapper/work-wrapper.module' 
 import { ContentComponent } from './content.component';
@@ -10,7 +11,8 @@ import { ContentComponent } from './content.component';
   ],
   imports: [
     CommonModule,
-    WorkWrapperModule
+    WorkWrapperModule,
+    InlineSVGModule
   ],
   providers: [],
   exports: [

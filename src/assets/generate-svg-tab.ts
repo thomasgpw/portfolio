@@ -23,12 +23,12 @@ export function generateSvgTab (wView:number, hView:number): SVGSVGElement {
   let tab = g.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'path'));
   const quarterCircleBezierOffset = 4*unitLength*(Math.sqrt(2)-1)/3;
   tab.setAttributeNS(null,"d",
-  	"M " + ((wView - wArrow)/2).toString() + "," + unitLength.toString() + 
+  	"M " + ((wView - (wArrow*2))/2).toString() + "," + unitLength.toString() + 
   	" a " + unitLength + "," + unitLength + " 0 0 1 " + unitLength + "," + unitLength +
  	  " l 0," + unitLength +
  	  " c 0," + quarterCircleBezierOffset + " " + (unitLength-quarterCircleBezierOffset) + "," + unitLength + " " + unitLength + "," + unitLength + " " +
  	  " l " + unitLength*2 + ",0" +
- 	  " c " + quarterCircleBezierOffset + ",0 " + unitLength + "," + (unitLength-quarterCircleBezierOffset) + " " + unitLength + "," + -(unitLength) +
+ 	  " c " + -(quarterCircleBezierOffset) + ",0 " + unitLength + "," + (unitLength-quarterCircleBezierOffset) + " " + unitLength + "," + -(unitLength) +
  	  " l 0," + -(unitLength) +
  	  " a " + unitLength + "," + unitLength + " 0 0 1 " + unitLength + "," + -(unitLength) +
  	  " l " + unitLength*(-5) + ",0" +

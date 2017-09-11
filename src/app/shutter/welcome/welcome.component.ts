@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
-import { trigger, state, style, animate, transition } from '@angular/animations';
 
 import { primaryColor } from "../../../colors";
+import { styleDownArrowShutter, styleLeftArrow } from "../../../apply-styles";
 
 @Component({
   selector: 'welcome',
@@ -12,11 +12,19 @@ export class WelcomeComponent implements OnInit {
   @Output() goContentEvent: EventEmitter<any> = new EventEmitter();
   @Output() toggleShutterEvent: EventEmitter<any> = new EventEmitter();
 
+  arrowPath = "../../../assets/arrow.svg";
   ngOnInit() {
     (document.getElementById("welcome") as HTMLElement).style.backgroundColor = primaryColor;
-  }
 
-  arrowPath = '/assets/arrow.svg';
+    let downArrowStyle = (document.getElementById("downArrow") as HTMLElement).style;
+
+  }
+  styleLeftArrowFunc(el: SVGAElement) {
+    styleLeftArrow(el);
+  }
+  styleDownArrowShutterFunc(el: SVGAElement) {
+    styleDownArrowShutter(el);
+  }
   shutterToggleFunc() {
     this.toggleShutterEvent.emit(null);
   }

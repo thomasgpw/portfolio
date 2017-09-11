@@ -1,5 +1,15 @@
 <div id="welcome" class="page welcome">
   <h1>Welcome To You, From Me, Thomas</h1>
-  <img [src]="arrowPath" class="button button-about" (click)="shutterToggleFunc()">
-  <img [src]="arrowPath" class="button button-content" (click)="goContentFunc()">
+  <div
+  id="leftArrow" class="button button-about"
+  [inlineSVG]="arrowPath"
+  (onSVGInserted)="styleLeftArrowFunc($event)"
+  (click)="shutterToggleFunc()">
+  </div>
+  <div
+  id="downArrow" class="button button-content"
+  [inlineSVG]="arrowPath"
+  (onSVGInserted)="styleDownArrowShutterFunc($event)"
+  (click)="goContentFunc()">
+  </div>
 </div>

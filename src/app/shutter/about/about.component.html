@@ -1,5 +1,15 @@
 <div id="about" class="page about">
   <h1>About Screen</h1>
-  <div class="button" (click)="shutterToggleFunc()">Right</div>
-  <div class="button" (click)="goContentFunc()">Down</div>
+  <div
+  id="rightArrow" class="button button-about"
+  [inlineSVG]="arrowPath"
+  (onSVGInserted)="styleRightArrowFunc($event)"
+  (click)="shutterToggleFunc()">
+  </div>
+  <div
+  id="downArrow" class="button button-content"
+  [inlineSVG]="arrowPath"
+  (onSVGInserted)="styleDownArrowShutterFunc($event)"
+  (click)="goContentFunc()">
+  </div>
 </div>

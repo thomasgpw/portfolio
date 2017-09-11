@@ -6,6 +6,7 @@ import { workTransitionConfig, gridWorkStyle, activeWorkStyle, rowWorkStyle } fr
 import { worksList } from './works-list';
 import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component'
 import { generateSvgTab } from '../../assets/generate-svg-tab'
+import { styleDownArrowContent } from '../../apply-styles'
 
 @Component({
   selector: 'content',
@@ -28,6 +29,7 @@ export class ContentComponent implements OnInit {
 
   works = worksList;
   gridButton = false;
+  arrowPath = '../../assets/arrow.svg';
 
   ngOnInit() {
     let contentEl = document.getElementById("content");
@@ -36,6 +38,9 @@ export class ContentComponent implements OnInit {
     tab.firstElementChild.setAttributeNS(null, "fill", primaryColor);
   }
   
+  styleDownArrowContentFunc(el: SVGAElement) {
+    styleDownArrowContent(el);
+  }
   goShutterFunc() {
     this.goShutterEvent.emit(null);
   }
