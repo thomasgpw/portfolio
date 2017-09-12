@@ -33,10 +33,10 @@ import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenS
 export class ShutterComponent {
   @Output() goContentEvent: EventEmitter<any> = new EventEmitter();
 
-  welcomeOpen:boolean = true;
-  aboutOpen:boolean = false;
-  welcomeAnimate:boolean = true;
-  aboutAnimate:boolean = false;
+  welcomeOpen = true;
+  aboutOpen = false;
+  welcomeAnimate = true;
+  aboutAnimate = false;
 
   goWelcomeFunc () {
   	this.welcomeOpen = true;
@@ -66,6 +66,6 @@ export class ShutterComponent {
   	this.goContentEvent.emit(null);
   }
   conLog() {
-    console.log("start")
+    console.log('start');
   }
 }

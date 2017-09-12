@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContentComponent } from './content.component';
-import { WorkWrapperModule } from './work-wrapper/work-wrapper.module' 
+import { WorkWrapperModule } from './work-wrapper/work-wrapper.module';
 
 describe('ContentComponent', () => {
   let component: ContentComponent;

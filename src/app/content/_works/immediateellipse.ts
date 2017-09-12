@@ -10,7 +10,7 @@ export class SpecificWork extends Work {
   }
   init(context: CanvasRenderingContext2D, w: number, h: number): void {
   	super.init(context, w, h);
-  	context.strokeStyle = "black";
+  	context.strokeStyle = 'black';
   }
   onPointerDown (e: PointerEvent): void {
   	this.pointerDown = true;
@@ -18,7 +18,7 @@ export class SpecificWork extends Work {
   	this.startY = e.offsetY;
   }
   onPointerMove (e: PointerEvent): void {
-  	if(this.pointerDown) {
+  	if (this.pointerDown) {
   	  this.drawEllipse(this.context, e.offsetX, e.offsetY);
   	}
   }
@@ -26,8 +26,8 @@ export class SpecificWork extends Work {
   	this.pointerDown = false;
   }
   drawEllipse (context: CanvasRenderingContext2D, pointerX: number, pointerY: number) {
-    let startX = this.startX;
-    let startY = this.startY;
+    const startX = this.startX;
+    const startY = this.startY;
     context.beginPath();
     context.ellipse(startX, startY, Math.abs(pointerX - startX), Math.abs(pointerY - startY), 0, 0, 2 * Math.PI, false);
     context.stroke();

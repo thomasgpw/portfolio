@@ -16,7 +16,7 @@ describe('WorkWrapperComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WorkWrapperComponent);
     component = fixture.componentInstance;
-    component.work = {name:"testwork",url:''};
+    component.work = {name: 'testwork', url: ''};
     fixture.detectChanges();
   });
 

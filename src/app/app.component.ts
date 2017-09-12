@@ -29,10 +29,10 @@ import { ContentModule } from './content/content.module';
 })
 export class AppComponent {
   title = 'app';
-  shutterOpen:boolean = true;
-  contentOpen:boolean = false;
-  shutterAnimate:boolean = true;
-  contentAnimate:boolean = false;
+  shutterOpen = true;
+  contentOpen = false;
+  shutterAnimate = true;
+  contentAnimate = false;
   goShutterFunc() {
     this.shutterOpen = true;
     this.shutterAnimate = true;

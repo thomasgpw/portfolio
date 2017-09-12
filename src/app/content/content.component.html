@@ -1,5 +1,11 @@
 <div id="content" class="page content">
-  <div class="button" *ngIf="gridButton" (click)="viewGrid()">Grid Button</div>
+  <div
+  id="gridButton" class="button button-grid"
+  *ngIf="gridButton"
+  [inlineSVG]="gridButtonPath"
+  (onSVGInserted)="styleGridButtonFunc($event)"
+  (click)="viewGridFunc()">
+  </div>
   <div
   id="downArrow" class="button button-shutter"
   [inlineSVG]="arrowPath"
