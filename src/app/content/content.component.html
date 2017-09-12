@@ -6,7 +6,11 @@
   (onSVGInserted)="styleDownArrowContentFunc($event)"
   (click)="goShutterFunc()">
   </div>
-  <div *ngFor="let workData of works; let i = index" [id]="i" class="work-wrapper wwGrid" [@workAnimations]="getStatus(workData.id)" (click)="workClickFunc($event)">
+  <div *ngFor="let workData of works; let i = index"
+  [id]="i" class="work-wrapper wwGrid"
+  [@workAnimations]="getStatus(workData.id)"
+  (@workAnimations.done)="resizeWork($event)"
+  (click)="workClickFunc($event)">
     <work-wrapper [workData]="workData">loading {{workData.name}}</work-wrapper>
   </div>
 </div>

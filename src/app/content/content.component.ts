@@ -63,9 +63,6 @@ export class ContentComponent implements OnInit {
       classes.remove("wwRow");
       classes.add("wwGrid");
   	}
-  	this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
-  		workWrapperComponentInstance.work.resizeCanvas();
-  	});
   }
   viewGrid(){
   	let activeEl = document.getElementsByClassName('wwActive')[0];
@@ -80,11 +77,17 @@ export class ContentComponent implements OnInit {
       }
     }
   }
-  resizeWorks(){
-
+  resizeWork(e: Event){
+    console.log(e);
+    // let allWorkWrapperComponents=[];
+    // this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
+    //   allWorkWrapperComponents.push(workWrapperComponentInstance);
+    // });
+    // let clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workData.id == e.srcElement.id);
+    // console.log(clickedWorkWrapper);
+    // clickedWorkWrapper.work.resizeCanvas();
   }
   activateWork(clickedEl: Element, clickedWorkWrapper:WorkWrapperComponent) {
-    console.log(clickedWorkWrapper);
 		if (clickedWorkWrapper.work.activate()) {
 		  let classes = clickedEl.classList;
 		  classes.remove('wwGrid');
@@ -138,9 +141,6 @@ export class ContentComponent implements OnInit {
 		  else{
 		  	this.activateWork(clickedEl, clickedWorkWrapper);
 		  }
-		  this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
-  		  workWrapperComponentInstance.work.resizeCanvas();
-  	  });
 	  }
   }
 }
