@@ -1,4 +1,4 @@
-<div id="content" class="page content">
+<div id="app-content" class="page app-content">
   <div
   id="gridButton" class="button button-grid"
   *ngIf="gridButton"
@@ -13,10 +13,10 @@
   (click)="goShutterFunc()">
   </div>
   <div *ngFor="let workData of works; let i = index"
-  [id]="i" class="work-wrapper wwGrid"
+  [id]="i" class="app-work-wrapper wwGrid"
   [@workAnimations]="getStatus(workData.id)"
   (@workAnimations.done)="resizeWork($event)"
   (click)="workClickFunc($event)">
-    <work-wrapper [workData]="workData">loading {{workData.name}}</work-wrapper>
+    <app-work-wrapper [workData]="workData">loading {{workData.name}}</app-work-wrapper>
   </div>
 </div>

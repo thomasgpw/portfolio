@@ -4,7 +4,7 @@ import { primaryColor } from '../../../colors';
 import { styleDownArrowShutter, styleLeftArrow } from '../../../apply-styles';
 
 @Component({
-  selector: 'welcome',
+  selector: 'app-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css'],
 })
@@ -29,6 +29,6 @@ export class WelcomeComponent implements OnInit {
     this.toggleShutterEvent.emit(null);
   }
   goContentFunc() {
-  	this.goContentEvent.emit(null);
+    this.goContentEvent.emit(null);
   }
 }

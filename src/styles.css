@@ -13,7 +13,7 @@ body { padding:0; margin:0; }
     overflow: hidden;
 }
 
-.content {
+.app-content {
 	overflow-y: auto;
 	overflow-x: auto;
 	z-index: -1;

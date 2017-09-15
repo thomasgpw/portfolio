@@ -4,7 +4,7 @@ import { trigger, state, animate, transition} from '@angular/animations';
 import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
 
 @Component({
-  selector: 'shutter',
+  selector: 'app-shutter',
   templateUrl: './shutter.component.html',
   styleUrls: ['./shutter.component.css'],
   animations: [
@@ -39,7 +39,7 @@ export class ShutterComponent {
   aboutAnimate = false;
 
   goWelcomeFunc () {
-  	this.welcomeOpen = true;
+    this.welcomeOpen = true;
     this.welcomeAnimate = true;
     this.aboutAnimate = false;
     window.setTimeout(this.turnOffAbout, viewTransitionTime);
@@ -63,7 +63,7 @@ export class ShutterComponent {
     return this.aboutOpen;
   }
   goContentFunc() {
-  	this.goContentEvent.emit(null);
+    this.goContentEvent.emit(null);
   }
   conLog() {
     console.log('start');

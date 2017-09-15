@@ -1,14 +1,14 @@
 <div *ngIf="checkShutterOpen()" class = "page shutter" 
 [@shutterView]=shutterAnimate.toString()
 >
-  <shutter (goContentEvent)="goContentFunc()">
-  	Shutter loading
-  </shutter>
+  <app-shutter (goContentEvent)="goContentFunc()">
+    Shutter loading
+  </app-shutter>
 </div>
-<div class = "page content" *ngIf="checkContentOpen()"
-[@contentView]=contentAnimate.toString()
+<div class = "page app-content" *ngIf="checkContentOpen()"
+[@contentView]=app-contentAnimate.toString()
 >
-  <content (goShutterEvent)="goShutterFunc()">
+  <app-content (goShutterEvent)="goShutterFunc()">
     Content loading
-  </content>
+  </app-content>
 </div>

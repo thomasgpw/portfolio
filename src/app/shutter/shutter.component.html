@@ -3,23 +3,23 @@
   [@welcomeView]=welcomeAnimate.toString()
   class="page welcome"
   >
-	  <welcome 
-	  (toggleShutterEvent)="goAboutFunc()"
-	  (goContentEvent)="goContentFunc()"
-	  >
-		  welcome loading
-	  </welcome>
-	</div>
+    <app-welcome 
+    (toggleShutterEvent)="goAboutFunc()"
+    (goContentEvent)="goContentFunc()"
+    >
+      welcome loading
+    </app-welcome>
+  </div>
   <div *ngIf="checkAboutOpen();" 
   [@aboutView]="aboutAnimate.toString()"
   (@aboutView.start)="conLog()"
   class="page about"
   >
-    <about
-	  (toggleShutterEvent)="goWelcomeFunc()"
-	  (goContentEvent)="goContentFunc()"
-	  >
-	    about loading
-	  </about>
-	</div>
+    <app-about
+    (toggleShutterEvent)="goWelcomeFunc()"
+    (goContentEvent)="goContentFunc()"
+    >
+      about loading
+    </app-about>
+  </div>
 </div>

@@ -4,7 +4,7 @@ import { tertiaryColor } from '../../../colors';
 import { styleDownArrowShutter, styleRightArrow } from '../../../apply-styles';
 
 @Component({
-  selector: 'about',
+  selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css']
 })
@@ -27,6 +27,6 @@ export class AboutComponent implements OnInit {
     this.toggleShutterEvent.emit(null);
   }
   goContentFunc() {
-  	this.goContentEvent.emit(null);
+    this.goContentEvent.emit(null);
   }
 }

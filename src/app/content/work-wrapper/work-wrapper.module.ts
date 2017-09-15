@@ -7,10 +7,10 @@ import { WorkWrapperComponent } from './work-wrapper.component';
     CommonModule
   ],
   declarations: [
-  	WorkWrapperComponent
+    WorkWrapperComponent
   ],
   exports: [
-  	WorkWrapperComponent
+    WorkWrapperComponent
   ]
 })
 export class WorkWrapperModule { }
