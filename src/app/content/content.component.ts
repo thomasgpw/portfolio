@@ -35,7 +35,7 @@ export class ContentComponent implements OnInit {
   ngOnInit() {
     const contentEl = document.getElementById('app-content');
     (contentEl as HTMLElement).style.backgroundColor = secondaryColor;
-    const tab = contentEl.appendChild(generateSvgTab(window.innerWidth, window.innerHeight));
+    const tab = contentEl.appendChild(generateSvgTab(window.innerWidth, window.innerHeight / 36));
     tab.firstElementChild.setAttributeNS(null, 'fill', primaryColor);
   }
 

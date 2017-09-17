@@ -4,6 +4,7 @@
   class="page welcome"
   >
     <app-welcome 
+    [name]="name"
     (toggleShutterEvent)="goAboutFunc()"
     (goContentEvent)="goContentFunc()"
     >

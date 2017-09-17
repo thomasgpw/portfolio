@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
 import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
@@ -32,6 +32,7 @@ import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenS
 })
 export class ShutterComponent {
   @Output() goContentEvent: EventEmitter<any> = new EventEmitter();
+  @Input() name: string;
 
   welcomeOpen = true;
   aboutOpen = false;

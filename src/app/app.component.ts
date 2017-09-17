@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle, belowScreenStyle } from './_animations/styles';
@@ -27,12 +27,29 @@ import { ContentModule } from './content/content.module';
     ])
   ]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'app';
+  name: string = null;
   shutterOpen = true;
   contentOpen = false;
   shutterAnimate = true;
   contentAnimate = false;
+  width: number;
+  height: number;
+
+  ngOnInit(): void {
+    this.initGraphics();
+  }
+  initGraphics(): void {
+    this.calcAspectLengths().then(result => this.redrawAll());
+  }
+  calcAspectLengths(): Promise<true> {
+    return Promise.resolve(true);
+  }
+  redrawAll(): void {
+    const width = this.width;
+    const height = this.height;
+  }
   goShutterFunc() {
     this.shutterOpen = true;
     this.shutterAnimate = true;

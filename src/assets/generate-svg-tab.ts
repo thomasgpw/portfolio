@@ -1,5 +1,4 @@
-export function generateSvgTab (wView: number, hView: number): SVGSVGElement {
-  const unitLength = wView / 64;
+export function generateSvgTab (wView: number, unitLength: number): SVGElement {
   const wArrow = unitLength * 3;
   const hArrow = unitLength * 2;
   const hTotal = unitLength * 4;

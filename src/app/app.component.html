@@ -1,7 +1,7 @@
 <div *ngIf="checkShutterOpen()" class = "page shutter" 
 [@shutterView]=shutterAnimate.toString()
 >
-  <app-shutter (goContentEvent)="goContentFunc()">
+  <app-shutter [name]="name" (goContentEvent)="goContentFunc()">
     Shutter loading
   </app-shutter>
 </div>
