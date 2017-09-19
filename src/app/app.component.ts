@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle, belowScreenStyle } from './_animations/styles';
@@ -16,6 +16,10 @@ import { ContentModule } from './content/content.module';
       state('false', aboveScreenStyle),
       transition('true<=>false', [
         animate(viewTransitionConfig)
+      ]),
+      transition('void=>false', [
+        aboveScreenStyle,
+        animate(viewTransitionConfig, aboveScreenStyle)
       ])
     ]),
     trigger('contentView', [
@@ -27,70 +31,108 @@ import { ContentModule } from './content/content.module';
     ])
   ]
 })
-export class AppComponent implements OnInit {
-  title = 'app';
-  name: string;
-  shutterOpen: boolean;
-  contentOpen: boolean;
-  shutterAnimate: boolean;
-  contentAnimate: boolean;
-  width: number;
-  height: number;
+export class AppComponent implements OnInit, OnDestroy {
+  // appData[0] contains shutter data, appData[1] contains content data
+  private appData: any[];
+  private shutterAlive: boolean;
+  private contentAlive: boolean;
+  private shutterAnimateState: boolean;
+  private contentAnimateState: boolean;
+  private width: number;
+  private height: number;
+  private welcomeAlive: boolean;
+  private workActive: number;
 
+  /* LIFECYCLE HOOK FUNCTIONS */
   ngOnInit(): void {
+    this.appData = [[[null, null], []], []];
     this.initGraphics();
-    this.shutterOpen = true;
-    this.contentOpen = false;
-    this.shutterAnimate = true;
-    this.contentAnimate = false;
-    this.name = null;
+    this.shutterAlive = true;
+    this.contentAlive = false;
+    this.shutterAnimateState = true;
+    this.contentAnimateState = false;
+    this.welcomeAlive = true;
+    this.workActive = null;
   }
-  initGraphics(): void {
-    this.calcAspectLengths().then(result => this.redrawAll());
+  ngOnDestroy(): void {
+    // save data to cookies or account eventually
   }
-  calcAspectLengths(): Promise<true> {
-    return Promise.resolve(true);
+
+  /* ON CHANGE SPECIFIC FUNCTIONS */
+  initGraphics(): Promise<null> {
+    this.calcAspectLengths().then(data => this.redrawAll(data));
+    return Promise.resolve(null);
   }
-  redrawAll(): void {
+  calcAspectLengths(): Promise<number[]> {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    this.width = width;
+    this.height = height;
+    return Promise.resolve([width, height]);
+  }
+  redrawAll(value: number[]): Promise<null> {
+    // send redraw command to alive child
     console.log('redrawAll fired');
-    const width = this.width;
-    const height = this.height;
+    return Promise.resolve(null);
   }
-  scrollFunc(e: WheelEvent) {
-    if (e.ctrlKey === false) {
-      const shutterOpen = this.shutterOpen;
-      const contentOpen = this.contentOpen;
-      console.log(this.shutterOpen, contentOpen);
-      if (shutterOpen === true && contentOpen === false && e.deltaY <= -10) {
+
+  /* EVENT FUNCTIONS */
+  saveShutterDataFunc(dataArray: string[][]): void {
+    this.appData[0] = dataArray;
+  }
+  setWelcomeAliveFunc(e: boolean) {
+    this.welcomeAlive = e;
+  }
+  saveContentDataFunc(dataArray: any[][]): void {
+    this.appData[1] = dataArray;
+  }
+  setworkActiveFunc(e: number) {
+    this.workActive = e;
+  }
+  scrollFunc(e: WheelEvent): void {
+    if (e.ctrlKey === false && e.altKey === false) {
+      e.preventDefault();
+      const shutterAlive = this.shutterAlive;
+      const contentAlive = this.contentAlive;
+      if (shutterAlive === true && contentAlive === false && e.deltaY <= -10) {
         this.goContentFunc();
-      } else if (shutterOpen === false && contentOpen === true && e.deltaY >= 10) {
+      } else if (shutterAlive === false && contentAlive === true && e.deltaY >= 10) {
         this.goShutterFunc();
       }
     }
   }
-  goShutterFunc() {
-    this.shutterOpen = true;
-    this.shutterAnimate = true;
-    this.contentAnimate = false;
-    window.setTimeout(this.turnOffContent, viewTransitionTime);
+  goShutterFunc(): void {
+    this.goShutter().then(resolve => setTimeout(() => this.turnOffContent(this), viewTransitionTime));
   }
-  goContentFunc() {
-    this.contentOpen = true;
-    this.shutterAnimate = false;
-    this.contentAnimate = true;
-    window.setTimeout(this.turnOffShutter, viewTransitionTime);
+  goContentFunc(): void {
+    this.goContent().then(resolve => setTimeout(() => this.turnOffShutter(this), viewTransitionTime));
   }
-  turnOffContent() {
-    this.contentOpen = false;
+  goShutter(): Promise<null> {
+    this.instantiateShutter().then(resolve => this.animateShutter());
+    return Promise.resolve(null);
   }
-  turnOffShutter() {
-    this.shutterOpen = false;
-    console.log(this.shutterOpen);
+  instantiateShutter(): Promise<null> {
+    this.shutterAlive = true;
+    return Promise.resolve(null);
   }
-  checkShutterOpen () {
-    return this.shutterOpen;
+  animateShutter(): Promise<null> {
+    return Promise.resolve(null);
   }
-  checkContentOpen () {
-    return this.contentOpen;
+  turnOffContent(that: this): void {
+    that.contentAlive = false;
+  }
+  goContent(): Promise<null> {
+    this.instantiateContent().then(resolve => this.animateContent());
+    return Promise.resolve(null);
+  }
+  instantiateContent(): Promise<null> {
+    this.contentAlive = true;
+    return Promise.resolve(null);
+  }
+  animateContent(): Promise<null> {
+    return Promise.resolve(null);
+  }
+  turnOffShutter(that: this): void {
+    that.shutterAlive = false;
   }
 }

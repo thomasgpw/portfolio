@@ -1,4 +1,4 @@
-import { Component, Output, Input, EventEmitter } from '@angular/core';
+import { Component, Output, Input, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
 import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
@@ -30,43 +30,77 @@ import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenS
     ])
   ]
 })
-export class ShutterComponent {
-  @Output() goContentEvent: EventEmitter<any> = new EventEmitter();
-  @Input() name: string;
+export class ShutterComponent implements OnInit, OnDestroy {
+  @Output() goContentEvent: EventEmitter<null> = new EventEmitter();
+  @Output() saveShutterDataEvent: EventEmitter<string[][]> = new EventEmitter();
+  @Output() setWelcomeAliveEvent: EventEmitter<boolean> = new EventEmitter();
+  @Input() shutterData: string[][];
+  @Input() welcomeAlive: boolean;
 
-  welcomeOpen = true;
-  aboutOpen = false;
-  welcomeAnimate = true;
-  aboutAnimate = false;
+  aboutAlive: boolean;
+  welcomeAnimate: boolean;
+  aboutAnimate: boolean;
 
-  goWelcomeFunc () {
-    this.welcomeOpen = true;
-    this.welcomeAnimate = true;
-    this.aboutAnimate = false;
-    window.setTimeout(this.turnOffAbout, viewTransitionTime);
+  /* LIFECYCLE HOOK FUNCTIONS */
+  ngOnInit(): void {
+    const welcomeAlive = this.welcomeAlive;
+    this.aboutAlive = !welcomeAlive;
+    this.welcomeAnimate = welcomeAlive;
+    this.aboutAnimate = !welcomeAlive;
   }
-  goAboutFunc () {
-    this.aboutOpen = true;
-    this.aboutAnimate = true;
-    this.welcomeAnimate = false;
-    window.setTimeout(this.turnOffWelcome, viewTransitionTime);
+  ngOnDestroy(): void {
+    this.saveShutterDataEvent.emit(this.shutterData);
+    this.setWelcomeAliveEvent.emit(this.welcomeAlive);
   }
-  turnOffAbout() {
-    this.aboutOpen = false;
+
+  /* ON CHANGE SPECIFIC FUNCTIONS */
+  redrawAll(): Promise<null> {
+    // send redraw command to alive child
+    return Promise.resolve(null);
   }
-  turnOffWelcome() {
-    this.welcomeOpen = false;
-  }
-  checkWelcomeOpen () {
-    return this.welcomeOpen;
-  }
-  checkAboutOpen () {
-    return this.aboutOpen;
-  }
+
+  /* EVENT FUNCTIONS */
   goContentFunc() {
     this.goContentEvent.emit(null);
   }
-  conLog() {
-    console.log('start');
+  goWelcomeFunc(): void {
+    this.goWelcome().then(resolve => setTimeout(() => this.turnOffAbout(this), viewTransitionTime));
+  }
+  goAboutFunc(): void {
+    this.goAbout().then(resolve => setTimeout(() => this.turnOffWelcome(this), viewTransitionTime));
+  }
+  goWelcome(): Promise<null> {
+    this.instantiateWelcome().then(resolve => this.animateWelcome());
+    return Promise.resolve(null);
+  }
+  instantiateWelcome(): Promise<null> {
+    this.welcomeAlive = true;
+    return Promise.resolve(null);
+  }
+  animateWelcome(): Promise<null> {
+    return Promise.resolve(null);
+  }
+  turnOffAbout(that: this): void {
+    that.aboutAlive = false;
+  }
+  goAbout(): Promise<null> {
+    this.instantiateAbout().then(resolve => this.animateAbout());
+    return Promise.resolve(null);
+  }
+  instantiateAbout(): Promise<null> {
+    this.aboutAlive = true;
+    return Promise.resolve(null);
+  }
+  animateAbout(): Promise<null> {
+    return Promise.resolve(null);
+  }
+  turnOffWelcome(that: this): void {
+    that.welcomeAlive = false;
+  }
+  saveWelcomeDataFunc(e: string[]): void {
+    this.shutterData[0] = e;
+  }
+  saveAboutDataFunc(e: string[]): void {
+    this.shutterData[1] = e;
   }
 }

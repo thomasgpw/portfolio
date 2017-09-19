@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, ViewChild, ViewChildren, QueryList, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ViewChildren, QueryList, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, animate, transition} from '@angular/animations';
 
 import { primaryColor, secondaryColor, tertiaryColor } from '../../colors';
@@ -23,8 +23,12 @@ import { styleDownArrowContent, styleGridButton } from '../../apply-styles';
     ])
   ]
 })
-export class ContentComponent implements OnInit {
-  @Output() goShutterEvent = new EventEmitter<null>();
+export class ContentComponent implements OnInit, OnDestroy {
+  @Output() goShutterEvent: EventEmitter<null> = new EventEmitter();
+  @Output() saveContentDataEvent: EventEmitter<any[]> = new EventEmitter();
+  @Output() setWorkActiveEvent: EventEmitter<number> = new EventEmitter();
+  @Input() contentData: any[];
+  @Input() workActive: number;
   @ViewChildren(WorkWrapperComponent) allWorkWrapper: QueryList<WorkWrapperComponent>;
 
   works = worksList;
@@ -38,13 +42,16 @@ export class ContentComponent implements OnInit {
     const tab = contentEl.appendChild(generateSvgTab(window.innerWidth, window.innerHeight / 36));
     tab.firstElementChild.setAttributeNS(null, 'fill', primaryColor);
   }
-
   styleDownArrowContentFunc(el: SVGElement) {
     styleDownArrowContent(el);
   }
   styleGridButtonFunc(el: SVGElement) {
     styleGridButton(el);
   }
+  ngOnDestroy(): void {
+
+  }
+
   goShutterFunc() {
     this.goShutterEvent.emit(null);
   }
@@ -92,6 +99,7 @@ export class ContentComponent implements OnInit {
   activateWork(clickedEl: Element, clickedWorkWrapper: WorkWrapperComponent) {
     if (clickedWorkWrapper.work.activate()) {
       let classes = clickedEl.classList;
+      this.workActive = parseInt(clickedEl.id, 10);
       classes.remove('wwGrid');
       classes.remove('wwRow');
       classes.add('wwActive');
@@ -119,6 +127,7 @@ export class ContentComponent implements OnInit {
       const classes = activeEl.classList;
       classes.remove('wwActive');
       classes.add('wwRow');
+      this.workActive = null;
       return true;
     }
   }

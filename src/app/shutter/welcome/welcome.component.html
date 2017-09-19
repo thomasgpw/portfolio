@@ -1,5 +1,7 @@
 <div id="welcome" class="page welcome">
-  <h1>{{welcome}}</h1>
+  <h1>
+    <span id="greeting" (click)='greetingClickFunc($event)'></span>
+  </h1>
   <div
   id="leftArrow" class="button button-about"
   [inlineSVG]="arrowPath"

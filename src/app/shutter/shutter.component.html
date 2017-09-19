@@ -1,24 +1,28 @@
 <div class="shutter" >
-  <div *ngIf="checkWelcomeOpen();" 
+  <div
+  *ngIf=welcomeAlive
   [@welcomeView]=welcomeAnimate.toString()
   class="page welcome"
   >
     <app-welcome 
-    [name]="name"
-    (toggleShutterEvent)="goAboutFunc()"
-    (goContentEvent)="goContentFunc()"
+    [welcomeData]=shutterData[0]
+    (toggleShutterEvent)=goAboutFunc()
+    (goContentEvent)=goContentFunc()
+    (saveWelcomeDataEvent)=saveWelcomeDataFunc($event)
     >
       welcome loading
     </app-welcome>
   </div>
-  <div *ngIf="checkAboutOpen();" 
-  [@aboutView]="aboutAnimate.toString()"
-  (@aboutView.start)="conLog()"
+  <div
+  *ngIf=aboutAlive
+  [@aboutView]=aboutAnimate.toString()
   class="page about"
   >
     <app-about
-    (toggleShutterEvent)="goWelcomeFunc()"
-    (goContentEvent)="goContentFunc()"
+    [aboutData]=shutterData[1]
+    (toggleShutterEvent)=goWelcomeFunc()
+    (goContentEvent)=goContentFunc()
+    (saveAboutDataEvent)=saveAboutDataFunc($event)
     >
       about loading
     </app-about>

@@ -2,20 +2,21 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class WelcomeService {
-  WELCOMES: string[] = [
+  GREETINGS: string[] = [
     'Welcome |name|!',
     'Greetings |name|!',
     'Nice to see you |name|!',
     'Howdy |name|!',
-    'Howdy partner!',
     'Salutations |name|!',
     'How\'s it going |name|?',
     'How\'s it going |name|? \n Just start talking, I can hear you.',
     'Hello |name|!',
     'Glad you made it |name|!',
     'Ahoy |name|!',
-    'Ahoy Sailor!',
     'Welcome Aboard |name|!',
+    'Thanks for coming |name|!',
+    'It\'s an honor to have you here |name|!',
+    'It\'s great to see you |name|!',
   ];
   NAMES: string[] = [
     'Amigo',
@@ -50,14 +51,17 @@ export class WelcomeService {
     'Your Eminence',
     'Your Honor',
   ];
-  getWelcome(name: string): string {
-    const WELCOMES = this.WELCOMES;
+  getGreeting(greeting: string, name: string): string {
     const namePattern = /\|name\|/;
-    return WELCOMES[Math.floor(Math.random() * WELCOMES.length)].replace(namePattern, name);
+    return greeting.replace(namePattern, name);
   }
-  getName(): string {
+  getRandomGreeting(): string {
+    const GREETINGS = this.GREETINGS;
+    return GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
+  }
+  getRandomName(): string {
     const NAMES = this.NAMES;
-    return NAMES[Math.floor(Math.random() * NAMES.length)];
+    return '<span id=\'name\'>' + NAMES[Math.floor(Math.random() * NAMES.length)] + '</span>';
   }
 }
 
