@@ -54,12 +54,10 @@ export class ShutterComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.saveShutterDataEvent.emit(this.shutterData);
-    this.setWelcomeAliveEvent.emit(this.welcomeAlive);
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
   redrawAll(values: number[]): Promise<null> {
-    console.log('redrawAll fired');
     if (this.welcomeAlive) {
       this.welcomeInstance.redrawAll(values);
     }
@@ -104,6 +102,7 @@ export class ShutterComponent implements OnInit, OnDestroy {
   }
   turnOffAbout(that: this): void {
     that.aboutAlive = false;
+    this.setWelcomeAliveEvent.emit(this.welcomeAlive);
   }
   goAbout(): Promise<null> {
     this.instantiateAbout().then(resolve => setTimeout(() => this.animateAbout()));
@@ -122,5 +121,6 @@ export class ShutterComponent implements OnInit, OnDestroy {
   }
   turnOffWelcome(that: this): void {
     that.welcomeAlive = false;
+    this.setWelcomeAliveEvent.emit(this.welcomeAlive);
   }
 }

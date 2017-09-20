@@ -36,13 +36,15 @@ export abstract class Work {
     this.h = h;
     this.redrawAll();
   }
-  activate(): true {
+  activate(): Promise<null> {
+    this.redrawAll();
     this.active = true;
-    return true;
+    return Promise.resolve(null);
   }
-  deactivate(): true {
+  deactivate(): Promise<null> {
+    this.init(this.context, this.w, this.h);
     this.active = false;
-    return true;
+    return Promise.resolve(null);
   }
   init(context: CanvasRenderingContext2D, w: number, h: number): void {
     context.clearRect(0, 0, w, h);

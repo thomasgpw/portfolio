@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
+
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle, belowScreenStyle } from './_animations/styles';
 import { ShutterComponent } from './shutter/shutter.component';
 import { ContentComponent } from './content/content.component';
@@ -73,7 +74,6 @@ export class AppComponent implements OnInit, OnDestroy {
     return Promise.resolve([width, height]);
   }
   redrawAll(values: number[]): Promise<null> {
-    console.log('redrawAll fired');
     if (this.shutterAlive) {
       this.shutterInstance.redrawAll(values);
     }
@@ -93,7 +93,7 @@ export class AppComponent implements OnInit, OnDestroy {
   saveContentDataFunc(dataArray: any[][]): void {
     this.appData[1] = dataArray;
   }
-  setworkActiveFunc(e: number) {
+  setWorkActiveFunc(e: number) {
     this.workActive = e;
   }
   scrollFunc(e: WheelEvent): void {

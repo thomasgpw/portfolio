@@ -39,6 +39,8 @@ export class WelcomeService {
     'Love',
     'Liz Lemon',
     'Ma\'m/Man/Mallcop',
+    'Pal',
+    'Partner',
     'Poe, the Kung-Fu Panda',
     'Partner',
     'Queen',

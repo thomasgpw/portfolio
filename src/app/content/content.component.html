@@ -1,22 +1,26 @@
-<div id="app-content" class="page app-content">
+<div id='app-content' class='page app-content'>
   <div
-  id="gridButton" class="button button-grid"
-  *ngIf="gridButton"
-  [inlineSVG]="gridButtonPath"
-  (onSVGInserted)="styleGridButtonFunc($event)"
-  (click)="viewGridFunc()">
+  id='gridButton' class='button button-grid'
+  *ngIf=gridButton
+  [inlineSVG]=gridButtonPath
+  (onSVGInserted)=styleGridButtonFunc($event)
+  (click)=viewGridFunc()>
   </div>
   <div
-  id="downArrow" class="button button-shutter"
-  [inlineSVG]="arrowPath"
-  (onSVGInserted)="styleDownArrowContentFunc($event)"
-  (click)="goShutterFunc()">
+  id='downArrow' class='button button-shutter'
+  [inlineSVG]=arrowPath
+  (onSVGInserted)=styleDownArrowContentFunc($event)
+  (click)=goShutterFunc()>
   </div>
-  <div *ngFor="let workData of works; let i = index"
-  [id]="i" class="app-work-wrapper wwGrid"
-  [@workAnimations]="getStatus(workData.id)"
-  (@workAnimations.done)="resizeWork($event)"
-  (click)="workClickFunc($event)">
-    <app-work-wrapper [workData]="workData">loading {{workData.name}}</app-work-wrapper>
+  <div *ngFor='let workData of works; let i = index'
+  [id]=i class='app-work-wrapper wwGrid'
+  [@workAnimations]=getStatus(workData.id)
+  (@workAnimations.done)=resizeWork($event)
+  (click)=workClickFunc($event)>
+    <app-work-wrapper
+    [workData]=workData
+    >
+      loading {{workData.name}}
+    </app-work-wrapper>
   </div>
 </div>
