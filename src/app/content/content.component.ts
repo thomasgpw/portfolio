@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ViewChildren, QueryList, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChildren, QueryList, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, animate, transition} from '@angular/animations';
 
 import { primaryColor, secondaryColor, tertiaryColor } from '../../colors';
@@ -31,31 +31,46 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() workActive: number;
   @ViewChildren(WorkWrapperComponent) allWorkWrapper: QueryList<WorkWrapperComponent>;
 
-  works = worksList;
+  works: Object[];
   gridButton = false;
   arrowPath = '../../assets/arrow.svg';
   gridButtonPath = '../../assets/gridbutton.svg';
 
-  ngOnInit() {
+  /* LIFECYCLE HOOK FUNCTIONS */
+  ngOnInit(): void {
+    this.works = this.assembleWorksList();
     const contentEl = document.getElementById('app-content');
     (contentEl as HTMLElement).style.backgroundColor = secondaryColor;
     const tab = contentEl.appendChild(generateSvgTab(window.innerWidth, window.innerHeight / 36));
     tab.firstElementChild.setAttributeNS(null, 'fill', primaryColor);
   }
-  styleDownArrowContentFunc(el: SVGElement) {
+  assembleWorksList(): Object[] {
+    for (let i = 0; i < worksList.length; i++) {
+      worksList[i].data = this.contentData[i];
+    }
+    return worksList;
+  }
+  styleDownArrowContentFunc(el: SVGElement): void {
     styleDownArrowContent(el);
   }
-  styleGridButtonFunc(el: SVGElement) {
+  styleGridButtonFunc(el: SVGElement): void {
     styleGridButton(el);
   }
   ngOnDestroy(): void {
 
   }
 
-  goShutterFunc() {
+  /* ON CHANGE SPECIFIC FUNCTIONS */
+  redrawAll(values: number[]): Promise<null> {
+    // More to be done here
+    return Promise.resolve(null);
+  }
+
+  /* EVENT FUNCTIONS */
+  goShutterFunc(): void {
     this.goShutterEvent.emit(null);
   }
-  getStatus(i: number) {
+  getStatus(i: number): string {
     const pattern = /^ww/;
     const elClassList = document.getElementsByClassName('app-work-wrapper')[i].classList;
     const elClassListLength = elClassList.length;
@@ -65,7 +80,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       }
     }
   }
-  forceGridClass() {
+  forceGridClass(): void {
     const elArray = document.getElementsByClassName('app-work-wrapper');
     const elArrayLength = elArray.length;
     for (let i = 0; i < elArrayLength; ++i) {
@@ -75,7 +90,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       classes.add('wwGrid');
     }
   }
-  viewGridFunc() {
+  viewGridFunc(): void {
     const activeEl = document.getElementsByClassName('wwActive')[0];
     if (activeEl) {
       const allWorkWrapperComponents = [];
@@ -88,7 +103,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       }
     }
   }
-  resizeWork(e) {
+  resizeWork(e): void {
     const allWorkWrapperComponents = [];
     this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
       allWorkWrapperComponents.push(workWrapperComponentInstance);
@@ -121,7 +136,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       this.gridButton = true;
     }
   }
-  deactivateWork(activeEl: Element, allWorkWrapperComponents) {
+  deactivateWork(activeEl: Element, allWorkWrapperComponents): true {
     const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workData.id === activeEl.id);
     if (clickedWorkWrapper.work.deactivate()) {
       const classes = activeEl.classList;
@@ -131,7 +146,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       return true;
     }
   }
-  workClickFunc(e: Event) {
+  workClickFunc(e: Event): void {
     const clickedEl = e.srcElement.closest('.app-work-wrapper');
     const allWorkWrapperComponents = [];
     this.allWorkWrapper.forEach(function(workWrapperComponentInstance){

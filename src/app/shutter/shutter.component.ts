@@ -1,6 +1,8 @@
-import { Component, Output, Input, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Output, Input, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { AboutComponent } from './about/about.component';
 import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
 
 @Component({
@@ -31,22 +33,24 @@ import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenS
   ]
 })
 export class ShutterComponent implements OnInit, OnDestroy {
-  @Output() goContentEvent: EventEmitter<null> = new EventEmitter();
-  @Output() saveShutterDataEvent: EventEmitter<string[][]> = new EventEmitter();
-  @Output() setWelcomeAliveEvent: EventEmitter<boolean> = new EventEmitter();
-  @Input() shutterData: string[][];
-  @Input() welcomeAlive: boolean;
+  @Output() private goContentEvent: EventEmitter<null> = new EventEmitter();
+  @Output() private saveShutterDataEvent: EventEmitter<string[][]> = new EventEmitter();
+  @Output() private setWelcomeAliveEvent: EventEmitter<boolean> = new EventEmitter();
+  @Input() private shutterData: string[][];
+  @Input() private welcomeAlive: boolean;
+  @ViewChild(WelcomeComponent) private welcomeInstance: WelcomeComponent;
+  @ViewChild(AboutComponent) private aboutInstance: AboutComponent;
 
-  aboutAlive: boolean;
-  welcomeAnimate: boolean;
-  aboutAnimate: boolean;
+  private aboutAlive: boolean;
+  private welcomeAnimateState: boolean;
+  private aboutAnimateState: boolean;
 
   /* LIFECYCLE HOOK FUNCTIONS */
   ngOnInit(): void {
     const welcomeAlive = this.welcomeAlive;
     this.aboutAlive = !welcomeAlive;
-    this.welcomeAnimate = welcomeAlive;
-    this.aboutAnimate = !welcomeAlive;
+    this.welcomeAnimateState = welcomeAlive;
+    this.aboutAnimateState = !welcomeAlive;
   }
   ngOnDestroy(): void {
     this.saveShutterDataEvent.emit(this.shutterData);
@@ -54,12 +58,24 @@ export class ShutterComponent implements OnInit, OnDestroy {
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
-  redrawAll(): Promise<null> {
-    // send redraw command to alive child
+  redrawAll(values: number[]): Promise<null> {
+    console.log('redrawAll fired');
+    if (this.welcomeAlive) {
+      this.welcomeInstance.redrawAll(values);
+    }
+    if (this.aboutAlive) {
+      this.aboutInstance.redrawAll(values);
+    }
     return Promise.resolve(null);
   }
 
   /* EVENT FUNCTIONS */
+  saveWelcomeDataFunc(e: string[]): void {
+    this.shutterData[0] = e;
+  }
+  saveAboutDataFunc(e: string[]): void {
+    this.shutterData[1] = e;
+  }
   goContentFunc() {
     this.goContentEvent.emit(null);
   }
@@ -69,38 +85,42 @@ export class ShutterComponent implements OnInit, OnDestroy {
   goAboutFunc(): void {
     this.goAbout().then(resolve => setTimeout(() => this.turnOffWelcome(this), viewTransitionTime));
   }
+
+  /* ANIMATION FUNCTIONS */
   goWelcome(): Promise<null> {
-    this.instantiateWelcome().then(resolve => this.animateWelcome());
+    this.instantiateWelcome().then(resolve => setTimeout(() => this.animateWelcome()));
     return Promise.resolve(null);
   }
   instantiateWelcome(): Promise<null> {
     this.welcomeAlive = true;
+    this.welcomeAnimateState = false;
+    this.aboutAnimateState = true;
     return Promise.resolve(null);
   }
   animateWelcome(): Promise<null> {
+    this.welcomeAnimateState = true;
+    this.aboutAnimateState = false;
     return Promise.resolve(null);
   }
   turnOffAbout(that: this): void {
     that.aboutAlive = false;
   }
   goAbout(): Promise<null> {
-    this.instantiateAbout().then(resolve => this.animateAbout());
+    this.instantiateAbout().then(resolve => setTimeout(() => this.animateAbout()));
     return Promise.resolve(null);
   }
   instantiateAbout(): Promise<null> {
     this.aboutAlive = true;
+    this.aboutAnimateState = false;
+    this.welcomeAnimateState = true;
     return Promise.resolve(null);
   }
   animateAbout(): Promise<null> {
+    this.aboutAnimateState = true;
+    this.welcomeAnimateState = false;
     return Promise.resolve(null);
   }
   turnOffWelcome(that: this): void {
     that.welcomeAlive = false;
-  }
-  saveWelcomeDataFunc(e: string[]): void {
-    this.shutterData[0] = e;
-  }
-  saveAboutDataFunc(e: string[]): void {
-    this.shutterData[1] = e;
   }
 }

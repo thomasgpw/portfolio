@@ -1,10 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle, belowScreenStyle } from './_animations/styles';
-
-import { ShutterModule } from './shutter/shutter.module';
-import { ContentModule } from './content/content.module';
+import { ShutterComponent } from './shutter/shutter.component';
+import { ContentComponent } from './content/content.component';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +31,9 @@ import { ContentModule } from './content/content.module';
   ]
 })
 export class AppComponent implements OnInit, OnDestroy {
+  @ViewChild(ShutterComponent) shutterInstance: ShutterComponent;
+  @ViewChild(ContentComponent) contentInstance: ContentComponent;
+
   // appData[0] contains shutter data, appData[1] contains content data
   private appData: any[];
   private shutterAlive: boolean;
@@ -45,7 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   /* LIFECYCLE HOOK FUNCTIONS */
   ngOnInit(): void {
-    this.appData = [[[null, null], []], []];
+    this.appData = [[[null, null], []], [[null], [null], [null], [null], [null], [null], [null], [null], [null], [null]]];
     this.initGraphics();
     this.shutterAlive = true;
     this.contentAlive = false;
@@ -70,9 +72,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.height = height;
     return Promise.resolve([width, height]);
   }
-  redrawAll(value: number[]): Promise<null> {
-    // send redraw command to alive child
+  redrawAll(values: number[]): Promise<null> {
     console.log('redrawAll fired');
+    if (this.shutterAlive) {
+      this.shutterInstance.redrawAll(values);
+    }
+    if (this.contentAlive) {
+      this.contentInstance.redrawAll(values);
+    }
     return Promise.resolve(null);
   }
 
@@ -107,30 +114,39 @@ export class AppComponent implements OnInit, OnDestroy {
   goContentFunc(): void {
     this.goContent().then(resolve => setTimeout(() => this.turnOffShutter(this), viewTransitionTime));
   }
+  /* ANIMATION FUNCTIONS */
   goShutter(): Promise<null> {
-    this.instantiateShutter().then(resolve => this.animateShutter());
+    this.instantiateShutter().then(resolve => setTimeout(() => this.animateShutter()));
     return Promise.resolve(null);
   }
   instantiateShutter(): Promise<null> {
     this.shutterAlive = true;
+    this.shutterAnimateState = false;
+    this.contentAnimateState = true;
     return Promise.resolve(null);
   }
   animateShutter(): Promise<null> {
+    this.shutterAnimateState = true;
+    this.contentAnimateState = false;
     return Promise.resolve(null);
   }
   turnOffContent(that: this): void {
     that.contentAlive = false;
   }
   goContent(): Promise<null> {
-    this.instantiateContent().then(resolve => this.animateContent());
+    this.instantiateContent().then(resolve => setTimeout(() => this.animateContent()));
     return Promise.resolve(null);
   }
   instantiateContent(): Promise<null> {
     this.contentAlive = true;
+    this.contentAnimateState = false;
+    this.shutterAnimateState = true;
     return Promise.resolve(null);
   }
   animateContent(): Promise<null> {
-    return Promise.resolve(null);
+    this.contentAnimateState = true;
+    this.shutterAnimateState = false;
+     return Promise.resolve(null);
   }
   turnOffShutter(that: this): void {
     that.shutterAlive = false;

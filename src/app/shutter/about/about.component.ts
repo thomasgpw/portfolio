@@ -31,7 +31,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
-  redrawAll(): Promise<null> {
+  redrawAll(values: number[]): Promise<null> {
     return Promise.resolve(null);
   }
 

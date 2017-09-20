@@ -2,51 +2,61 @@ export const worksList = [
   {
     id: '0',
     name: 'work0',
-    url: ''
+    url: '',
+    data: null
   },
   {
     id: '1',
     name: 'Draw a face',
-    url: ''
+    url: '',
+    data: null
   },
   {
     id: '2',
     name: 'Fractals',
-    url: ''
+    url: '',
+    data: null
   },
   {
     id: '3',
     name: 'work3',
-    url: ''
+    url: '',
+    data: null
   },
   {
     id: '4',
     name: 'work4',
-    url: ''
+    url: '',
+    data: null
   },
   {
     id: '5',
     name: 'work5',
-    url: ''
+    url: '',
+    data: null
   },
   {
     id: '6',
     name: 'work6',
-    url: ''
+    url: '',
+    data: null
   },
   {
     id: '7',
     name: 'work7',
-    url: ''
+    url: '',
+    data: null
   },
   {
     id: '8',
     name: 'work8',
-    url: ''
+    url: '',
+    data: null
   },
   {
     id: '9',
     name: 'work9',
-    url: ''
+    url: '',
+    data: null
   }
 ];

@@ -1,7 +1,7 @@
 <div class="shutter" >
   <div
   *ngIf=welcomeAlive
-  [@welcomeView]=welcomeAnimate.toString()
+  [@welcomeView]=welcomeAnimateState.toString()
   class="page welcome"
   >
     <app-welcome 
@@ -15,7 +15,7 @@
   </div>
   <div
   *ngIf=aboutAlive
-  [@aboutView]=aboutAnimate.toString()
+  [@aboutView]=aboutAnimateState.toString()
   class="page about"
   >
     <app-about
