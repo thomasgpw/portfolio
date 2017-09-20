@@ -44,11 +44,11 @@ export function styleDownArrowContent(el: SVGElement) {
 
 export function styleGridButton(el: SVGElement) {
   const gridButtonStyle = el.style;
-  gridButtonStyle.position = "fixed";
+  gridButtonStyle.position = 'fixed';
   const windowInnerHeight = window.innerHeight;
-  const gridButtonLength = windowInnerHeight/12;
+  const gridButtonLength = windowInnerHeight / 12;
   gridButtonStyle.width = gridButtonLength.toString();
   gridButtonStyle.height = gridButtonLength.toString();
-  gridButtonStyle.right = "0";
-  gridButtonStyle.top = ((windowInnerHeight + gridButtonLength)/2).toString();
+  gridButtonStyle.right = '0';
+  gridButtonStyle.top = ((windowInnerHeight + gridButtonLength) / 2).toString();
 }

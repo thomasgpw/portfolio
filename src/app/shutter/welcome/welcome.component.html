@@ -1,5 +1,7 @@
 <div id="welcome" class="page welcome">
-  <h1>Welcome To You, From Me, Thomas</h1>
+  <h1>
+    <span id="greeting" class="button" (click)='greetingClickFunc($event)'></span>
+  </h1>
   <div
   id="leftArrow" class="button button-about"
   [inlineSVG]="arrowPath"
@@ -11,5 +13,10 @@
   [inlineSVG]="arrowPath"
   (onSVGInserted)="styleDownArrowShutterFunc($event)"
   (click)="goContentFunc()">
+  </div>
+  <div id="welcomeText">
+    <br> <br> <br>
+    <p>Use the down arrow to get to the projects screen</p> <br>
+    <p>Use the left arrow to see information about this site</p>
   </div>
 </div>

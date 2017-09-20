@@ -1,14 +1,32 @@
-<div *ngIf="checkShutterOpen()" class = "page shutter" 
-[@shutterView]=shutterAnimate.toString()
->
-  <app-shutter (goContentEvent)="goContentFunc()">
-    Shutter loading
-  </app-shutter>
-</div>
-<div class = "page app-content" *ngIf="checkContentOpen()"
-[@contentView]=app-contentAnimate.toString()
->
-  <app-content (goShutterEvent)="goShutterFunc()">
-    Content loading
-  </app-content>
+<div id='app-window' (wheel)=scrollFunc($event)>
+  <div
+  class='page shutter'
+  *ngIf=shutterAlive
+  [@shutterView]=shutterAnimateState.toString()
+  >
+    <app-shutter
+    [shutterData]=appData[0]
+    [welcomeAlive]=welcomeAlive
+    (goContentEvent)=goContentFunc()
+    (saveShutterDataEvent)=saveShutterDataFunc($event)
+    (setWelcomeAliveEvent)=setWelcomeAliveFunc($event)
+    >
+      Shutter loading
+    </app-shutter>
+  </div>
+  <div
+  class='page app-content'
+  *ngIf=contentAlive
+  [@contentView]=contentAnimateState.toString()
+  >
+    <app-content
+    [contentData]=appData[1]
+    [workActive]=workActive
+    (goShutterEvent)=goShutterFunc()
+    (saveContentDataEvent)=saveContentDataFunc($event)
+    (setWorkActiveEvent)=setWorkActiveFunc($event)
+    >
+      Content loading
+    </app-content>
+  </div>
 </div>

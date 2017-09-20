@@ -28,17 +28,20 @@ export abstract class Work {
     const canvas = this.canvas;
     const parentEl = canvas.parentElement.parentElement.parentElement;
     const canvasstyle = canvas.style;
-    canvas.width = parentEl.clientWidth;
-    canvas.height = parentEl.clientHeight;
+    const w = parentEl.clientWidth;
+    const h = parentEl.clientHeight;
+    canvas.width = w;
+    canvas.height = h;
+    this.w = w;
+    this.h = h;
+    this.redrawAll();
   }
   activate(): true {
     this.active = true;
-    this.resizeCanvas();
     return true;
   }
   deactivate(): true {
     this.active = false;
-    this.resizeCanvas();
     return true;
   }
   init(context: CanvasRenderingContext2D, w: number, h: number): void {
@@ -66,7 +69,23 @@ export abstract class Work {
     const commandStack = this.commandStack;
     const paramStack = this.paramStack;
     for (let i = 0; i < commandStack.length; i++) {
-      commandStack[i].apply(this, paramStack[i]);
+      const paramSet = paramStack[i];
+      const newParamSet = [];
+      for (let iParam = 0; iParam < paramSet.length; iParam++) {
+        const param = paramSet[iParam];
+        let newParam;
+        if (Object.prototype.toString.call( param ) === '[object Array]') {
+          if (param[0] === 'X') {
+            newParam = param[1] * this.w;
+          } else if (param[0] === 'Y') {
+            newParam = param[1] * this.h;
+          }
+        }  else {
+          newParam = param;
+        }
+        newParamSet.push(newParam);
+      }
+      commandStack[i].apply(this.context, newParamSet);
     }
   }
   clickInteract(e: Event) { }
