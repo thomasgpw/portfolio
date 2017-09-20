@@ -35,15 +35,15 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild(ContentComponent) contentInstance: ContentComponent;
 
   // appData[0] contains shutter data, appData[1] contains content data
-  private appData: any[];
-  private shutterAlive: boolean;
-  private contentAlive: boolean;
-  private shutterAnimateState: boolean;
-  private contentAnimateState: boolean;
-  private width: number;
-  private height: number;
-  private welcomeAlive: boolean;
-  private workActive: number;
+  appData: any[];
+  shutterAlive: boolean;
+  contentAlive: boolean;
+  shutterAnimateState: boolean;
+  contentAnimateState: boolean;
+  width: number;
+  height: number;
+  welcomeAlive: boolean;
+  workActive: number;
 
   /* LIFECYCLE HOOK FUNCTIONS */
   ngOnInit(): void {
