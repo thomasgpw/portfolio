@@ -33,17 +33,17 @@ import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenS
   ]
 })
 export class ShutterComponent implements OnInit, OnDestroy {
-  @Output() private goContentEvent: EventEmitter<null> = new EventEmitter();
-  @Output() private saveShutterDataEvent: EventEmitter<string[][]> = new EventEmitter();
-  @Output() private setWelcomeAliveEvent: EventEmitter<boolean> = new EventEmitter();
-  @Input() private shutterData: string[][];
-  @Input() private welcomeAlive: boolean;
-  @ViewChild(WelcomeComponent) private welcomeInstance: WelcomeComponent;
-  @ViewChild(AboutComponent) private aboutInstance: AboutComponent;
+  @Output() goContentEvent: EventEmitter<null> = new EventEmitter();
+  @Output() saveShutterDataEvent: EventEmitter<string[][]> = new EventEmitter();
+  @Output() setWelcomeAliveEvent: EventEmitter<boolean> = new EventEmitter();
+  @Input() shutterData: string[][];
+  @Input() welcomeAlive: boolean;
+  @ViewChild(WelcomeComponent) welcomeInstance: WelcomeComponent;
+  @ViewChild(AboutComponent) aboutInstance: AboutComponent;
 
-  private aboutAlive: boolean;
-  private welcomeAnimateState: boolean;
-  private aboutAnimateState: boolean;
+  aboutAlive: boolean;
+  welcomeAnimateState: boolean;
+  aboutAnimateState: boolean;
 
   /* LIFECYCLE HOOK FUNCTIONS */
   ngOnInit(): void {
