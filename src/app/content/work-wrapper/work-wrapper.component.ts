@@ -8,12 +8,12 @@ import { SpecificWork } from '../_works/immediateellipse';
   styleUrls: ['./work-wrapper.component.css']
 })
 export class WorkWrapperComponent implements OnInit, OnDestroy {
-  @Input() workData;
+  @Input() workScript;
   work: Work;
 
   /* LIFECYCLE HOOK FUNCTIONS */
   ngOnInit(): void {
-    this.work = new SpecificWork(document.getElementsByClassName('canvasWrapper')[this.workData.id]);
+    this.work = new SpecificWork(document.getElementsByClassName('canvasWrapper')[this.workScript.id]);
   }
   ngOnDestroy(): void {
 
@@ -21,7 +21,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
   redrawAll(values: number[]): Promise<null> {
-    // More to be done here
+    this.work.redrawAll();
     return Promise.resolve(null);
   }
 

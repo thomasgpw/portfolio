@@ -14,25 +14,50 @@ body { padding:0; margin:0; }
 }
 
 .app-content {
-	overflow-y: auto;
-	overflow-x: auto;
-	z-index: -1;
+  overflow-y: auto;
+  overflow-x: auto;
+  z-index: -1;
 }
 .shutter {
-	z-index: 1;
+  z-index: 1;
 }
 .about {
-	z-index: -1;
+  z-index: -1;
 }
 .welcome {
-	z-index: 1;
+  z-index: 1;
 }
 
 .button {
-	cursor: pointer;
-	z-index: 2;
-	/*position: fixed;*/
+  cursor: pointer;
+  z-index: 2;
+  /*position: fixed;*/
 }
 #aboutText {
-	
+  
+}
+.work-wrapper{
+  margin: 2.5%;
+  float:left;
+  border: 3px solid #777;
+  border-radius: 5%;
+  background: white;
+}
+.wwGrid {
+  height: 25%;
+  width: 25%;
+}
+.wwRow {
+  height:10%;
+  width:10%;
+  position: absolute;
+  top:90%;
+  /*background: blue;*/
+}
+.wwActive {
+  height: 80%;
+  width: 80%;
+  position: fixed;
+  top: 0;
+  /*background: red;*/
 }

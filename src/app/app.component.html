@@ -1,33 +1,35 @@
 <div id='app-window' (wheel)=scrollFunc($event)>
-  <div
-  class='page shutter'
-  *ngIf=shutterAlive
+  <div class='page shutter'
+  *ngIf='shutterAlive'
   [@shutterView]=shutterAnimateState.toString()
   >
     <app-shutter
-    [shutterData]=appData[0]
-    [welcomeAlive]=welcomeAlive
-    (goContentEvent)=goContentFunc()
-    (saveShutterDataEvent)=saveShutterDataFunc($event)
-    (setWelcomeAliveEvent)=setWelcomeAliveFunc($event)
+    [welcomeAlive]='welcomeAlive$ | async'
+    [fullGreeting]='fullGreeting'
+    [colors]='colors'
+    (toggleShutterAliveEvent)='toggleShutterAlive()'
+    (toggleWelcomeAliveEvent)='toggleWelcomeAlive()'
+    (getNextGreetingEvent)='getNextGreeting()'
+    (getRandomGreetingEvent)='getRandomGreeting()'
+    (getRandomNameEvent)='getRandomName()'
+    (setNameEvent)='setName($event)'
     >
-      Shutter loading
+      app-shutter error
     </app-shutter>
   </div>
-  <div
-  class='page app-content'
-  *ngIf=contentAlive
+  <div class='page content'
+  *ngIf='contentAlive'
   [@contentView]=contentAnimateState.toString()
   >
     <app-content
-    [contentData]=appData[1]
-    [workActive]=workActive
-    [welcomeAlive]=welcomeAlive
-    (goShutterEvent)=goShutterFunc()
-    (saveContentDataEvent)=saveContentDataFunc($event)
-    (setWorkActiveEvent)=setWorkActiveFunc($event)
+    [welcomeAlive]='welcomeAlive$ | async'
+    [workActive]='workActive$ | async'
+    [worksData]='worksData | async'
+    [colors]='colors'
+    (toggleShutterAliveEvent)='toggleShutterAlive()'
+    (setWorkActiveEvent)='setWorkActive($event)'
     >
-      Content loading
+      app-content error
     </app-content>
   </div>
 </div>

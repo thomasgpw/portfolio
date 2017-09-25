@@ -1,15 +1,27 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
+import { Store, Action } from '@ngrx/store';
+import { Observable } from 'rxjs/Rx';
 
+import { WelcomeService } from './_services/welcome.service';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle, belowScreenStyle } from './_animations/styles';
-import { ShutterComponent } from './shutter/shutter.component';
-import { ContentComponent } from './content/content.component';
+import { AppState, CommandStacks } from './app.datatypes';
+import {
+  ToggleShutterAliveAction,
+  ToggleWelcomeAliveAction,
+  GetNextGreetingAction,
+  GetRandomGreetingAction,
+  GetRandomNameAction,
+  SetNameAction,
+  SetWorkActiveAction
+} from './app.reducers';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  providers: [WelcomeService],
   animations: [
     trigger('shutterView', [
       state('true', onScreenYStyle),
@@ -31,90 +43,114 @@ import { ContentComponent } from './content/content.component';
     ])
   ]
 })
-export class AppComponent implements OnInit, OnDestroy {
-  @ViewChild(ShutterComponent) shutterInstance: ShutterComponent;
-  @ViewChild(ContentComponent) contentInstance: ContentComponent;
-
-  // appData[0] contains shutter data, appData[1] contains content data
-  appData: any[];
+export class AppComponent implements OnInit {
+  shutterAlive$: Observable<boolean>;
+  welcomeAlive$: Observable<boolean>;
+  greeting$: Observable<string>;
+  name$: Observable<string>;
+  color$: Observable<string>;
+  shutterAliveSubscriber;
+  greetingSubscriber;
+  fullGreetingSubscriber;
+  colorSubscriber;
   shutterAlive: boolean;
-  contentAlive: boolean;
   shutterAnimateState: boolean;
+  contentAlive: boolean;
   contentAnimateState: boolean;
-  width: number;
-  height: number;
-  welcomeAlive: boolean;
-  workActive: number;
+  greeting: string;
+  fullGreeting: string;
+  colors: {[key: string]: string} = {};
 
   /* LIFECYCLE HOOK FUNCTIONS */
-  ngOnInit(): void {
-    this.appData = [[[null, null], []], [[null], [null], [null], [null], [null], [null], [null], [null], [null], [null]]];
-    this.initGraphics();
-    this.shutterAlive = true;
-    this.contentAlive = false;
-    this.shutterAnimateState = true;
-    this.contentAnimateState = false;
-    this.welcomeAlive = true;
-    this.workActive = null;
+  constructor(private store: Store<AppState>, private _welcomeService: WelcomeService) {
+    this.shutterAlive$ = store.select(state => state.shutterAlive);
+    this.welcomeAlive$ = store.select(state => state.welcomeAlive);
+    this.greeting$ = store.select(state => state.greeting);
+    this.name$ = store.select(state => state.name);
+    this.color$ = store.select(state => state.color);
+    this.shutterAliveSubscriber = this.shutterAlive$.subscribe(state => this.handleShutterAlive(state));
+    this.greetingSubscriber = this.greeting$.subscribe(state => this.greeting = state);
+    this.fullGreetingSubscriber = Observable.zip(this.greeting$, this.name$).subscribe(state => this.concatGreeting(state));
+    this.colorSubscriber = this.color$.subscribe(state => this.getColors(state));
   }
-  ngOnDestroy(): void {
-    // save data to cookies or account eventually
+  ngOnInit(): void {
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
-  initGraphics(): Promise<null> {
-    this.calcAspectLengths().then(data => this.redrawAll(data));
-    return Promise.resolve(null);
-  }
-  calcAspectLengths(): Promise<number[]> {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    this.width = width;
-    this.height = height;
-    return Promise.resolve([width, height]);
-  }
-  redrawAll(values: number[]): Promise<null> {
-    if (this.shutterAlive) {
-      this.shutterInstance.redrawAll(values);
+  // initGraphics(): Promise<null> {
+  //   this.calcAspectLengths().then(data => this.redrawAll(data));
+  //   return Promise.resolve(null);
+  // }
+  // calcAspectLengths(): Promise<number[]> {
+  //   const width = window.innerWidth;
+  //   const height = window.innerHeight;
+  //   this.width = width;
+  //   this.height = height;
+  //   return Promise.resolve([width, height]);
+  // }
+  // redrawAll(values: number[]): Promise<null> {
+  //   if (this.shutterAlive) {
+  //     this.shutterInstance.redrawAll(values);
+  //   }
+  //   if (this.contentAlive) {
+  //     this.contentInstance.redrawAll(values);
+  //   }
+  //   return Promise.resolve(null);
+  // }
+  concatGreeting(state: string[]) {
+    if (state[0] && state[1]) {
+      this.fullGreeting = this._welcomeService.concatenateGreeting(state[0], state[1]);
     }
-    if (this.contentAlive) {
-      this.contentInstance.redrawAll(values);
-    }
-    return Promise.resolve(null);
+  }
+  getColors(color: string): void {
+    console.log(color);
+    this.colors['welcomeColor'] = color;
+    this.colors['contentColor'] = '#505781';
+    this.colors['aboutColor'] = '#8CA2D9';
   }
 
   /* EVENT FUNCTIONS */
-  saveShutterDataFunc(dataArray: string[][]): void {
-    this.appData[0] = dataArray;
-  }
-  setWelcomeAliveFunc(e: boolean) {
-    this.welcomeAlive = e;
-  }
-  saveContentDataFunc(dataArray: any[][]): void {
-    this.appData[1] = dataArray;
-  }
-  setWorkActiveFunc(e: number) {
-    this.workActive = e;
-  }
   scrollFunc(e: WheelEvent): void {
     if (e.ctrlKey === false && e.altKey === false) {
       e.preventDefault();
       const shutterAlive = this.shutterAlive;
       const contentAlive = this.contentAlive;
       if (shutterAlive === true && contentAlive === false && e.deltaY <= -10) {
-        this.goContentFunc();
+        this.goContent().then(resolve => setTimeout(() => this.turnOffShutter(this), viewTransitionTime));
       } else if (shutterAlive === false && contentAlive === true && e.deltaY >= 10) {
-        this.goShutterFunc();
+        this.goShutter().then(resolve => setTimeout(() => this.turnOffContent(this), viewTransitionTime));
       }
     }
   }
-  goShutterFunc(): void {
-    this.goShutter().then(resolve => setTimeout(() => this.turnOffContent(this), viewTransitionTime));
+  toggleShutterAlive(): void {
+    this.store.dispatch(new ToggleShutterAliveAction);
   }
-  goContentFunc(): void {
-    this.goContent().then(resolve => setTimeout(() => this.turnOffShutter(this), viewTransitionTime));
+  toggleWelcomeAlive(): void {
+    this.store.dispatch(new ToggleWelcomeAliveAction);
   }
-  /* ANIMATION FUNCTIONS */
+  getNextGreeting() {
+    this.store.dispatch(new GetNextGreetingAction(this.greeting));
+  }
+  getRandomGreeting(): void {
+    this.store.dispatch(new GetRandomGreetingAction);
+  }
+  getRandomName(): void {
+    this.store.dispatch(new GetRandomNameAction);
+  }
+  setName(name: string): void {
+    this.store.dispatch(new SetNameAction(name));
+  }
+  setWorkActive(id: number): void {
+    this.store.dispatch(new SetWorkActiveAction(id));
+  }
+
+  handleShutterAlive(state: boolean): void {
+    if (state) {
+      this.goShutter().then(resolve => setTimeout(() => this.turnOffContent(this), viewTransitionTime));
+    } else {
+      this.goContent().then(resolve => setTimeout(() => this.turnOffShutter(this), viewTransitionTime));
+    }
+  }
   goShutter(): Promise<null> {
     this.instantiateShutter().then(resolve => setTimeout(() => this.animateShutter()));
     return Promise.resolve(null);

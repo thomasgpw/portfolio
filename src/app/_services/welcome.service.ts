@@ -53,9 +53,18 @@ export class WelcomeService {
     'Your Eminence',
     'Your Honor',
   ];
-  getGreeting(greeting: string, name: string): string {
+  concatenateGreeting(greeting: string, name: string): string {
     const namePattern = /\|name\|/;
     return greeting.replace(namePattern, name);
+  }
+  getNextGreeting(greeting: string): string {
+    const GREETINGS = this.GREETINGS;
+    const index = GREETINGS.indexOf(greeting);
+    if (index === GREETINGS.length - 1) {
+      return GREETINGS[0];
+    } else {
+      return GREETINGS[(index + 1)];
+    }
   }
   getRandomGreeting(): string {
     const GREETINGS = this.GREETINGS;

@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { WelcomeModule } from './welcome/welcome.module';
-import { AboutModule } from './about/about.module';
+
 import { ShutterComponent } from './shutter.component';
 
 describe('ShutterComponent', () => {
@@ -9,10 +8,6 @@ describe('ShutterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        WelcomeModule,
-        AboutModule
-      ],
       declarations: [ ShutterComponent ]
     })
     .compileComponents();

@@ -1,3 +1,4 @@
+import { CommandStacks } from '../../app.datatypes';
 export abstract class Work {
 
   w: number;
@@ -5,10 +6,9 @@ export abstract class Work {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   active = false;
-  commandStack: Function[] = [];
-  paramStack: any[][] = [];
-  redoCommandStack: Function[] = [];
-  redoParamStack: any[][] = [];
+  commandStacks: CommandStacks;
+  redoStacks: CommandStacks;
+
   constructor (parentEl: Element) {
     const canvas = document.createElement('canvas');
     this.context = canvas.getContext('2d');
@@ -23,10 +23,12 @@ export abstract class Work {
     this.canvas = canvas;
     this.w = w;
     this.h = h;
+    this.commandStacks = {functionStack: [], paramStack: []};
+    this.redoStacks = {functionStack: [], paramStack: []};
   }
   resizeCanvas(): void {
     const canvas = this.canvas;
-    const parentEl = canvas.parentElement.parentElement.parentElement;
+    const parentEl = canvas.closest('.work-wrapper');
     const canvasstyle = canvas.style;
     const w = parentEl.clientWidth;
     const h = parentEl.clientHeight;
@@ -56,20 +58,22 @@ export abstract class Work {
     context.putImageData(imageData, 0, 0);
   }
   undo(): void {
-    this.redoCommandStack.push(this.commandStack.pop());
-    this.redoParamStack.push(this.paramStack.pop());
+    const commandStacks = this.commandStacks;
+    const redoStacks = this.redoStacks;
+    redoStacks['functionStack'].push(commandStacks['functionStack'].pop());
+    redoStacks['paramStack'].push(commandStacks['paramStack'].pop());
     this.redrawAll();
   }
   redo(): void {
-    const redoneCommand = this.redoCommandStack.pop();
-    const redoneParam = this.redoParamStack.pop();
+    const redoneCommand = this.redoStacks['functionStack'].pop();
+    const redoneParam = this.redoStacks['paramStack'].pop();
     redoneCommand.apply(this, redoneParam);
-    this.commandStack.push(redoneCommand);
-    this.paramStack.push(redoneParam);
+    this.commandStacks['functionStack'].push(redoneCommand);
+    this.commandStacks['paramStack'].push(redoneParam);
   }
   redrawAll(): void {
-    const commandStack = this.commandStack;
-    const paramStack = this.paramStack;
+    const commandStack = this.commandStacks['functionStack'];
+    const paramStack = this.commandStacks['paramStack'];
     for (let i = 0; i < commandStack.length; i++) {
       const paramSet = paramStack[i];
       const newParamSet = [];

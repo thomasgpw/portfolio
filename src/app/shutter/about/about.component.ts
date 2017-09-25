@@ -1,6 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-
-import { tertiaryColor } from '../../../colors';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { styleDownArrowShutter, styleRightArrow } from '../../../apply-styles';
 
 @Component({
@@ -8,17 +6,17 @@ import { styleDownArrowShutter, styleRightArrow } from '../../../apply-styles';
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css']
 })
-export class AboutComponent implements OnInit, OnDestroy {
-  @Output() goContentEvent: EventEmitter<null> = new EventEmitter();
-  @Output() toggleShutterEvent: EventEmitter<null> = new EventEmitter();
-  @Output() saveAboutDataEvent: EventEmitter<string[]> = new EventEmitter();
-  @Input() aboutData: string[];
+export class AboutComponent implements OnInit {
+  @Output() toggleShutterAliveEvent: EventEmitter<null> = new EventEmitter();
+  @Output() toggleWelcomeAliveEvent: EventEmitter<null> = new EventEmitter();
+  @Input() aboutColor: string;
 
   arrowPath = '../../../assets/arrow.svg';
 
-  /* LIFECYCLE HOOK FUNCTIONS */
+  constructor() { }
+
   ngOnInit(): void {
-    (document.getElementById('about') as HTMLElement).style.backgroundColor = tertiaryColor;
+    (document.getElementById('about') as HTMLElement).style.backgroundColor = this.aboutColor;
   }
   styleRightArrowFunc(el: SVGAElement) {
     styleRightArrow(el);
@@ -26,20 +24,12 @@ export class AboutComponent implements OnInit, OnDestroy {
   styleDownArrowShutterFunc(el: SVGAElement) {
     styleDownArrowShutter(el);
   }
-  ngOnDestroy(): void {
-    this.saveAboutDataEvent.emit(this.aboutData);
-  }
-
-  /* ON CHANGE SPECIFIC FUNCTIONS */
-  redrawAll(values: number[]): Promise<null> {
-    return Promise.resolve(null);
-  }
 
   /* EVENT FUNCTIONS */
   shutterToggleFunc() {
-    this.toggleShutterEvent.emit(null);
+    this.toggleWelcomeAliveEvent.emit(null);
   }
   goContentFunc() {
-    this.goContentEvent.emit(null);
+    this.toggleShutterAliveEvent.emit(null);
   }
 }

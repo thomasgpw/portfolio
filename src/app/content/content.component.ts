@@ -1,17 +1,18 @@
-import { Component, Input, Output, EventEmitter, ViewChildren, QueryList, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter, ViewChildren, QueryList, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, state, animate, transition} from '@angular/animations';
 
-import { primaryColor, secondaryColor, tertiaryColor } from '../../colors';
+import { CommandStacks } from '../app.datatypes';
+import { generateSvgTab } from '../../assets/generate-svg-tab';
+import { styleDownArrowContent, styleGridButton } from '../../apply-styles';
 import { workTransitionConfig, gridWorkStyle, activeWorkStyle, rowWorkStyle } from '../_animations/styles';
 import { worksList } from './works-list';
 import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
-import { generateSvgTab } from '../../assets/generate-svg-tab';
-import { styleDownArrowContent, styleGridButton } from '../../apply-styles';
 
 @Component({
   selector: 'app-content',
-  templateUrl: 'content.component.html',
-  styleUrls: ['content.component.css'],
+  templateUrl: './content.component.html',
+  styleUrls: ['./content.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('workAnimations', [
       state('wwGrid', gridWorkStyle),
@@ -23,37 +24,33 @@ import { styleDownArrowContent, styleGridButton } from '../../apply-styles';
     ])
   ]
 })
-export class ContentComponent implements OnInit, OnDestroy {
-  @Output() goShutterEvent: EventEmitter<null> = new EventEmitter();
-  @Output() saveContentDataEvent: EventEmitter<any[]> = new EventEmitter();
+export class ContentComponent implements OnInit {
+  @Output() toggleShutterAliveEvent: EventEmitter<null> = new EventEmitter();
   @Output() setWorkActiveEvent: EventEmitter<number> = new EventEmitter();
-  @Input() contentData: any[];
-  @Input() workActive: number;
   @Input() welcomeAlive: boolean;
+  @Input() workActive: number;
+  @Input() worksData: {[key: number]: CommandStacks};
+  @Input() colors: {[key: string]: string};
   @ViewChildren(WorkWrapperComponent) allWorkWrapper: QueryList<WorkWrapperComponent>;
 
   works: Object[];
   gridButton = false;
   arrowPath = '../../assets/arrow.svg';
   gridButtonPath = '../../assets/gridbutton.svg';
+  constructor() { }
 
-  /* LIFECYCLE HOOK FUNCTIONS */
-  ngOnInit(): void {
-    this.works = this.assembleWorksList();
-    const contentEl = document.getElementById('app-content');
-    (contentEl as HTMLElement).style.backgroundColor = secondaryColor;
+  ngOnInit() {
+    this.works = worksList;
+    const contentEl = document.getElementById('content');
+    (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
     const tab = contentEl.appendChild(generateSvgTab(window.innerWidth, window.innerHeight / 36));
     if (this.welcomeAlive) {
-      tab.firstElementChild.setAttributeNS(null, 'fill', primaryColor);
+      tab.firstElementChild.setAttributeNS(null, 'fill', this.colors['welcomeColor']);
     } else {
-      tab.firstElementChild.setAttributeNS(null, 'fill', tertiaryColor);
+      tab.firstElementChild.setAttributeNS(null, 'fill', this.colors['aboutColor']);
     }
-  }
-  assembleWorksList(): Object[] {
-    for (let i = 0; i < worksList.length; i++) {
-      worksList[i].data = this.contentData[i];
+    if (this.workActive) {
     }
-    return worksList;
   }
   styleDownArrowContentFunc(el: SVGElement): void {
     styleDownArrowContent(el);
@@ -61,19 +58,10 @@ export class ContentComponent implements OnInit, OnDestroy {
   styleGridButtonFunc(el: SVGElement): void {
     styleGridButton(el);
   }
-  ngOnDestroy(): void {
-    this.saveContentDataEvent.emit(this.contentData);
-    this.setWorkActiveEvent.emit(this.workActive);
-  }
 
-  /* ON CHANGE SPECIFIC FUNCTIONS */
-  redrawAll(values: number[]): Promise<null> {
-    // More to be done here
-    return Promise.resolve(null);
-  }
   getStatus(i: number): string {
     const pattern = /^ww/;
-    const elClassList = document.getElementsByClassName('app-work-wrapper')[i].classList;
+    const elClassList = document.getElementsByClassName('work-wrapper')[i].classList;
     const elClassListLength = elClassList.length;
     for (let c = 0; c < elClassListLength; ++c) {
       if (elClassList[c].match(pattern)) {
@@ -83,19 +71,22 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   /* EVENT FUNCTIONS */
-  // workInitFunc(e: WorkWrapperComponent): void {
-  //   const workActive = this.workActive;
-  //   if (workActive === parseInt(e.workData.id, 10)) {
-  //     const activeEl = document.getElementsByClassName('work-wrapper')[workActive];
-  //     console.log(document.getElementsByClassName('work-wrapper'));
-  //     this.activateWorkHandler(activeEl, e);
-  //   }
-  // }
-  goShutterFunc(): void {
-    this.goShutterEvent.emit(null);
+  workInitFunc(e: WorkWrapperComponent): void {
+    const workActive = this.workActive;
+    if (workActive === parseInt(e.workScript.id, 10)) {
+      const activeEl = document.getElementsByClassName('work-wrapper')[workActive];
+      console.log(document.getElementsByClassName('work-wrapper'));
+      this.activateWorkHandler(activeEl, e);
+    }
+  }
+  toggleShutterAliveFunc(): void {
+    this.toggleShutterAliveEvent.emit(null);
+  }
+  setWorkActiveFunc(id: number): void {
+    this.setWorkActiveEvent.emit(id);
   }
   forceGridClass(): void {
-    const elArray = document.getElementsByClassName('app-work-wrapper');
+    const elArray = document.getElementsByClassName('work-wrapper');
     const elArrayLength = elArray.length;
     for (let i = 0; i < elArrayLength; ++i) {
       const classes = elArray[i].classList;
@@ -120,7 +111,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
       allWorkWrapperComponents.push(workWrapperComponentInstance);
     });
-    const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workData.id === e.element.id);
+    const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workScript.id === e.element.id);
     clickedWorkWrapper.work.resizeCanvas();
   }
   activateWorkHandler(clickedEl: Element, clickedWorkWrapper: WorkWrapperComponent): void {
@@ -128,12 +119,12 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
   activateWorkActuator(clickedEl: Element, clickedWorkWrapper: WorkWrapperComponent): void {
     let classes = clickedEl.classList;
-    this.workActive = parseInt(clickedEl.id, 10);
+    this.setWorkActiveFunc(parseInt(clickedEl.id, 10));
     classes.remove('wwGrid');
     classes.remove('wwRow');
     classes.add('wwActive');
     (clickedEl as HTMLElement).style.left = '7.5%';
-    const elArray = document.getElementsByClassName('app-work-wrapper');
+    const elArray = document.getElementsByClassName('work-wrapper');
     const elArrayLength = elArray.length;
     let rowOffset = 0;
     for (let i = 0; i < elArrayLength; ++i) {
@@ -150,7 +141,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.gridButton = true;
   }
   deactivateWorkHandler(activeEl: Element, allWorkWrapperComponents): Promise<null> {
-    const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workData.id === activeEl.id);
+    const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workScript.id === activeEl.id);
     clickedWorkWrapper.work.deactivate().then(resolve => this.deactivateWorkActuator(activeEl));
     return Promise.resolve(null);
   }
@@ -158,15 +149,15 @@ export class ContentComponent implements OnInit, OnDestroy {
     const classes = activeEl.classList;
     classes.remove('wwActive');
     classes.add('wwRow');
-    this.workActive = null;
+    this.setWorkActiveFunc(null);
   }
   workClickFunc(e: Event): void {
-    const clickedEl = e.srcElement.closest('.app-work-wrapper');
+    const clickedEl = e.srcElement.closest('.work-wrapper');
     const allWorkWrapperComponents = [];
     this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
       allWorkWrapperComponents.push(workWrapperComponentInstance);
     });
-    const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workData.id === clickedEl.id);
+    const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.workScript.id === clickedEl.id);
     if (clickedEl.classList.contains('wwActive')) {
       clickedWorkWrapper.work.clickInteract(e);
     } else {

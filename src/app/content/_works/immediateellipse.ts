@@ -28,19 +28,20 @@ export class SpecificWork extends Work {
   drawEllipse (context: CanvasRenderingContext2D, pointerX: number, pointerY: number) {
     let startX = this.startX;
     let startY = this.startY;
-    this.commandStack.push(context.beginPath);
-    this.paramStack.push([]);
-    this.commandStack.push(context.ellipse);
-    this.paramStack.push([
+    const commandStacks = this.commandStacks;
+    commandStacks['functionStack'].push(context.beginPath);
+    commandStacks['paramStack'].push([]);
+    commandStacks['functionStack'].push(context.ellipse);
+    commandStacks['paramStack'].push([
       ['X', startX], ['Y', startY],
       ['X', Math.abs(pointerX - startX)], ['Y', Math.abs(pointerY - startY)],
       0, 0,
       2 * Math.PI, false
     ]);
-    this.commandStack.push(context.stroke);
-    this.paramStack.push([]);
-    this.commandStack.push(context.closePath);
-    this.paramStack.push([]);
+    commandStacks['functionStack'].push(context.stroke);
+    commandStacks['paramStack'].push([]);
+    commandStacks['functionStack'].push(context.closePath);
+    commandStacks['paramStack'].push([]);
     const w = this.w;
     const h = this.h;
     startX *= this.w;
