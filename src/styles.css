@@ -33,9 +33,6 @@ body { padding:0; margin:0; }
   z-index: 2;
   /*position: fixed;*/
 }
-#aboutText {
-  
-}
 .work-wrapper{
   margin: 2.5%;
   float:left;
@@ -51,7 +48,7 @@ body { padding:0; margin:0; }
   height:10%;
   width:10%;
   position: absolute;
-  top:90%;
+  top:85%;
   /*background: blue;*/
 }
 .wwActive {
@@ -60,4 +57,7 @@ body { padding:0; margin:0; }
   position: fixed;
   top: 0;
   /*background: red;*/
+}
+.work-wrapper:hover {
+  box-shadow: 0 0 3px 5px #555
 }

@@ -23,8 +23,8 @@ export abstract class Work {
     this.canvas = canvas;
     this.w = w;
     this.h = h;
-    this.commandStacks = {functionStack: [], paramStack: []};
-    this.redoStacks = {functionStack: [], paramStack: []};
+    this.commandStacks = {id: null, functionStack: [], paramStack: []};
+    this.redoStacks = {id: null, functionStack: [], paramStack: []};
   }
   resizeCanvas(): void {
     const canvas = this.canvas;

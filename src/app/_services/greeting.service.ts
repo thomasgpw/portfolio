@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class WelcomeService {
+export class GreetingService {
   GREETINGS: string[] = [
     'Welcome |name|!',
     'Greetings |name|!',

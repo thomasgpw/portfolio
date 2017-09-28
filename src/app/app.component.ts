@@ -2,26 +2,35 @@ import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
 import { Store, Action } from '@ngrx/store';
-import { Observable } from 'rxjs/Rx';
+import { Observable, Subscription } from 'rxjs/Rx';
 
-import { WelcomeService } from './_services/welcome.service';
-import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle, belowScreenStyle } from './_animations/styles';
+import { environment } from '../environments/environment';
+import { GreetingService } from './_services/greeting.service';
+import { RhymeService } from './_services/rhyme.service';
+import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle } from './_animations/styles';
+import { } from './app.module';
 import { AppState, CommandStacks } from './app.datatypes';
 import {
-  ToggleShutterAliveAction,
-  ToggleWelcomeAliveAction,
+  SetAppViewAction,
+  SetShutterViewAction,
   GetNextGreetingAction,
   GetRandomGreetingAction,
   GetRandomNameAction,
   SetNameAction,
-  SetWorkActiveAction
+  GetNextRhymeAction,
+  GetRandomRhymeAction,
+  SetColorAction,
+  SetUnitLengthAction,
+  SetWorkActiveAction,
+  SetCommandStacksAction,
+  DeleteCommandStacksAction
 } from './app.reducers';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [WelcomeService],
+  providers: [GreetingService, RhymeService],
   animations: [
     trigger('shutterView', [
       state('true', onScreenYStyle),
@@ -44,36 +53,52 @@ import {
   ]
 })
 export class AppComponent implements OnInit {
-  shutterAlive$: Observable<boolean>;
-  welcomeAlive$: Observable<boolean>;
+  appView$: Observable<boolean>;
+  shutterView$: Observable<boolean>;
   greeting$: Observable<string>;
   name$: Observable<string>;
+  rhyme$: Observable<string>;
   color$: Observable<string>;
-  shutterAliveSubscriber;
-  greetingSubscriber;
-  fullGreetingSubscriber;
-  colorSubscriber;
+  unitLength$: Observable<number>;
+  appViewSubscription: Subscription;
+  greetingSubscription: Subscription;
+  rhymeSubscription: Subscription;
+  fullGreetingSubscription: Subscription;
+  colorSubscription: Subscription;
   shutterAlive: boolean;
-  shutterAnimateState: boolean;
+  appAnimateState: boolean;
   contentAlive: boolean;
-  contentAnimateState: boolean;
   greeting: string;
+  rhyme: string;
   fullGreeting: string;
   colors: {[key: string]: string} = {};
 
   /* LIFECYCLE HOOK FUNCTIONS */
-  constructor(private store: Store<AppState>, private _welcomeService: WelcomeService) {
-    this.shutterAlive$ = store.select(state => state.shutterAlive);
-    this.welcomeAlive$ = store.select(state => state.welcomeAlive);
+  constructor(private store: Store<AppState>, private _greetingService: GreetingService) {
+    this.appView$ = store.select(state => state.appView);
+    this.shutterView$ = store.select(state => state.shutterView);
     this.greeting$ = store.select(state => state.greeting);
     this.name$ = store.select(state => state.name);
+    this.rhyme$ = store.select(state => state.rhyme);
     this.color$ = store.select(state => state.color);
-    this.shutterAliveSubscriber = this.shutterAlive$.subscribe(state => this.handleShutterAlive(state));
-    this.greetingSubscriber = this.greeting$.subscribe(state => this.greeting = state);
-    this.fullGreetingSubscriber = Observable.zip(this.greeting$, this.name$).subscribe(state => this.concatGreeting(state));
-    this.colorSubscriber = this.color$.subscribe(state => this.getColors(state));
+    this.unitLength$ = store.select(state => state.unitLength);
+    this.appViewSubscription = this.appView$.subscribe(state => this.handleAppView(state));
+    this.greetingSubscription = this.greeting$.subscribe(state => this.greeting = state);
+    this.rhymeSubscription = this.rhyme$.subscribe(state => this.rhyme = state);
+    this.fullGreetingSubscription = Observable.zip(this.greeting$, this.name$).subscribe(state => this.concatGreeting(state));
+    this.colorSubscription = this.color$.subscribe(state => this.getColors(state));
   }
   ngOnInit(): void {
+    if (!environment.production) {
+      this.setAppView(true);
+      this.setShutterView(true);
+      this.getRandomGreeting();
+      this.getRandomName();
+      this.getRandomRhyme();
+      this.setColor('#7486B4');
+      this.setWorkActive(null);
+      this.appAnimateState = true;
+    }
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
@@ -89,7 +114,7 @@ export class AppComponent implements OnInit {
   //   return Promise.resolve([width, height]);
   // }
   // redrawAll(values: number[]): Promise<null> {
-  //   if (this.shutterAlive) {
+  //   if (this.appView) {
   //     this.shutterInstance.redrawAll(values);
   //   }
   //   if (this.contentAlive) {
@@ -97,16 +122,35 @@ export class AppComponent implements OnInit {
   //   }
   //   return Promise.resolve(null);
   // }
+  handleAppView(state: boolean): void {
+    if (state !== false) {
+      console.log('goingshutter');
+      this.goShutter().then(resolve => setTimeout(() => this.turnOffContent(), viewTransitionTime));
+    } else {
+      console.log('goingcontent');
+      this.goContent().then(resolve => setTimeout(() => this.turnOffShutter(), viewTransitionTime));
+    }
+    console.log(this.shutterAlive, this.contentAlive);
+    setTimeout(() => console.log(this.shutterAlive, this.contentAlive), 2000);
+  }
   concatGreeting(state: string[]) {
     if (state[0] && state[1]) {
-      this.fullGreeting = this._welcomeService.concatenateGreeting(state[0], state[1]);
+      this.fullGreeting = this._greetingService.concatenateGreeting(state[0], state[1]);
     }
   }
   getColors(color: string): void {
-    console.log(color);
     this.colors['welcomeColor'] = color;
     this.colors['contentColor'] = '#505781';
     this.colors['aboutColor'] = '#8CA2D9';
+  }
+  calcUnitLength(): void {
+
+  }
+  getCurrentShutterAnimationState(): string {
+    return this.appAnimateState.toString();
+  }
+  getCurrentContentAnimationState(): string {
+    return (!this.appAnimateState).toString();
   }
 
   /* EVENT FUNCTIONS */
@@ -116,17 +160,17 @@ export class AppComponent implements OnInit {
       const shutterAlive = this.shutterAlive;
       const contentAlive = this.contentAlive;
       if (shutterAlive === true && contentAlive === false && e.deltaY <= -10) {
-        this.goContent().then(resolve => setTimeout(() => this.turnOffShutter(this), viewTransitionTime));
+        this.setAppView(false);
       } else if (shutterAlive === false && contentAlive === true && e.deltaY >= 10) {
-        this.goShutter().then(resolve => setTimeout(() => this.turnOffContent(this), viewTransitionTime));
+        this.setAppView(true);
       }
     }
   }
-  toggleShutterAlive(): void {
-    this.store.dispatch(new ToggleShutterAliveAction);
+  setAppView(shutterAlive: boolean): void {
+    this.store.dispatch(new SetAppViewAction(shutterAlive));
   }
-  toggleWelcomeAlive(): void {
-    this.store.dispatch(new ToggleWelcomeAliveAction);
+  setShutterView(welcomeAlive: boolean): void {
+    this.store.dispatch(new SetShutterViewAction(welcomeAlive));
   }
   getNextGreeting() {
     this.store.dispatch(new GetNextGreetingAction(this.greeting));
@@ -140,51 +184,60 @@ export class AppComponent implements OnInit {
   setName(name: string): void {
     this.store.dispatch(new SetNameAction(name));
   }
+  getNextRhyme() {
+    this.store.dispatch(new GetNextRhymeAction(this.rhyme));
+  }
+  getRandomRhyme(): void {
+    this.store.dispatch(new GetRandomRhymeAction);
+  }
+  setColor(color: string): void {
+    this.store.dispatch(new SetColorAction(color));
+  }
+  setUnitLength(unitLength: number): void {
+    this.store.dispatch(new SetUnitLengthAction(unitLength));
+  }
   setWorkActive(id: number): void {
     this.store.dispatch(new SetWorkActiveAction(id));
   }
-
-  handleShutterAlive(state: boolean): void {
-    if (state) {
-      this.goShutter().then(resolve => setTimeout(() => this.turnOffContent(this), viewTransitionTime));
-    } else {
-      this.goContent().then(resolve => setTimeout(() => this.turnOffShutter(this), viewTransitionTime));
-    }
+  setCommandStacks(commandStacks: CommandStacks): void {
+    this.store.dispatch(new SetCommandStacksAction(commandStacks));
   }
+  deleteCommandStacks(id: number): void {
+    this.store.dispatch(new DeleteCommandStacksAction(id));
+  }
+
   goShutter(): Promise<null> {
+    console.log('goShutter');
     this.instantiateShutter().then(resolve => setTimeout(() => this.animateShutter()));
     return Promise.resolve(null);
   }
   instantiateShutter(): Promise<null> {
     this.shutterAlive = true;
-    this.shutterAnimateState = false;
-    this.contentAnimateState = true;
     return Promise.resolve(null);
   }
   animateShutter(): Promise<null> {
-    this.shutterAnimateState = true;
-    this.contentAnimateState = false;
+    this.appAnimateState = true;
     return Promise.resolve(null);
   }
-  turnOffContent(that: this): void {
-    that.contentAlive = false;
+  turnOffContent(): void {
+    this.contentAlive = false;
+    console.log('turnOffContent');
   }
   goContent(): Promise<null> {
+    console.log('goContent');
     this.instantiateContent().then(resolve => setTimeout(() => this.animateContent()));
     return Promise.resolve(null);
   }
   instantiateContent(): Promise<null> {
     this.contentAlive = true;
-    this.contentAnimateState = false;
-    this.shutterAnimateState = true;
     return Promise.resolve(null);
   }
   animateContent(): Promise<null> {
-    this.contentAnimateState = true;
-    this.shutterAnimateState = false;
+    this.appAnimateState = false;
      return Promise.resolve(null);
   }
-  turnOffShutter(that: this): void {
-    that.shutterAlive = false;
+  turnOffShutter(): void {
+    this.shutterAlive = false;
+    console.log('turnOffShutter');
   }
 }

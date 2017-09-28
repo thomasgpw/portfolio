@@ -7,9 +7,11 @@ import { styleDownArrowShutter, styleRightArrow } from '../../../apply-styles';
   styleUrls: ['./about.component.css']
 })
 export class AboutComponent implements OnInit {
-  @Output() toggleShutterAliveEvent: EventEmitter<null> = new EventEmitter();
-  @Output() toggleWelcomeAliveEvent: EventEmitter<null> = new EventEmitter();
+  @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
+  @Output() setShutterViewEvent: EventEmitter<null> = new EventEmitter();
+  @Output() getNextRhymeEvent: EventEmitter<null> = new EventEmitter();
   @Input() aboutColor: string;
+  @Input() rhyme: string;
 
   arrowPath = '../../../assets/arrow.svg';
 
@@ -26,10 +28,13 @@ export class AboutComponent implements OnInit {
   }
 
   /* EVENT FUNCTIONS */
+  getNextRhymeFunc(): void {
+    this.getNextRhymeEvent.emit(null);
+  }
   shutterToggleFunc() {
-    this.toggleWelcomeAliveEvent.emit(null);
+    this.setShutterViewEvent.emit(null);
   }
   goContentFunc() {
-    this.toggleShutterAliveEvent.emit(null);
+    this.setAppViewEvent.emit(null);
   }
 }

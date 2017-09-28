@@ -11,7 +11,7 @@
   id='downArrow' class='button button-shutter'
   [inlineSVG]=arrowPath
   (onSVGInserted)=styleDownArrowContentFunc($event)
-  (click)=toggleShutterAliveFunc()>
+  (click)=setAppViewFunc()>
   </div>
   <div *ngFor='let workScript of works; let i = index'
   [id]='i' class='work-wrapper wwGrid'

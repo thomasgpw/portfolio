@@ -5,11 +5,11 @@ import { styleDownArrowShutter, styleLeftArrow } from '../../../apply-styles';
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WelcomeComponent implements OnInit {
-  @Output() toggleShutterAliveEvent: EventEmitter<null> = new EventEmitter();
-  @Output() toggleWelcomeAliveEvent: EventEmitter<null> = new EventEmitter();
+  @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
+  @Output() setShutterViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() getNextGreetingEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getRandomGreetingEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getRandomNameEvent: EventEmitter<null>  = new EventEmitter();
@@ -23,7 +23,7 @@ export class WelcomeComponent implements OnInit {
 
   ngOnInit() {
     (document.getElementById('welcome') as HTMLElement).style.backgroundColor = this.welcomeColor;
-    this.setGreeting();
+    // this.setGreeting();
   }
   styleLeftArrowFunc(el: SVGAElement) {
     styleLeftArrow(el);
@@ -40,17 +40,17 @@ export class WelcomeComponent implements OnInit {
     } else if (elId === 'name') {
       this.getRandomNameFunc();
     }
-    this.setGreeting();
+    // this.setGreeting();
   }
-  setGreeting(): void {
-    console.log(this.fullGreeting);
-    document.getElementById('greeting').innerHTML = this.fullGreeting;
+  // setGreeting(): void {
+  //   console.log(this.fullGreeting);
+  //   document.getElementById('greeting').innerHTML = this.fullGreeting;
+  // }
+  setAppViewFunc(): void {
+    this.setAppViewEvent.emit(null);
   }
-  toggleShutterAliveFunc(): void {
-    this.toggleShutterAliveEvent.emit(null);
-  }
-  toggleWelcomeAliveFunc(): void {
-    this.toggleWelcomeAliveEvent.emit(null);
+  setShutterViewFunc(): void {
+    this.setShutterViewEvent.emit(null);
   }
   getNextGreetingFunc(): void {
     this.getNextGreetingEvent.emit(null);

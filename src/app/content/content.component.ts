@@ -25,7 +25,7 @@ import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
   ]
 })
 export class ContentComponent implements OnInit {
-  @Output() toggleShutterAliveEvent: EventEmitter<null> = new EventEmitter();
+  @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() setWorkActiveEvent: EventEmitter<number> = new EventEmitter();
   @Input() welcomeAlive: boolean;
   @Input() workActive: number;
@@ -79,8 +79,8 @@ export class ContentComponent implements OnInit {
       this.activateWorkHandler(activeEl, e);
     }
   }
-  toggleShutterAliveFunc(): void {
-    this.toggleShutterAliveEvent.emit(null);
+  setAppViewFunc(): void {
+    this.setAppViewEvent.emit(null);
   }
   setWorkActiveFunc(id: number): void {
     this.setWorkActiveEvent.emit(id);

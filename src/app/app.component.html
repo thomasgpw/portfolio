@@ -1,32 +1,34 @@
 <div id='app-window' (wheel)=scrollFunc($event)>
   <div class='page shutter'
   *ngIf='shutterAlive'
-  [@shutterView]=shutterAnimateState.toString()
+  [@shutterView]='getCurrentShutterAnimationState()'
   >
     <app-shutter
-    [welcomeAlive]='welcomeAlive$ | async'
+    [shutterView$]='shutterView$'
     [fullGreeting]='fullGreeting'
+    [rhyme]='rhyme'
     [colors]='colors'
-    (toggleShutterAliveEvent)='toggleShutterAlive()'
-    (toggleWelcomeAliveEvent)='toggleWelcomeAlive()'
+    (setAppViewEvent)='setAppView(false)'
+    (setShutterViewEvent)='setShutterView($event)'
     (getNextGreetingEvent)='getNextGreeting()'
     (getRandomGreetingEvent)='getRandomGreeting()'
     (getRandomNameEvent)='getRandomName()'
     (setNameEvent)='setName($event)'
+    (getNextRhymeEvent)='getNextRhyme()'
     >
       app-shutter error
     </app-shutter>
   </div>
   <div class='page content'
   *ngIf='contentAlive'
-  [@contentView]=contentAnimateState.toString()
+  [@contentView]='getCurrentContentAnimationState()'
   >
     <app-content
     [welcomeAlive]='welcomeAlive$ | async'
     [workActive]='workActive$ | async'
     [worksData]='worksData | async'
     [colors]='colors'
-    (toggleShutterAliveEvent)='toggleShutterAlive()'
+    (setAppViewEvent)='setAppView(true)'
     (setWorkActiveEvent)='setWorkActive($event)'
     >
       app-content error

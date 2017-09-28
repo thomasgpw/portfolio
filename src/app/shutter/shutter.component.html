@@ -1,15 +1,16 @@
 <div class='shutter' >
   <div
-  *ngIf='welcomeAlive'
-  [@welcomeView]='welcomeAnimateState.toString()'
+  *ngIf='getCurrentWelcomeAlive()'
+  [@welcomeView]='getCurrentWelcomeAnimationState()'
+  (@welcomeView.done)='logData($event)'
   class='page welcome'
   id='welcome'
   >
     <app-welcome 
     [fullGreeting]='fullGreeting'
     [welcomeColor]='colors["welcomeColor"]'
-    (toggleShutterAliveEvent)=toggleShutterAliveFunc()
-    (toggleWelcomeAliveEvent)=toggleWelcomeAliveFunc()
+    (setAppViewEvent)='setAppViewFunc()'
+    (setShutterViewEvent)='setShutterViewFunc(false)'
     (getNextGreetingEvent)='getNextGreetingFunc()'
     (getRandomGreetingEvent)='getRandomGreetingFunc()'
     (getRandomNameEvent)='getRandomNameFunc()'
@@ -19,15 +20,18 @@
     </app-welcome>
   </div>
   <div
-  *ngIf='aboutAlive'
-  [@aboutView]='aboutAnimateState.toString()'
+  *ngIf='getCurrentAboutAlive()'
+  [@aboutView]='getCurrentAboutAnimationState()'
+  (@aboutView.done)='logData($event)'
   class='page about'
   id='about'
   >
     <app-about
     [aboutColor]='colors["aboutColor"]'
-    (toggleShutterAliveEvent)='toggleShutterAliveFunc()'
-    (toggleWelcomeAliveEvent)='toggleWelcomeAliveFunc()'
+    [rhyme]='rhyme'
+    (setAppViewEvent)='setAppViewFunc()'
+    (setShutterViewEvent)='setShutterViewFunc(true)'
+    (getNextRhymeEvent)='getNextRhymeFunc()'
     >
       app-about error
     </app-about>

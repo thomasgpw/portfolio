@@ -1,18 +1,18 @@
 <div id="welcome" class="page welcome">
   <h1>
-    <span id="greeting" class="button" (click)='greetingClickFunc($event)'></span>
+    <span id="greeting" class="button" (click)='greetingClickFunc($event)'>{{fullGreeting}}</span>
   </h1>
   <div
   id="leftArrow" class="button button-about"
   [inlineSVG]="arrowPath"
   (onSVGInserted)="styleLeftArrowFunc($event)"
-  (click)="toggleWelcomeAliveFunc()">
+  (click)="setShutterViewFunc()">
   </div>
   <div
   id="downArrow" class="button button-app-content"
   [inlineSVG]="arrowPath"
   (onSVGInserted)="styleDownArrowShutterFunc($event)"
-  (click)="toggleShutterAliveFunc()">
+  (click)="setAppViewFunc()">
   </div>
   <div id="welcomeText">
     <br> <br> <br>
