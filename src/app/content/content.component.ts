@@ -29,7 +29,7 @@ export class ContentComponent implements OnInit {
   @Output() setWorkActiveEvent: EventEmitter<number> = new EventEmitter();
   @Input() welcomeAlive: boolean;
   @Input() workActive: number;
-  @Input() worksData: {[key: number]: CommandStacks};
+  @Input() commandStacksMap: {[key: number]: CommandStacks};
   @Input() colors: {[key: string]: string};
   @ViewChildren(WorkWrapperComponent) allWorkWrapper: QueryList<WorkWrapperComponent>;
 

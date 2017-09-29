@@ -8,7 +8,6 @@ import { environment } from '../environments/environment';
 import { GreetingService } from './_services/greeting.service';
 import { RhymeService } from './_services/rhyme.service';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle } from './_animations/styles';
-import { } from './app.module';
 import { AppState, CommandStacks } from './app.datatypes';
 import {
   SetAppViewAction,
@@ -60,6 +59,7 @@ export class AppComponent implements OnInit {
   rhyme$: Observable<string>;
   color$: Observable<string>;
   unitLength$: Observable<number>;
+  commandStacksMap$: Observable<{[key: number]: CommandStacks}>;
   appViewSubscription: Subscription;
   greetingSubscription: Subscription;
   rhymeSubscription: Subscription;
@@ -82,6 +82,7 @@ export class AppComponent implements OnInit {
     this.rhyme$ = store.select(state => state.rhyme);
     this.color$ = store.select(state => state.color);
     this.unitLength$ = store.select(state => state.unitLength);
+    this.commandStacksMap$ = store.select(state => state.commandStacksMap);
     this.appViewSubscription = this.appView$.subscribe(state => this.handleAppView(state));
     this.greetingSubscription = this.greeting$.subscribe(state => this.greeting = state);
     this.rhymeSubscription = this.rhyme$.subscribe(state => this.rhyme = state);
