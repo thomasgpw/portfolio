@@ -1,24 +1,26 @@
 import { ActionReducerMap, Action, ActionReducer, MetaReducer } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import { AppState, CommandStacks } from './app.datatypes';
-import { GreetingService } from './_services/greeting.service';
-import { RhymeService } from './_services/rhyme.service';
+import { AppState, CommandStacks, IterableStringMap, IterableStringList } from './app.datatypes';
+import { StringService } from './_services/string.service';
+
 /* ACTION TYPES */
 const SET_APP_VIEW = 'SET_APP_VIEW';
 const SET_SHUTTER_VIEW = 'SET_SHUTTER_VIEW';
-const GET_NEXT_GREETING = 'GET_NEXT_GREETING';
-const GET_RANDOM_GREETING = 'GET_RANDOM_GREETING';
-const GET_RANDOM_NAME = 'GET_RANDOM_NAME';
-const SET_NAME = 'SET_NAME';
-const GET_NEXT_RHYME = 'GET_NEXT_RHYME';
-const GET_RANDOM_RHYME = 'GET_RANDOM_RHYME';
+const GET_NEXT_STRING = 'GET_NEXT_STRING';
+const GET_RANDOM_STRING = 'GET_RANDOM_STRING';
+const SET_STRING = 'SET_STRING';
 const SET_COLOR = 'SET_COLOR';
 const SET_UNIT_LENGTH = 'SET_UNIT_LENGTH';
 const SET_WORK_ACTIVE = 'SET_WORK_ACTIVE';
+const SET_COMMAND_STACKS_MAP = 'SET_COMMAND_STACKS_MAP';
 const SET_COMMAND_STACKS = 'SET_COMMAND_STACKS';
 const DELETE_COMMAND_STACKS = 'DELETE_COMMAND_STACKS';
 
 /* ACTIONS */
+export class DummyAction implements Action {
+  readonly type: string = 'dummy';
+  constructor(public payload?) {}
+}
 export class SetAppViewAction implements Action {
   readonly type: string = SET_APP_VIEW;
   constructor(public payload: boolean) {}
@@ -27,29 +29,17 @@ export class SetShutterViewAction implements Action {
   readonly type: string = SET_SHUTTER_VIEW;
   constructor(public payload: boolean) {}
 }
-export class GetNextGreetingAction implements Action {
-  readonly type: string = GET_NEXT_GREETING;
-  constructor(public payload: string) {}
+export class GetNextStringAction implements Action {
+  readonly type: string = GET_NEXT_STRING;
+  constructor(public payload: [StringService, string]) {}
 }
-export class GetRandomGreetingAction implements Action {
-  readonly type: string = GET_RANDOM_GREETING;
-  constructor(public payload?) {}
+export class GetRandomStringAction implements Action {
+  readonly type: string = GET_RANDOM_STRING;
+  constructor(public payload: [StringService, string]) {}
 }
-export class GetRandomNameAction implements Action {
-  readonly type: string = GET_RANDOM_NAME;
-  constructor(public payload?) {}
-}
-export class SetNameAction implements Action {
-  readonly type: string = SET_NAME;
-  constructor(public payload: string) {}
-}
-export class GetNextRhymeAction implements Action {
-  readonly type: string = GET_NEXT_RHYME;
-  constructor(public payload: string) {}
-}
-export class GetRandomRhymeAction implements Action {
-  readonly type: string = GET_RANDOM_RHYME;
-  constructor(public payload?) {}
+export class SetStringAction implements Action {
+  readonly type: string = SET_STRING;
+  constructor(public payload: [string, string]) {}
 }
 export class SetColorAction implements Action {
   readonly type = SET_COLOR;
@@ -62,6 +52,10 @@ export class SetUnitLengthAction implements Action {
 export class SetWorkActiveAction implements Action {
   readonly type = SET_WORK_ACTIVE;
   constructor(public payload: number) {}
+}
+export class SetCommandStacksMapAction implements Action {
+  readonly type = SET_COMMAND_STACKS_MAP;
+  constructor(public payload: {[key: number]: CommandStacks}) {}
 }
 export class SetCommandStacksAction implements Action {
   readonly type = SET_COMMAND_STACKS;
@@ -89,34 +83,41 @@ export function shutterViewReducer(state: boolean, action: Actions): boolean {
       return state;
   }
 }
-const _greetingService = new GreetingService();
-export function greetingReducer(state: string, action: Actions): string {
-  switch (action.type) {
-    case GET_NEXT_GREETING:
-      return _greetingService.getNextGreeting(action.payload);
-    case GET_RANDOM_GREETING:
-      return _greetingService.getRandomGreeting();
-    default:
-      return state;
+function textsReducer(
+state: IterableStringMap = {
+  'greeting': new IterableStringList(null, null, 'greeting'),
+  'name': new IterableStringList(null, null, 'name'),
+  'tip': new IterableStringList(null, null, 'tip'),
+  'rhyme': new IterableStringList(null, null, 'rhyme')
+},
+action: Actions
+): IterableStringMap {
+  const payload = action.payload;
+  let mainPayload;
+  let type;
+  if (payload) {
+    mainPayload = payload[0];
+    type = payload[1];
+  } else {
+    mainPayload = null;
+    type = null;
   }
-}
-export function nameReducer(state: string, action: Actions): string {
   switch (action.type) {
-    case GET_RANDOM_NAME:
-      return _greetingService.getRandomName();
-    case SET_NAME:
-      return action.payload;
-    default:
+    case GET_NEXT_STRING:
+      state[type] = mainPayload.getNextString(state[type]);
       return state;
-  }
-}
-const _rhymeService = new RhymeService();
-export function rhymeReducer(state: string, action: Actions): string {
-  switch (action.type) {
-    case GET_NEXT_RHYME:
-      return _rhymeService.getNextRhyme(action.payload);
-    case GET_RANDOM_RHYME:
-      return _rhymeService.getRandomRhyme();
+    case GET_RANDOM_STRING:
+      const returns = mainPayload.getRandomString();
+      if (state[type]) {
+        state[type].instance = returns[0];
+        state[type].index = returns[1];
+      } else {
+        state[type] = new IterableStringList(returns[0], returns[1], type);
+      }
+      return state;
+    case SET_STRING:
+      state[type].instance = mainPayload;
+      return state;
     default:
       return state;
   }
@@ -148,11 +149,13 @@ export function workActiveReducer(state: number, action: Actions): number {
 export function commandStacksMapReducer(state: {[key: number]: CommandStacks}, action: Actions): {[key: number]: CommandStacks} {
   const payload = action.payload;
   switch (action.type) {
+    case SET_COMMAND_STACKS_MAP:
+      return payload;
     case SET_COMMAND_STACKS:
-      state[payload.key] = payload.commandStack;
+      state[payload.id] = payload;
       return state;
     case DELETE_COMMAND_STACKS:
-      state[payload] = {id: payload, functionStack: [], paramStack: []};
+      state[payload] = new CommandStacks(payload);
       return state;
     default:
       return state;
@@ -160,14 +163,12 @@ export function commandStacksMapReducer(state: {[key: number]: CommandStacks}, a
 }
 
 export type Actions
-  = SetAppViewAction
+  = DummyAction
+  | SetAppViewAction
   | SetShutterViewAction
-  | GetNextGreetingAction
-  | GetRandomGreetingAction
-  | GetRandomNameAction
-  | SetNameAction
-  | GetNextRhymeAction
-  | GetRandomRhymeAction
+  | GetNextStringAction
+  | GetRandomStringAction
+  | SetStringAction
   | SetColorAction
   | SetUnitLengthAction
   | SetWorkActiveAction
@@ -177,9 +178,7 @@ export type Actions
 export const reducers: ActionReducerMap<AppState> = {
   appView: appViewReducer,
   shutterView: shutterViewReducer,
-  greeting: greetingReducer,
-  name: nameReducer,
-  rhyme: rhymeReducer,
+  texts: textsReducer,
   color: colorReducer,
   unitLength: unitLengthReducer,
   workActive: workActiveReducer,

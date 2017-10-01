@@ -6,15 +6,17 @@
     <app-shutter
     [shutterView$]='shutterView$'
     [fullGreeting]='fullGreeting'
-    [rhyme]='rhyme'
+    [tip]='tip$ | async'
+    [rhyme]='rhyme$ | async'
     [colors]='colors'
     (setAppViewEvent)='setAppView(false)'
     (setShutterViewEvent)='setShutterView($event)'
-    (getNextGreetingEvent)='getNextGreeting()'
-    (getRandomGreetingEvent)='getRandomGreeting()'
-    (getRandomNameEvent)='getRandomName()'
-    (setNameEvent)='setName($event)'
-    (getNextRhymeEvent)='getNextRhyme()'
+    (getNextGreetingEvent)='getNextString("greeting")'
+    (getRandomGreetingEvent)='getRandomString("greeting")'
+    (getRandomNameEvent)='getRandomString("name")'
+    (setNameEvent)='setString($event, "name")'
+    (getNextTipEvent)='getNextString("tip")'
+    (getNextRhymeEvent)='getNextString("rhyme")'
     >
       app-shutter error
     </app-shutter>
@@ -26,7 +28,7 @@
     <app-content
     [welcomeAlive]='welcomeAlive$ | async'
     [workActive]='workActive$ | async'
-    [commandStacksMap]='commandStacksMap | async'
+    [commandStacksMap]='commandStacksMap$ | async'
     [colors]='colors'
     (setAppViewEvent)='setAppView(true)'
     (setWorkActiveEvent)='setWorkActive($event)'

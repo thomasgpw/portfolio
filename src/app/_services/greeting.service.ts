@@ -53,9 +53,11 @@ export class GreetingService {
     'Your Eminence',
     'Your Honor',
   ];
-  concatenateGreeting(greeting: string, name: string): string {
+  concatenateGreeting(greeting: string, name: string): string[] {
     const namePattern = /\|name\|/;
-    return greeting.replace(namePattern, name);
+    const fullGreeting = greeting.split(namePattern);
+    fullGreeting[2] = name;
+    return fullGreeting;
   }
   getNextGreeting(greeting: string): string {
     const GREETINGS = this.GREETINGS;
@@ -72,7 +74,7 @@ export class GreetingService {
   }
   getRandomName(): string {
     const NAMES = this.NAMES;
-    return '<span id=\'name\'>' + NAMES[Math.floor(Math.random() * NAMES.length)] + '</span>';
+    return NAMES[Math.floor(Math.random() * NAMES.length)];
   }
 }
 

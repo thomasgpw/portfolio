@@ -5,22 +5,23 @@ import { Store, Action } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs/Rx';
 
 import { environment } from '../environments/environment';
-import { GreetingService } from './_services/greeting.service';
-import { RhymeService } from './_services/rhyme.service';
+import { StringService } from './_services/string.service';
+import { GREETINGS } from './_text/greetings';
+import { NAMES } from './_text/names';
+import { TIPS } from './_text/tips';
+import { RHYMES } from './_text/rhymes';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle } from './_animations/styles';
-import { AppState, CommandStacks } from './app.datatypes';
+import { AppState, CommandStacks, IterableStringMap, IterableStringList } from './app.datatypes';
 import {
   SetAppViewAction,
   SetShutterViewAction,
-  GetNextGreetingAction,
-  GetRandomGreetingAction,
-  GetRandomNameAction,
-  SetNameAction,
-  GetNextRhymeAction,
-  GetRandomRhymeAction,
+  GetNextStringAction,
+  GetRandomStringAction,
+  SetStringAction,
   SetColorAction,
   SetUnitLengthAction,
   SetWorkActiveAction,
+  SetCommandStacksMapAction,
   SetCommandStacksAction,
   DeleteCommandStacksAction
 } from './app.reducers';
@@ -29,7 +30,7 @@ import {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [GreetingService, RhymeService],
+  providers: [StringService],
   animations: [
     trigger('shutterView', [
       state('true', onScreenYStyle),
@@ -52,54 +53,61 @@ import {
   ]
 })
 export class AppComponent implements OnInit {
+  _stringServiceMap: {
+    [key: string]: StringService
+  } = {};
   appView$: Observable<boolean>;
   shutterView$: Observable<boolean>;
-  greeting$: Observable<string>;
-  name$: Observable<string>;
+  tip$: Observable<string>;
   rhyme$: Observable<string>;
   color$: Observable<string>;
   unitLength$: Observable<number>;
   commandStacksMap$: Observable<{[key: number]: CommandStacks}>;
-  appViewSubscription: Subscription;
-  greetingSubscription: Subscription;
-  rhymeSubscription: Subscription;
-  fullGreetingSubscription: Subscription;
-  colorSubscription: Subscription;
   shutterAlive: boolean;
   appAnimateState: boolean;
   contentAlive: boolean;
-  greeting: string;
-  rhyme: string;
-  fullGreeting: string;
+  welcomeAlive: boolean;
+  fullGreeting: string[];
   colors: {[key: string]: string} = {};
 
   /* LIFECYCLE HOOK FUNCTIONS */
-  constructor(private store: Store<AppState>, private _greetingService: GreetingService) {
+  constructor(private store: Store<AppState>) {
+    this._stringServiceMap['greeting'] = new StringService(GREETINGS);
+    this._stringServiceMap['name'] = new StringService(NAMES);
+    this._stringServiceMap['tip'] = new StringService(TIPS);
+    this._stringServiceMap['rhyme'] = new StringService(RHYMES);
     this.appView$ = store.select(state => state.appView);
     this.shutterView$ = store.select(state => state.shutterView);
-    this.greeting$ = store.select(state => state.greeting);
-    this.name$ = store.select(state => state.name);
-    this.rhyme$ = store.select(state => state.rhyme);
+    this.tip$ = store.select(state => state.texts['tip'].instance);
+    this.rhyme$ = store.select(state => state.texts['rhyme'].instance);
     this.color$ = store.select(state => state.color);
     this.unitLength$ = store.select(state => state.unitLength);
     this.commandStacksMap$ = store.select(state => state.commandStacksMap);
-    this.appViewSubscription = this.appView$.subscribe(state => this.handleAppView(state));
-    this.greetingSubscription = this.greeting$.subscribe(state => this.greeting = state);
-    this.rhymeSubscription = this.rhyme$.subscribe(state => this.rhyme = state);
-    this.fullGreetingSubscription = Observable.zip(this.greeting$, this.name$).subscribe(state => this.concatGreeting(state));
-    this.colorSubscription = this.color$.subscribe(state => this.getColors(state));
+    this.appView$.subscribe(state => this.handleAppView(state));
+    this.shutterView$.subscribe(state => this.welcomeAlive = state);
+    Observable.combineLatest(
+      store.select(state => state.texts['greeting'].instance),
+      store.select(state => state.texts['name'].instance)
+    ).subscribe(state => this.concatGreeting(state));
+    this.color$.subscribe(state => this.getColors(state));
   }
   ngOnInit(): void {
-    if (!environment.production) {
+    // if (!environment.production) {
       this.setAppView(true);
       this.setShutterView(true);
-      this.getRandomGreeting();
-      this.getRandomName();
-      this.getRandomRhyme();
+      this.getRandomString('greeting');
+      this.getRandomString('name');
+      this.getRandomString('tip');
+      this.getRandomString('rhyme');
       this.setColor('#7486B4');
       this.setWorkActive(null);
+      this.setCommandStacksMap({});
+      this.setCommandStacks(new CommandStacks(0));
+      this.setCommandStacks(new CommandStacks(1));
+      this.setCommandStacks(new CommandStacks(2));
+      this.setCommandStacks(new CommandStacks(3));
       this.appAnimateState = true;
-    }
+    // }
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
@@ -134,18 +142,29 @@ export class AppComponent implements OnInit {
     console.log(this.shutterAlive, this.contentAlive);
     setTimeout(() => console.log(this.shutterAlive, this.contentAlive), 2000);
   }
-  concatGreeting(state: string[]) {
-    if (state[0] && state[1]) {
-      this.fullGreeting = this._greetingService.concatenateGreeting(state[0], state[1]);
+  concatGreeting([greeting, name]: string[]): void {
+    console.log('app.concatGreeting');
+    if (greeting && name) {
+      const namePattern = /\|name\|/;
+      const fullGreeting = greeting.split(namePattern);
+      fullGreeting[2] = name;
+      this.fullGreeting = fullGreeting;
     }
   }
   getColors(color: string): void {
+    console.log('colorGet');
     this.colors['welcomeColor'] = color;
     this.colors['contentColor'] = '#505781';
     this.colors['aboutColor'] = '#8CA2D9';
   }
   calcUnitLength(): void {
-
+    this.setUnitLength(Math.sqrt(
+      Math.sqrt(
+        window.innerWidth
+        * window.innerHeight
+        / 6
+      )
+    ));
   }
   getCurrentShutterAnimationState(): string {
     return this.appAnimateState.toString();
@@ -160,10 +179,16 @@ export class AppComponent implements OnInit {
       e.preventDefault();
       const shutterAlive = this.shutterAlive;
       const contentAlive = this.contentAlive;
+      const welcomeAlive = this.welcomeAlive;
+      console.log(e.deltaX);
       if (shutterAlive === true && contentAlive === false && e.deltaY <= -10) {
         this.setAppView(false);
       } else if (shutterAlive === false && contentAlive === true && e.deltaY >= 10) {
         this.setAppView(true);
+      } else if (shutterAlive === true && contentAlive === false && welcomeAlive === true && e.deltaX <= -10) {
+        this.setShutterView(false);
+      } else if (shutterAlive === true && contentAlive === false && welcomeAlive === false && e.deltaX >= 10) {
+        this.setShutterView(true);
       }
     }
   }
@@ -173,23 +198,14 @@ export class AppComponent implements OnInit {
   setShutterView(welcomeAlive: boolean): void {
     this.store.dispatch(new SetShutterViewAction(welcomeAlive));
   }
-  getNextGreeting() {
-    this.store.dispatch(new GetNextGreetingAction(this.greeting));
+  getNextString(type: string) {
+    this.store.dispatch(new GetNextStringAction([this._stringServiceMap[type], type]));
   }
-  getRandomGreeting(): void {
-    this.store.dispatch(new GetRandomGreetingAction);
+  getRandomString(type: string): void {
+    this.store.dispatch(new GetRandomStringAction([this._stringServiceMap[type], type]));
   }
-  getRandomName(): void {
-    this.store.dispatch(new GetRandomNameAction);
-  }
-  setName(name: string): void {
-    this.store.dispatch(new SetNameAction(name));
-  }
-  getNextRhyme() {
-    this.store.dispatch(new GetNextRhymeAction(this.rhyme));
-  }
-  getRandomRhyme(): void {
-    this.store.dispatch(new GetRandomRhymeAction);
+  setString(s: string, type: string): void {
+    this.store.dispatch(new SetStringAction([s, type]));
   }
   setColor(color: string): void {
     this.store.dispatch(new SetColorAction(color));
@@ -199,6 +215,9 @@ export class AppComponent implements OnInit {
   }
   setWorkActive(id: number): void {
     this.store.dispatch(new SetWorkActiveAction(id));
+  }
+  setCommandStacksMap(commandStacksMap: {[key: number]: CommandStacks}) {
+    this.store.dispatch(new SetCommandStacksMapAction(commandStacksMap));
   }
   setCommandStacks(commandStacks: CommandStacks): void {
     this.store.dispatch(new SetCommandStacksAction(commandStacks));
