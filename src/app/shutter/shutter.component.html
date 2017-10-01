@@ -8,6 +8,7 @@
   >
     <app-welcome 
     [fullGreeting]='fullGreeting'
+    [tip]='tip'
     [welcomeColor]='colors["welcomeColor"]'
     (setAppViewEvent)='setAppViewFunc()'
     (setShutterViewEvent)='setShutterViewFunc(false)'
@@ -15,6 +16,7 @@
     (getRandomGreetingEvent)='getRandomGreetingFunc()'
     (getRandomNameEvent)='getRandomNameFunc()'
     (setNameEvent)='setNameFunc($event)'
+    (getNextTipEvent)='getNextTipFunc()'
     >
       app-welcome error
     </app-welcome>

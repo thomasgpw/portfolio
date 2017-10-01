@@ -20,20 +20,20 @@ const _greetingService = new GreetingService();
 const _rhymeService = new RhymeService();
 // Later can grab data and overwrite initial state
 const stateFromMemory: AppState = undefined;
-export const initialState: AppState = {
-  appView: true,
-  shutterView: true,
-  greeting: _greetingService.getRandomGreeting(),
-  name: _greetingService.getRandomName(),
-  rhyme: _rhymeService.getRandomRhyme(),
-  color: '#7486B4',
-  unitLength: null,
-  workActive: null,
-  commandStacksMap: {}
-};
-export function getInitialState() {
-  return {...initialState, ...stateFromMemory};
-}
+// export const initialState: AppState = {
+//   appView: true,
+//   shutterView: true,
+//   greeting: _greetingService.getRandomGreeting(),
+//   name: _greetingService.getRandomName(),
+//   rhyme: _rhymeService.getRandomRhyme(),
+//   color: '#7486B4',
+//   unitLength: null,
+//   workActive: null,
+//   commandStacksMap: {}
+// };
+// export function getInitialState() {
+//   return {...initialState, ...stateFromMemory};
+// }
 
 @NgModule({
   declarations: [
@@ -48,7 +48,10 @@ export function getInitialState() {
     BrowserModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers,
-    {initialState: getInitialState, metaReducers: metaReducers}),
+    {
+      // initialState: getInitialState,
+      metaReducers: metaReducers
+    }),
     InlineSVGModule
   ],
   providers: [],

@@ -11,10 +11,12 @@ export class WelcomeComponent implements OnInit {
   @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() setShutterViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() getNextGreetingEvent: EventEmitter<null>  = new EventEmitter();
+  @Output() getNextTipEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getRandomGreetingEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getRandomNameEvent: EventEmitter<null>  = new EventEmitter();
   @Output() setNameEvent: EventEmitter<string>  = new EventEmitter();
-  @Input() fullGreeting: string;
+  @Input() fullGreeting: string[3];
+  @Input() tip: string;
   @Input() welcomeColor: string;
 
   arrowPath = '../../../assets/arrow.svg';
@@ -23,7 +25,6 @@ export class WelcomeComponent implements OnInit {
 
   ngOnInit() {
     (document.getElementById('welcome') as HTMLElement).style.backgroundColor = this.welcomeColor;
-    // this.setGreeting();
   }
   styleLeftArrowFunc(el: SVGAElement) {
     styleLeftArrow(el);
@@ -35,17 +36,12 @@ export class WelcomeComponent implements OnInit {
   /* EVENT FUNCTIONS */
   greetingClickFunc (e: Event) {
     const elId = e.srcElement.id;
-    if (elId === 'greeting') {
+    if (elId === 'prename' || elId === 'postname') {
       this.getNextGreetingFunc();
     } else if (elId === 'name') {
       this.getRandomNameFunc();
     }
-    // this.setGreeting();
   }
-  // setGreeting(): void {
-  //   console.log(this.fullGreeting);
-  //   document.getElementById('greeting').innerHTML = this.fullGreeting;
-  // }
   setAppViewFunc(): void {
     this.setAppViewEvent.emit(null);
   }
@@ -63,5 +59,8 @@ export class WelcomeComponent implements OnInit {
   }
   setNameFunc(name: string): void {
     this.setNameEvent.emit(name);
+  }
+  getNextTipFunc(): void {
+    this.getNextTipEvent.emit(null);
   }
 }

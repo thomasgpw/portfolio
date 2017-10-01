@@ -8,12 +8,13 @@ import { SpecificWork } from '../_works/immediateellipse';
   styleUrls: ['./work-wrapper.component.css']
 })
 export class WorkWrapperComponent implements OnInit, OnDestroy {
-  @Input() workScript;
+  @Input() commandStacks;
   work: Work;
 
   /* LIFECYCLE HOOK FUNCTIONS */
   ngOnInit(): void {
-    this.work = new SpecificWork(document.getElementsByClassName('canvasWrapper')[this.workScript.id]);
+    console.log(this.commandStacks);
+    this.work = new SpecificWork(document.getElementsByClassName('canvasWrapper')[this.commandStacks.id]);
   }
   ngOnDestroy(): void {
 

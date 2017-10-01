@@ -39,9 +39,11 @@ export class ShutterComponent implements OnInit {
   @Output() getRandomGreetingEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getRandomNameEvent: EventEmitter<null>  = new EventEmitter();
   @Output() setNameEvent: EventEmitter<string>  = new EventEmitter();
+  @Output() getNextTipEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getNextRhymeEvent: EventEmitter<null> = new EventEmitter();
   @Input() shutterView$: Observable<boolean>;
-  @Input() fullGreeting: string;
+  @Input() fullGreeting: string[3];
+  @Input() tip: string;
   @Input() rhyme: string;
   @Input() colors: {[key: string]: string};
 
@@ -58,13 +60,16 @@ export class ShutterComponent implements OnInit {
     console.log('shutter.ngInit');
     this.welcomeAlive = true;
     this.aboutAlive = true;
-    this.shutterAnimateState = true;
+    this.shutterAnimateState = undefined;
     this.shutterViewSubscriber = this.shutterView$.subscribe(state => this.handleShutterView(state));
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
   handleShutterView(state: boolean): void {
     console.log('shutter.handleShutterView', state);
+    if (this.shutterAnimateState === undefined) {
+      this.shutterAnimateState = state;
+    }
     if (state !== false) {
       this.goWelcome().then(resolve => setTimeout(() => this.turnOffAbout(), viewTransitionTime));
     } else {
@@ -124,6 +129,10 @@ export class ShutterComponent implements OnInit {
   setNameFunc(name: string): void {
     console.log('shutter.SetNameFunc');
     this.setNameEvent.emit(name);
+  }
+  getNextTipFunc(): void {
+    console.log('shutter.getNextTipFunc');
+    this.getNextTipEvent.emit(null);
   }
   getNextRhymeFunc(): void {
     this.getNextRhymeEvent.emit(null);

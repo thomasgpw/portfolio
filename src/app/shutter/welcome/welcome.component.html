@@ -1,6 +1,6 @@
 <div id="welcome" class="page welcome">
   <h1>
-    <span id="greeting" class="button" (click)='greetingClickFunc($event)'>{{fullGreeting}}</span>
+    <span id="greeting" class="button textBox" (click)='greetingClickFunc($event)'><span id='prename'>{{fullGreeting[0]}}</span><span id='name'>{{fullGreeting[2]}}</span><span id='postname'>{{fullGreeting[1]}}</span></span>
   </h1>
   <div
   id="leftArrow" class="button button-about"
@@ -14,9 +14,12 @@
   (onSVGInserted)="styleDownArrowShutterFunc($event)"
   (click)="setAppViewFunc()">
   </div>
-  <div id="welcomeText">
+  <div class="textBox" id="welcomeText">
     <br> <br> <br>
     <p>Use the down arrow to get to the projects screen</p> <br>
     <p>Use the left arrow to see information about this site</p>
+  </div>
+  <div class="textBox button" id='tipText' (click)='getNextTipFunc()'>
+    <span>{{tip}}</span>
   </div>
 </div>

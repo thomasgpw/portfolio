@@ -12,6 +12,7 @@ export class RhymeService {
   'support Local Business',
   'I love to program',
   'I accept you',
+  'I\'ve lost my mind',
   'I respect my elders',
   'please get me a job'
   ];
