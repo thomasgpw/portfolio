@@ -73,7 +73,7 @@ export class DeleteCommandStacksAction implements Action {
 }
 
 /* REDUCERS */
-function appViewReducer(state: boolean, action: Actions): boolean {
+export function appViewReducer(state: boolean, action: Actions): boolean {
   switch (action.type) {
     case SET_APP_VIEW:
       return action.payload;
@@ -81,7 +81,7 @@ function appViewReducer(state: boolean, action: Actions): boolean {
       return state;
   }
 }
-function shutterViewReducer(state: boolean, action: Actions): boolean {
+export function shutterViewReducer(state: boolean, action: Actions): boolean {
   switch (action.type) {
     case SET_SHUTTER_VIEW:
       return action.payload;
@@ -90,7 +90,7 @@ function shutterViewReducer(state: boolean, action: Actions): boolean {
   }
 }
 const _greetingService = new GreetingService();
-function greetingReducer(state: string, action: Actions): string {
+export function greetingReducer(state: string, action: Actions): string {
   switch (action.type) {
     case GET_NEXT_GREETING:
       return _greetingService.getNextGreeting(action.payload);
@@ -100,7 +100,7 @@ function greetingReducer(state: string, action: Actions): string {
       return state;
   }
 }
-function nameReducer(state: string, action: Actions): string {
+export function nameReducer(state: string, action: Actions): string {
   switch (action.type) {
     case GET_RANDOM_NAME:
       return _greetingService.getRandomName();
@@ -111,7 +111,7 @@ function nameReducer(state: string, action: Actions): string {
   }
 }
 const _rhymeService = new RhymeService();
-function rhymeReducer(state: string, action: Actions): string {
+export function rhymeReducer(state: string, action: Actions): string {
   switch (action.type) {
     case GET_NEXT_RHYME:
       return _rhymeService.getNextRhyme(action.payload);
@@ -121,7 +121,7 @@ function rhymeReducer(state: string, action: Actions): string {
       return state;
   }
 }
-function colorReducer(state: string, action: Actions): string {
+export function colorReducer(state: string, action: Actions): string {
   switch (action.type) {
     case SET_COLOR:
       return action.payload;
@@ -129,7 +129,7 @@ function colorReducer(state: string, action: Actions): string {
       return state;
   }
 }
-function unitLengthReducer(state: number, action: Actions): number {
+export function unitLengthReducer(state: number, action: Actions): number {
   switch (action.type) {
     case SET_UNIT_LENGTH:
       return action.payload;
@@ -137,7 +137,7 @@ function unitLengthReducer(state: number, action: Actions): number {
       return state;
   }
 }
-function workActiveReducer(state: number, action: Actions): number {
+export function workActiveReducer(state: number, action: Actions): number {
   switch (action.type) {
     case SET_WORK_ACTIVE:
       return action.payload;
@@ -145,7 +145,7 @@ function workActiveReducer(state: number, action: Actions): number {
       return state;
   }
 }
-function commandStacksMapReducer(state: {[key: number]: CommandStacks}, action: Actions): {[key: number]: CommandStacks} {
+export function commandStacksMapReducer(state: {[key: number]: CommandStacks}, action: Actions): {[key: number]: CommandStacks} {
   const payload = action.payload;
   switch (action.type) {
     case SET_COMMAND_STACKS:
