@@ -11,12 +11,10 @@ import { NAMES } from './_text/names';
 import { TIPS } from './_text/tips';
 import { RHYMES } from './_text/rhymes';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle } from './_animations/styles';
-import { AppState, CommandStacks, IterableStringMap, IterableStringList } from './app.datatypes';
+import { AppState, CommandStacks, IterableStringMap, IterableStringInstance } from './app.datatypes';
 import {
   SetAppViewAction,
   SetShutterViewAction,
-  GetNextStringAction,
-  GetRandomStringAction,
   SetStringAction,
   SetColorAction,
   SetUnitLengthAction,
@@ -30,7 +28,9 @@ import {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [StringService],
+  providers: [
+    StringService
+  ],
   animations: [
     trigger('shutterView', [
       state('true', onScreenYStyle),
@@ -72,22 +72,26 @@ export class AppComponent implements OnInit {
 
   /* LIFECYCLE HOOK FUNCTIONS */
   constructor(private store: Store<AppState>) {
-    this._stringServiceMap['greeting'] = new StringService(GREETINGS);
-    this._stringServiceMap['name'] = new StringService(NAMES);
-    this._stringServiceMap['tip'] = new StringService(TIPS);
-    this._stringServiceMap['rhyme'] = new StringService(RHYMES);
+    this._stringServiceMap['greeting'] = new StringService();
+    this._stringServiceMap['greeting'].setStrings(GREETINGS);
+    this._stringServiceMap['name'] = new StringService();
+    this._stringServiceMap['name'].setStrings(NAMES);
+    this._stringServiceMap['tip'] = new StringService();
+    this._stringServiceMap['tip'].setStrings(TIPS);
+    this._stringServiceMap['rhyme'] = new StringService();
+    this._stringServiceMap['rhyme'].setStrings(RHYMES);
     this.appView$ = store.select(state => state.appView);
     this.shutterView$ = store.select(state => state.shutterView);
-    this.tip$ = store.select(state => state.texts['tip'].instance);
-    this.rhyme$ = store.select(state => state.texts['rhyme'].instance);
+    this.tip$ = store.select(state => state.texts['tip'].payload);
+    this.rhyme$ = store.select(state => state.texts['rhyme'].payload);
     this.color$ = store.select(state => state.color);
     this.unitLength$ = store.select(state => state.unitLength);
     this.commandStacksMap$ = store.select(state => state.commandStacksMap);
     this.appView$.subscribe(state => this.handleAppView(state));
     this.shutterView$.subscribe(state => this.welcomeAlive = state);
     Observable.combineLatest(
-      store.select(state => state.texts['greeting'].instance),
-      store.select(state => state.texts['name'].instance)
+      store.select(state => state.texts['greeting'].payload),
+      store.select(state => state.texts['name'].payload)
     ).subscribe(state => this.concatGreeting(state));
     this.color$.subscribe(state => this.getColors(state));
   }
@@ -141,6 +145,18 @@ export class AppComponent implements OnInit {
     }
     console.log(this.shutterAlive, this.contentAlive);
     setTimeout(() => console.log(this.shutterAlive, this.contentAlive), 2000);
+  }
+  getNextString(type: string) {
+    this.setString({
+      payload: this._stringServiceMap[type].getNextString(),
+      type: type
+    });
+  }
+  getRandomString(type: string): void {
+    this.setString({
+      payload: this._stringServiceMap[type].getRandomString(),
+      type: type
+    });
   }
   concatGreeting([greeting, name]: string[]): void {
     console.log('app.concatGreeting');
@@ -198,14 +214,8 @@ export class AppComponent implements OnInit {
   setShutterView(welcomeAlive: boolean): void {
     this.store.dispatch(new SetShutterViewAction(welcomeAlive));
   }
-  getNextString(type: string) {
-    this.store.dispatch(new GetNextStringAction([this._stringServiceMap[type], type]));
-  }
-  getRandomString(type: string): void {
-    this.store.dispatch(new GetRandomStringAction([this._stringServiceMap[type], type]));
-  }
-  setString(s: string, type: string): void {
-    this.store.dispatch(new SetStringAction([s, type]));
+  setString(iterableStringInstance: IterableStringInstance): void {
+    this.store.dispatch(new SetStringAction(iterableStringInstance));
   }
   setColor(color: string): void {
     this.store.dispatch(new SetColorAction(color));

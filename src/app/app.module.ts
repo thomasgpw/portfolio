@@ -13,11 +13,11 @@ import { WorkWrapperComponent } from './content/work-wrapper/work-wrapper.compon
 
 import { reducers, metaReducers } from './app.reducers';
 import { AppState } from './app.datatypes';
-import { GreetingService} from './_services/greeting.service';
-import { RhymeService} from './_services/rhyme.service';
+// import { GreetingService} from './_services/greeting.service';
+// import { RhymeService} from './_services/rhyme.service';
 
-const _greetingService = new GreetingService();
-const _rhymeService = new RhymeService();
+// const _greetingService = new GreetingService();
+// const _rhymeService = new RhymeService();
 // Later can grab data and overwrite initial state
 const stateFromMemory: AppState = undefined;
 // export const initialState: AppState = {

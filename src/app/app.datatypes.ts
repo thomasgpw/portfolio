@@ -8,27 +8,25 @@ export interface AppState {
   commandStacksMap: {[key: number]: CommandStacks};
 }
 export class CommandStacks {
+  id: number;
+  functionStack: Function[];
+  paramStack: any[];
   constructor(id: number, functionStack: Function[] = [], paramStack: any[] = []) {
     this.id = id;
     this.functionStack = functionStack;
     this.paramStack = paramStack;
   }
-  id: number;
-  functionStack: Function[];
-  paramStack: any[];
 }
 export class IterableStringMap {
-  [key: string]: IterableStringList;
+  [key: string]: IterableStringInstance;
 }
-export class IterableStringList {
-  constructor (instance: string, index: number, type: string) {
-    this.instance = instance;
-    this.index = index;
+export class IterableStringInstance {
+  payload: string;
+  type: string;
+  constructor (payload: string, type: string) {
+    this.payload = payload;
     this.type = type;
   }
-  instance: string;
-  index: number;
-  type: string;
 }
 // export interface ViewState {
 //   view0Alive: boolean;

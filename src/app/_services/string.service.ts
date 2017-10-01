@@ -1,27 +1,34 @@
-import { IterableStringList } from '../app.datatypes';
 import { Injectable } from '@angular/core';
+import { IterableStringInstance } from '../app.datatypes';
 
 @Injectable()
 export class StringService {
   STRINGS: string[];
-  constructor(STRINGS: string[]) {
+  currentIndex: number;
+  constructor() {
+    this.STRINGS = ['unset'];
+    this.currentIndex = 0;
+  }
+  setStrings(STRINGS: string[]) {
     this.STRINGS = STRINGS;
   }
-  getNextString(state: IterableStringList): IterableStringList {
+  getNextString(): string {
     const STRINGS = this.STRINGS;
-    const i = state.index;
-    if (i === STRINGS.length - 1) {
-      state.index = 0;
-      state.instance = STRINGS[0];
+    const i = this.currentIndex + 1;
+    let result: string;
+    if (i === STRINGS.length) {
+      this.currentIndex = 0;
+      result = STRINGS[0];
     } else {
-      state.index = i + 1;
-      state.instance = STRINGS[(i + 1)];
+      this.currentIndex = i;
+      result = STRINGS[(i)];
     }
-    return state;
+    return result;
   }
-  getRandomString(): [string, number] {
+  getRandomString(): string {
     const STRINGS = this.STRINGS;
     const index = Math.floor(Math.random() * STRINGS.length);
-    return [STRINGS[index], index];
+    this.currentIndex = index;
+    return STRINGS[index];
   }
 }

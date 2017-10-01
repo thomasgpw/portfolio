@@ -1,13 +1,10 @@
 import { ActionReducerMap, Action, ActionReducer, MetaReducer } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import { AppState, CommandStacks, IterableStringMap, IterableStringList } from './app.datatypes';
-import { StringService } from './_services/string.service';
+import { AppState, CommandStacks, IterableStringMap, IterableStringInstance } from './app.datatypes';
 
 /* ACTION TYPES */
 const SET_APP_VIEW = 'SET_APP_VIEW';
 const SET_SHUTTER_VIEW = 'SET_SHUTTER_VIEW';
-const GET_NEXT_STRING = 'GET_NEXT_STRING';
-const GET_RANDOM_STRING = 'GET_RANDOM_STRING';
 const SET_STRING = 'SET_STRING';
 const SET_COLOR = 'SET_COLOR';
 const SET_UNIT_LENGTH = 'SET_UNIT_LENGTH';
@@ -29,17 +26,9 @@ export class SetShutterViewAction implements Action {
   readonly type: string = SET_SHUTTER_VIEW;
   constructor(public payload: boolean) {}
 }
-export class GetNextStringAction implements Action {
-  readonly type: string = GET_NEXT_STRING;
-  constructor(public payload: [StringService, string]) {}
-}
-export class GetRandomStringAction implements Action {
-  readonly type: string = GET_RANDOM_STRING;
-  constructor(public payload: [StringService, string]) {}
-}
 export class SetStringAction implements Action {
   readonly type: string = SET_STRING;
-  constructor(public payload: [string, string]) {}
+  constructor(public payload: IterableStringInstance) {}
 }
 export class SetColorAction implements Action {
   readonly type = SET_COLOR;
@@ -83,40 +72,17 @@ export function shutterViewReducer(state: boolean, action: Actions): boolean {
       return state;
   }
 }
-function textsReducer(
-state: IterableStringMap = {
-  'greeting': new IterableStringList(null, null, 'greeting'),
-  'name': new IterableStringList(null, null, 'name'),
-  'tip': new IterableStringList(null, null, 'tip'),
-  'rhyme': new IterableStringList(null, null, 'rhyme')
-},
-action: Actions
+export function textsReducer(
+  state: IterableStringMap = {
+    'greeting': {payload: null, type: 'greeting'},
+    'name': {payload: null, type: 'name'},
+  },
+  action: Actions
 ): IterableStringMap {
-  const payload = action.payload;
-  let mainPayload;
-  let type;
-  if (payload) {
-    mainPayload = payload[0];
-    type = payload[1];
-  } else {
-    mainPayload = null;
-    type = null;
-  }
   switch (action.type) {
-    case GET_NEXT_STRING:
-      state[type] = mainPayload.getNextString(state[type]);
-      return state;
-    case GET_RANDOM_STRING:
-      const returns = mainPayload.getRandomString();
-      if (state[type]) {
-        state[type].instance = returns[0];
-        state[type].index = returns[1];
-      } else {
-        state[type] = new IterableStringList(returns[0], returns[1], type);
-      }
-      return state;
     case SET_STRING:
-      state[type].instance = mainPayload;
+      const payload = action.payload;
+      state[payload.type] = payload;
       return state;
     default:
       return state;
@@ -166,8 +132,6 @@ export type Actions
   = DummyAction
   | SetAppViewAction
   | SetShutterViewAction
-  | GetNextStringAction
-  | GetRandomStringAction
   | SetStringAction
   | SetColorAction
   | SetUnitLengthAction
