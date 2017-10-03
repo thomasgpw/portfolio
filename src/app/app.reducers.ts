@@ -1,6 +1,6 @@
 import { ActionReducerMap, Action, ActionReducer, MetaReducer } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import { AppState, CommandStacks, IterableStringMap, IterableStringInstance } from './app.datatypes';
+import { AppState, CommandStacks, ViewState, IterableStringMap, IterableStringInstance } from './app.datatypes';
 
 /* ACTION TYPES */
 const SET_APP_VIEW = 'SET_APP_VIEW';
@@ -15,16 +15,16 @@ const DELETE_COMMAND_STACKS = 'DELETE_COMMAND_STACKS';
 
 /* ACTIONS */
 export class DummyAction implements Action {
-  readonly type: string = 'dummy';
+  readonly type: string = 'DUMMY';
   constructor(public payload?) {}
 }
 export class SetAppViewAction implements Action {
   readonly type: string = SET_APP_VIEW;
-  constructor(public payload: boolean) {}
+  constructor(public payload: [string, boolean]) {}
 }
 export class SetShutterViewAction implements Action {
   readonly type: string = SET_SHUTTER_VIEW;
-  constructor(public payload: boolean) {}
+  constructor(public payload: [string, boolean]) {}
 }
 export class SetStringAction implements Action {
   readonly type: string = SET_STRING;
@@ -56,18 +56,45 @@ export class DeleteCommandStacksAction implements Action {
 }
 
 /* REDUCERS */
-export function appViewReducer(state: boolean, action: Actions): boolean {
+export function appViewReducer(state: ViewState = {view0Alive: null, view0OnScreen: null, view1Alive: null}, action: Actions): ViewState {
   switch (action.type) {
     case SET_APP_VIEW:
-      return action.payload;
+      const payload = action.payload;
+      switch (payload[0]) {
+        case 'shutterViewAlive':
+          state.view0Alive = payload[1];
+          state.view0OnScreen = payload[1];
+          break;
+        case 'contentViewAlive':
+          state.view1Alive = payload[1];
+          state.view0OnScreen = !payload[1];
+          break;
+        default:
+          break;
+      }
+      return state;
     default:
       return state;
   }
 }
-export function shutterViewReducer(state: boolean, action: Actions): boolean {
+export function shutterViewReducer(state: ViewState
+  = {view0Alive: null, view0OnScreen: null, view1Alive: null}, action: Actions): ViewState {
   switch (action.type) {
     case SET_SHUTTER_VIEW:
-      return action.payload;
+      const payload = action.payload;
+      switch (payload[0]) {
+        case 'welcomeViewAlive':
+          state.view0Alive = payload[1];
+          state.view0OnScreen = payload[1];
+          break;
+        case 'aboutViewAlive':
+          state.view1Alive = payload[1];
+          state.view0OnScreen = !payload[1];
+          break;
+        default:
+          break;
+      }
+      return state;
     default:
       return state;
   }

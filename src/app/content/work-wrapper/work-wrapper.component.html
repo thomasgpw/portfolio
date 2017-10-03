@@ -1,2 +1,39 @@
+<div class="canvasOverlay">
+  <div class="undo"
+  [inlineSVG]=undoPath
+  (onSVGInserted)='styleUndoFunc($event, unitLength)'
+  >
+  </div>
+  <div class="redo"
+  [inlineSVG]=undoPath
+  (onSVGInserted)='styleRedoFunc($event, unitLength)'
+  >
+  </div>
+  <div class="settings"
+  [inlineSVG]=settingsPath
+  (onSVGInserted)='styleSettingsFunc($event, unitLength)'
+  >
+  </div>
+  <div class="delete"
+  [inlineSVG]=deletePath
+  (onSVGInserted)='styleDeleteFunc($event, unitLength)'
+  >
+  </div>
+  <div class="upload"
+  [inlineSVG]=uploadPath
+  (onSVGInserted)='styleUploadFunc($event, unitLength)'
+  >
+  </div>
+  <div class="download"
+  [inlineSVG]=downloadPath
+  (onSVGInserted)='styleDownloadFunc($event, unitLength)'
+  >
+  </div>
+  <div class="close"
+  [inlineSVG]=closePath
+  (onSVGInserted)='styleCloseFunc($event, unitLength)'
+  >
+  </div>
+</div>
 <div class="canvasWrapper">
 </div>

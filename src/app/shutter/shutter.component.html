@@ -1,7 +1,7 @@
 <div class='shutter' >
   <div
-  *ngIf='getCurrentWelcomeAlive()'
-  [@welcomeView]='getCurrentWelcomeAnimationState()'
+  *ngIf='shutterView0Alive'
+  [@welcomeView]='shutterView0OnScreen'
   (@welcomeView.done)='logData($event)'
   class='page welcome'
   id='welcome'
@@ -9,11 +9,11 @@
     <app-welcome 
     [fullGreeting]='fullGreeting'
     [tip]='tip'
+    [unitLength]='unitLength'
     [welcomeColor]='colors["welcomeColor"]'
     (setAppViewEvent)='setAppViewFunc()'
-    (setShutterViewEvent)='setShutterViewFunc(false)'
+    (setShutterViewEvent)='setShutterViewFunc(["aboutViewAlive", true])'
     (getNextGreetingEvent)='getNextGreetingFunc()'
-    (getRandomGreetingEvent)='getRandomGreetingFunc()'
     (getRandomNameEvent)='getRandomNameFunc()'
     (setNameEvent)='setNameFunc($event)'
     (getNextTipEvent)='getNextTipFunc()'
@@ -22,17 +22,18 @@
     </app-welcome>
   </div>
   <div
-  *ngIf='getCurrentAboutAlive()'
-  [@aboutView]='getCurrentAboutAnimationState()'
+  *ngIf='shutterView1Alive'
+  [@aboutView]='!shutterView0OnScreen'
   (@aboutView.done)='logData($event)'
   class='page about'
   id='about'
   >
     <app-about
-    [aboutColor]='colors["aboutColor"]'
     [rhyme]='rhyme'
+    [unitLength]='unitLength'
+    [aboutColor]='colors["aboutColor"]'
     (setAppViewEvent)='setAppViewFunc()'
-    (setShutterViewEvent)='setShutterViewFunc(true)'
+    (setShutterViewEvent)='setShutterViewFunc(["welcomeViewAlive", true])'
     (getNextRhymeEvent)='getNextRhymeFunc()'
     >
       app-about error

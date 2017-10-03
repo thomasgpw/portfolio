@@ -10,8 +10,9 @@ export class AboutComponent implements OnInit {
   @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() setShutterViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() getNextRhymeEvent: EventEmitter<null> = new EventEmitter();
-  @Input() aboutColor: string;
   @Input() rhyme: string;
+  @Input() unitLength: number;
+  @Input() aboutColor: string;
 
   arrowPath = '../../../assets/arrow.svg';
 
@@ -20,11 +21,11 @@ export class AboutComponent implements OnInit {
   ngOnInit(): void {
     (document.getElementById('about') as HTMLElement).style.backgroundColor = this.aboutColor;
   }
-  styleRightArrowFunc(el: SVGAElement) {
-    styleRightArrow(el);
+  styleRightArrowFunc(el: SVGAElement, unitLength: number, windowInnerHeight: number = window.innerHeight) {
+    styleRightArrow(el, windowInnerHeight, unitLength);
   }
-  styleDownArrowShutterFunc(el: SVGAElement) {
-    styleDownArrowShutter(el);
+  styleDownArrowShutterFunc(el: SVGAElement, unitLength: number, windowInnerWidth: number = window.innerWidth) {
+    styleDownArrowShutter(el, windowInnerWidth, unitLength);
   }
 
   /* EVENT FUNCTIONS */

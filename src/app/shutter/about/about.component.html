@@ -3,13 +3,13 @@
   <div
   id="rightArrow" class="button button-about"
   [inlineSVG]="arrowPath"
-  (onSVGInserted)="styleRightArrowFunc($event)"
+  (onSVGInserted)="styleRightArrowFunc($event, unitLength)"
   (click)="shutterToggleFunc()">
   </div>
   <div
   id="downArrow" class="button button-app-content"
   [inlineSVG]="arrowPath"
-  (onSVGInserted)="styleDownArrowShutterFunc($event)"
+  (onSVGInserted)="styleDownArrowShutterFunc($event, unitLength)"
   (click)="goContentFunc()">
   </div>
   <div id="aboutText">

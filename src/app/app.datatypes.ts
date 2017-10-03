@@ -1,6 +1,6 @@
 export interface AppState {
-  appView: boolean;
-  shutterView: boolean;
+  appView: ViewState;
+  shutterView: ViewState;
   texts: IterableStringMap;
   color: string;
   unitLength: number;
@@ -28,8 +28,8 @@ export class IterableStringInstance {
     this.type = type;
   }
 }
-// export interface ViewState {
-//   view0Alive: boolean;
-//   view1Alive: boolean;
-//   view0OnScreen: boolean;
-// }
+export interface ViewState {
+  view0Alive: boolean;
+  view1Alive: boolean;
+  view0OnScreen: boolean;
+}

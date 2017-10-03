@@ -3,8 +3,8 @@ import { IterableStringInstance } from '../app.datatypes';
 
 @Injectable()
 export class StringService {
-  STRINGS: string[];
-  currentIndex: number;
+  private STRINGS: string[];
+  private currentIndex: number;
   constructor() {
     this.STRINGS = ['unset'];
     this.currentIndex = 0;

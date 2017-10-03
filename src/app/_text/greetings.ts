@@ -13,4 +13,12 @@ export const GREETINGS: string[] = [
   'Thanks for coming |name|!',
   'It\'s an honor to have you here |name|!',
   'It\'s great to see you |name|!',
+  'Hey |name|!',
+  'I\'ll Always be here for you |name|',
+  'What\'s new |name|?',
+  'Long time no see |name|!',
+  'Yo |name|!',
+  'Sup |name|!',
+  'Sup |name|? Just start talking, I can hear you.',
+  'It\'s always a pleasure to see you, |name|!'
 ];

@@ -1,18 +1,20 @@
-<div id='app-window' (wheel)=scrollFunc($event)>
+<div id='app-window' (wheel)='scrollFunc($event)'>
   <div class='page shutter'
-  *ngIf='shutterAlive'
-  [@shutterView]='getCurrentShutterAnimationState()'
+  *ngIf='appView0Alive$ | async'
+  [@shutterView]='appView0OnScreen$ | async'
   >
     <app-shutter
-    [shutterView$]='shutterView$'
+    [shutterView0Alive]='shutterView0Alive$ | async'
+    [shutterView0OnScreen]='shutterView0OnScreen$ | async'
+    [shutterView1Alive]='shutterView1Alive$ | async'
     [fullGreeting]='fullGreeting'
     [tip]='tip$ | async'
     [rhyme]='rhyme$ | async'
+    [unitLength]='unitLength$ | async'
     [colors]='colors'
-    (setAppViewEvent)='setAppView(false)'
+    (setAppViewEvent)='setAppView(["contentViewAlive", true])'
     (setShutterViewEvent)='setShutterView($event)'
     (getNextGreetingEvent)='getNextString("greeting")'
-    (getRandomGreetingEvent)='getRandomString("greeting")'
     (getRandomNameEvent)='getRandomString("name")'
     (setNameEvent)='setString($event, "name")'
     (getNextTipEvent)='getNextString("tip")'
@@ -22,15 +24,16 @@
     </app-shutter>
   </div>
   <div class='page content'
-  *ngIf='contentAlive'
-  [@contentView]='getCurrentContentAnimationState()'
+  *ngIf='appView1Alive$ | async'
+  [@contentView]='!(appView0OnScreen$ | async)'
   >
     <app-content
     [welcomeAlive]='welcomeAlive$ | async'
+    [unitLength]='unitLength$ | async'
     [workActive]='workActive$ | async'
     [commandStacksMap]='commandStacksMap$ | async'
     [colors]='colors'
-    (setAppViewEvent)='setAppView(true)'
+    (setAppViewEvent)='setAppView(["shutterViewAlive", true])'
     (setWorkActiveEvent)='setWorkActive($event)'
     >
       app-content error

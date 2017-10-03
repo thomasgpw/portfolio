@@ -12,23 +12,17 @@ export abstract class Work {
   constructor (parentEl: Element) {
     const canvas = document.createElement('canvas');
     this.context = canvas.getContext('2d');
-    canvas.width = parentEl.clientWidth;
-    canvas.height = parentEl.clientHeight;
-    const w = canvas.width;
-    const h = canvas.height;
-
-    canvas.style.width = w.toString();
-    canvas.style.height = h.toString();
-    parentEl.appendChild(canvas);
-    this.canvas = canvas;
-    this.w = w;
-    this.h = h;
     this.commandStacks = {id: null, functionStack: [], paramStack: []};
     this.redoStacks = {id: null, functionStack: [], paramStack: []};
+    parentEl.appendChild(canvas);
+    this.canvas = canvas;
+    this.resizeCanvas(canvas, parentEl);
   }
-  resizeCanvas(): void {
-    const canvas = this.canvas;
-    const parentEl = canvas.closest('.work-wrapper');
+  setCommandStacks(newCommandStacks: CommandStacks): void {
+    this.commandStacks = newCommandStacks;
+    this.redrawAll();
+  }
+  resizeCanvas(canvas: HTMLCanvasElement = this.canvas, parentEl: Element = canvas.closest('.work-wrapper-view-container')): void {
     const canvasstyle = canvas.style;
     const w = parentEl.clientWidth;
     const h = parentEl.clientHeight;

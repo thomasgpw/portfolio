@@ -5,13 +5,13 @@
   <div
   id="leftArrow" class="button button-about"
   [inlineSVG]="arrowPath"
-  (onSVGInserted)="styleLeftArrowFunc($event)"
+  (onSVGInserted)="styleLeftArrowFunc($event, unitLength)"
   (click)="setShutterViewFunc()">
   </div>
   <div
   id="downArrow" class="button button-app-content"
   [inlineSVG]="arrowPath"
-  (onSVGInserted)="styleDownArrowShutterFunc($event)"
+  (onSVGInserted)="styleDownArrowShutterFunc($event, unitLength)"
   (click)="setAppViewFunc()">
   </div>
   <div class="textBox" id="welcomeText">

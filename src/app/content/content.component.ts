@@ -1,6 +1,7 @@
-import { Component, OnInit, Output, Input, EventEmitter, ViewChildren, QueryList, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, Input, EventEmitter, ViewChildren, QueryList, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, state, animate, transition} from '@angular/animations';
 
+import { WorkWrapperCollectionService } from '../_services/work-wrapper-collection.service';
 import { CommandStacks } from '../app.datatypes';
 import { generateSvgTab } from '../../assets/generate-svg-tab';
 import { styleDownArrowContent, styleGridButton } from '../../apply-styles';
@@ -12,7 +13,10 @@ import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
   selector: 'app-content',
   templateUrl: './content.component.html',
   styleUrls: ['./content.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    WorkWrapperCollectionService
+  ],
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('workAnimations', [
       state('wwGrid', gridWorkStyle),
@@ -24,46 +28,65 @@ import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
     ])
   ]
 })
-export class ContentComponent implements OnInit {
+export class ContentComponent implements OnInit, OnDestroy {
   @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() setWorkActiveEvent: EventEmitter<number> = new EventEmitter();
+  @Output() setCommandStacksEvent: EventEmitter<CommandStacks> = new EventEmitter();
+  @Output() deleteComandStacksEvent: EventEmitter<number> = new EventEmitter();
   @Input() welcomeAlive: boolean;
+  @Input() unitLength: number;
   @Input() workActive: number;
   @Input() commandStacksMap: {[key: number]: CommandStacks};
   @Input() colors: {[key: string]: string};
-  @ViewChildren(WorkWrapperComponent) allWorkWrapper: QueryList<WorkWrapperComponent>;
 
   commandStacksKeys;
   gridButton = false;
+  tab: SVGElement;
   arrowPath = '../../assets/arrow.svg';
   gridButtonPath = '../../assets/gridbutton.svg';
-  constructor() { }
+  readonly _workWrapperColectionService: WorkWrapperCollectionService;
+  constructor() {
+    this._workWrapperColectionService = new WorkWrapperCollectionService(this.workActive);
+  }
 
-  ngOnInit() {
-    this.commandStacksKeys = Object.keys(this.commandStacksMap);
+  ngOnInit(): void {
     const contentEl = document.getElementById('content');
     (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
-    const tab = contentEl.appendChild(generateSvgTab(window.innerWidth, window.innerHeight / 36));
+    this.stylePage(contentEl);
+    this.commandStacksKeys = Object.keys(this.commandStacksMap);
     if (this.welcomeAlive) {
-      tab.firstElementChild.setAttributeNS(null, 'fill', this.colors['welcomeColor']);
+      this.tab.firstElementChild.setAttributeNS(null, 'fill', this.colors['welcomeColor']);
     } else {
-      tab.firstElementChild.setAttributeNS(null, 'fill', this.colors['aboutColor']);
+      this.tab.firstElementChild.setAttributeNS(null, 'fill', this.colors['aboutColor']);
     }
-    if (this.workActive) {
+    if (this.workActive !== null) {
+      this.workInitFunc();
     }
   }
-  styleDownArrowContentFunc(el: SVGElement): void {
-    styleDownArrowContent(el);
-  }
-  styleGridButtonFunc(el: SVGElement): void {
-    styleGridButton(el);
+  ngOnDestroy(): void {
+    this._workWrapperColectionService.destroy();
   }
 
+  /* ON CHANGE SPECIFIC FUNCTIONS */
+  stylePage(contentEl: HTMLElement): void {
+    this.tab = contentEl.appendChild(generateSvgTab(window.innerWidth, this.unitLength));
+  }
+  styleDownArrowContentFunc(el: SVGElement, unitLength: number, windowInnerWidth: number = window.innerWidth): void {
+    styleDownArrowContent(el, windowInnerWidth, unitLength);
+  }
+  styleGridButtonFunc(el: SVGElement, unitLength: number, windowInnerHeight: number = window.innerHeight): void {
+    styleGridButton(el, windowInnerHeight, unitLength);
+  }
+  addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
+    this._workWrapperColectionService.addWorkWrapper(workWrapperComponentInstance);
+  }
+  getWorkWrapper(id: number): WorkWrapperComponent {
+    return this._workWrapperColectionService.getWorkWrapper(id);
+  }
   getStatus(i: string): string {
     const pattern = /^ww/;
-    const elClassList = document.getElementsByClassName('work-wrapper')[i].classList;
+    const elClassList = document.getElementsByClassName('work-wrapper-view-container')[i].classList;
     const elClassListLength = elClassList.length;
-    console.log(i);
     for (let c = 0; c < elClassListLength; ++c) {
       if (elClassList[c].match(pattern)) {
         return elClassList[c];
@@ -72,13 +95,11 @@ export class ContentComponent implements OnInit {
   }
 
   /* EVENT FUNCTIONS */
-  workInitFunc(e: WorkWrapperComponent): void {
+  workInitFunc(): void {
     const workActive = this.workActive;
-    if (workActive === parseInt(e.commandStacks['key'], 10)) {
-      const activeEl = document.getElementsByClassName('work-wrapper')[workActive];
-      console.log(document.getElementsByClassName('work-wrapper'));
-      this.activateWorkHandler(activeEl, e);
-    }
+    const activeEl = document.getElementsByClassName('work-wrapper-view-container')[workActive];
+    console.log(document.getElementsByClassName('work-wrapper-view-container'));
+    this.activateWorkHandler(activeEl);
   }
   setAppViewFunc(): void {
     this.setAppViewEvent.emit(null);
@@ -86,8 +107,14 @@ export class ContentComponent implements OnInit {
   setWorkActiveFunc(id: number): void {
     this.setWorkActiveEvent.emit(id);
   }
+  setCommandStacksFunc(commandStacks: CommandStacks): void {
+    this.setCommandStacksEvent.emit(commandStacks);
+  }
+  deleteCommandStacksFunc(id: number): void {
+    this.deleteComandStacksEvent.emit(id);
+  }
   forceGridClass(): void {
-    const elArray = document.getElementsByClassName('work-wrapper');
+    const elArray = document.getElementsByClassName('work-wrapper-view-container');
     const elArrayLength = elArray.length;
     for (let i = 0; i < elArrayLength; ++i) {
       const classes = elArray[i].classList;
@@ -100,51 +127,44 @@ export class ContentComponent implements OnInit {
   viewGridFunc(): void {
     const activeEl = document.getElementsByClassName('wwActive')[0];
     if (activeEl) {
-      const allWorkWrapperComponents = [];
-      this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
-        allWorkWrapperComponents.push(workWrapperComponentInstance);
-      });
-      this.deactivateWorkHandler(activeEl, allWorkWrapperComponents).then(resolve => this.forceGridClass());
+      this.deactivateWorkHandler(activeEl).then(resolve => this.forceGridClass());
     }
   }
   resizeWork(e): void {
-    const allWorkWrapperComponents = [];
-    this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
-      allWorkWrapperComponents.push(workWrapperComponentInstance);
-    });
-    const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents
-      .find(component => component.commandStacks.id === e.element.id);
-    clickedWorkWrapper.work.resizeCanvas();
+    this.getWorkWrapper(e.element.id.toString()).work.resizeCanvas();
   }
-  activateWorkHandler(clickedEl: Element, clickedWorkWrapper: WorkWrapperComponent): void {
-    clickedWorkWrapper.work.activate().then(resolve => this.activateWorkActuator(clickedEl, clickedWorkWrapper));
+  activateWorkHandler(clickedEl: Element): void {
+    const id = parseInt(clickedEl.id, 10);
+    this.getWorkWrapper(id).work.activate().then(resolve => this.activateWorkActuator(clickedEl, id));
   }
-  activateWorkActuator(clickedEl: Element, clickedWorkWrapper: WorkWrapperComponent): void {
+
+  // FUNCTION SHOULD BE SPLIT. VIEW SETTING AWAY FROM MODEL LOGIC
+  activateWorkActuator(clickedEl: Element, id: number): void {
     let classes = clickedEl.classList;
-    this.setWorkActiveFunc(parseInt(clickedEl.id, 10));
+    this.setWorkActiveFunc(id);
     classes.remove('wwGrid');
     classes.remove('wwRow');
     classes.add('wwActive');
     (clickedEl as HTMLElement).style.left = '7.5%';
-    const elArray = document.getElementsByClassName('work-wrapper');
+    const elArray = document.getElementsByClassName('work-wrapper-view-container');
     const elArrayLength = elArray.length;
     let rowOffset = 0;
     for (let i = 0; i < elArrayLength; ++i) {
       const loopEl = elArray[i];
-      if (clickedEl.id !== loopEl.id) {
+      const loopId = parseInt(loopEl.id, 10);
+      if (id !== loopId) {
         classes = loopEl.classList;
         classes.remove('wwGrid');
         classes.add('wwRow');
-        (loopEl as HTMLElement).style.left = (((parseInt(loopEl.id, 10) + rowOffset) * 15) + '%');
+        (loopEl as HTMLElement).style.left = (((loopId + rowOffset) * 15) + '%');
       } else {
         rowOffset = -1;
       }
     }
     this.gridButton = true;
   }
-  deactivateWorkHandler(activeEl: Element, allWorkWrapperComponents): Promise<null> {
-    const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents.find(component => component.commandStacks.id === activeEl.id);
-    clickedWorkWrapper.work.deactivate().then(resolve => this.deactivateWorkActuator(activeEl));
+  deactivateWorkHandler(activeEl: Element): Promise<null> {
+    this.getWorkWrapper(parseInt(activeEl.id, 10)).work.deactivate().then(resolve => this.deactivateWorkActuator(activeEl));
     return Promise.resolve(null);
   }
   deactivateWorkActuator(activeEl: Element): void {
@@ -154,22 +174,17 @@ export class ContentComponent implements OnInit {
     this.setWorkActiveFunc(null);
   }
   workClickFunc(e: Event): void {
-    const clickedEl = e.srcElement.closest('.work-wrapper');
-    const allWorkWrapperComponents = [];
-    this.allWorkWrapper.forEach(function(workWrapperComponentInstance){
-      allWorkWrapperComponents.push(workWrapperComponentInstance);
-    });
-    const clickedWorkWrapper: WorkWrapperComponent = allWorkWrapperComponents
-      .find(component => component.commandStacks.id === clickedEl.id);
+    const clickedEl = e.srcElement.closest('.work-wrapper-view-container');
+    const clickedWorkWrapper = this.getWorkWrapper(parseInt(clickedEl.id, 10));
     if (clickedEl.classList.contains('wwActive')) {
-      clickedWorkWrapper.work.clickInteract(e);
+      // clickedWorkWrapper.work.clickInteract(e);
     } else {
       const activeEl = document.getElementsByClassName('wwActive')[0];
       if (activeEl) {
-        this.deactivateWorkHandler(activeEl, allWorkWrapperComponents)
-          .then(resolve => this.activateWorkHandler(clickedEl, clickedWorkWrapper));
+        this.deactivateWorkHandler(activeEl)
+          .then(resolve => this.activateWorkHandler(clickedEl));
       } else {
-        this.activateWorkHandler(clickedEl, clickedWorkWrapper);
+        this.activateWorkHandler(clickedEl);
       }
     }
   }

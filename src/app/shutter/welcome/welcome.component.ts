@@ -17,6 +17,7 @@ export class WelcomeComponent implements OnInit {
   @Output() setNameEvent: EventEmitter<string>  = new EventEmitter();
   @Input() fullGreeting: string[3];
   @Input() tip: string;
+  @Input() unitLength: number;
   @Input() welcomeColor: string;
 
   arrowPath = '../../../assets/arrow.svg';
@@ -26,11 +27,11 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
     (document.getElementById('welcome') as HTMLElement).style.backgroundColor = this.welcomeColor;
   }
-  styleLeftArrowFunc(el: SVGAElement) {
-    styleLeftArrow(el);
+  styleLeftArrowFunc(el: SVGAElement, unitLength: number, windowInnerHeight: number = window.innerHeight) {
+    styleLeftArrow(el, windowInnerHeight, unitLength);
   }
-  styleDownArrowShutterFunc(el: SVGAElement) {
-    styleDownArrowShutter(el);
+  styleDownArrowShutterFunc(el: SVGAElement, unitLength: number, windowInnerWidth: number = window.innerWidth) {
+    styleDownArrowShutter(el, windowInnerWidth, unitLength);
   }
 
   /* EVENT FUNCTIONS */
@@ -50,9 +51,6 @@ export class WelcomeComponent implements OnInit {
   }
   getNextGreetingFunc(): void {
     this.getNextGreetingEvent.emit(null);
-  }
-  getRandomGreetingFunc(): void {
-    this.getRandomGreetingEvent.emit(null);
   }
   getRandomNameFunc(): void {
     this.getRandomNameEvent.emit(null);

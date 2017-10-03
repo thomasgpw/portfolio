@@ -1,9 +1,9 @@
-export function generateSvgTab (wView: number, unitLengthY: number): SVGElement {
+export function generateSvgTab (wView: number, unitLength: number): SVGElement {
 
   // Sizing Variables
-  const wArrow = wView * 3 / 64;
-  const hArrow = unitLengthY * 2;
-  const hTotal = unitLengthY * 4;
+  const wArrow = unitLength * 3;
+  const hArrow = unitLength * 2;
+  const hTotal = unitLength * 4;
 
   // SVG Element
   const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -20,10 +20,10 @@ export function generateSvgTab (wView: number, unitLengthY: number): SVGElement 
   bar.setAttributeNS(null, 'x', '0');
   bar.setAttributeNS(null, 'y', '0');
   bar.setAttributeNS(null, 'width', wView.toString());
-  bar.setAttributeNS(null, 'height', unitLengthY.toString());
+  bar.setAttributeNS(null, 'height', unitLength.toString());
 
   const tab = g.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'path'));
-  tab.setAttributeNS(null, 'd', generateTabPath(wView, unitLengthY));
+  tab.setAttributeNS(null, 'd', generateTabPath(wView, unitLength));
   return svgEl;
 }
 function generateTabPath (wView: number, unitLengthY: number): string {
