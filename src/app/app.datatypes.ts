@@ -4,6 +4,7 @@ export interface AppState {
   texts: IterableStringMap;
   color: string;
   unitLength: number;
+  isPortrait: boolean;
   workActive: number;
   commandStacksMap: {[key: number]: CommandStacks};
 }
@@ -31,5 +32,6 @@ export class IterableStringInstance {
 export interface ViewState {
   view0Alive: boolean;
   view1Alive: boolean;
-  view0OnScreen: boolean;
+  animationState: boolean;
+  transitionActive: boolean;
 }

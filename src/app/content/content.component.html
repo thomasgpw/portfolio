@@ -3,14 +3,14 @@
   id='gridButton' class='button button-grid'
   *ngIf=gridButton
   [inlineSVG]=gridButtonPath
-  (onSVGInserted)='styleGridButtonFunc($event, unitLength)'
+  (onSVGInserted)='styleGridButtonFunc($event)'
   (click)=viewGridFunc()
   >
   </div>
   <div
   id='downArrow' class='button button-shutter'
   [inlineSVG]=arrowPath
-  (onSVGInserted)='styleDownArrowContentFunc($event, unitLength)'
+  (onSVGInserted)='styleDownArrowContentFunc($event)'
   (click)=setAppViewFunc()>
   </div>
   <div *ngFor='let commandStacksKey of commandStacksKeys;'
@@ -20,6 +20,11 @@
   (click)='workClickFunc($event)'
   >
     <app-work-wrapper
+    [unitLength]='unitLength'
+    [uLx2]='uLx2'
+    [uLd2]='uLd2'
+    [bWP]='bWP'
+    [isPortrait]='isPortrait'
     [commandStacks]='commandStacksMap[commandStacksKey]'
     (workWrapperInitEvent)='addWorkWrapperFunc($event)'
     >

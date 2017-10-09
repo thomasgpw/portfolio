@@ -1,4 +1,5 @@
 import { CommandStacks } from '../../app.datatypes';
+
 export abstract class Work {
 
   w: number;
@@ -22,6 +23,9 @@ export abstract class Work {
     this.commandStacks = newCommandStacks;
     this.redrawAll();
   }
+  setStrokeStyle(style: string, context: CanvasRenderingContext2D = this.context): void {
+    context.strokeStyle = style;
+  }
   resizeCanvas(canvas: HTMLCanvasElement = this.canvas, parentEl: Element = canvas.closest('.work-wrapper-view-container')): void {
     const canvasstyle = canvas.style;
     const w = parentEl.clientWidth;
@@ -42,7 +46,7 @@ export abstract class Work {
     this.active = false;
     return Promise.resolve(null);
   }
-  init(context: CanvasRenderingContext2D, w: number, h: number): void {
+  init(context: CanvasRenderingContext2D = this.context, w: number = this.w, h: number = this.h): void {
     context.clearRect(0, 0, w, h);
   }
   save(context: CanvasRenderingContext2D, w: number, h: number): ImageData {
@@ -53,40 +57,56 @@ export abstract class Work {
   }
   undo(): void {
     const commandStacks = this.commandStacks;
-    const redoStacks = this.redoStacks;
-    redoStacks['functionStack'].push(commandStacks['functionStack'].pop());
-    redoStacks['paramStack'].push(commandStacks['paramStack'].pop());
-    this.redrawAll();
+    if (commandStacks.functionStack.length > 0) {
+      const redoStacks = this.redoStacks;
+      redoStacks.functionStack.push(commandStacks.functionStack.pop());
+      redoStacks.paramStack.push(commandStacks.paramStack.pop());
+      this.redrawAll();
+    }
   }
   redo(): void {
-    const redoneCommand = this.redoStacks['functionStack'].pop();
-    const redoneParam = this.redoStacks['paramStack'].pop();
-    redoneCommand.apply(this, redoneParam);
-    this.commandStacks['functionStack'].push(redoneCommand);
-    this.commandStacks['paramStack'].push(redoneParam);
+    const redoStacks = this.redoStacks;
+    if (redoStacks.functionStack.length > 0) {
+      const redoneCommand = redoStacks.functionStack.pop();
+      const redoneParam = redoStacks.paramStack.pop();
+      // this.addAndApply(this.commandStacks, redoneCommand, redoneParam, this);
+    }
   }
   redrawAll(): void {
     const commandStack = this.commandStacks['functionStack'];
     const paramStack = this.commandStacks['paramStack'];
-    for (let i = 0; i < commandStack.length; i++) {
-      const paramSet = paramStack[i];
-      const newParamSet = [];
-      for (let iParam = 0; iParam < paramSet.length; iParam++) {
-        const param = paramSet[iParam];
+    const commandStackLength = commandStack.length;
+    for (let i = 0; i < commandStackLength; i++) {
+      this.applyFunc(commandStack[i], paramStack[i], this.context);
+    }
+  }
+  applyFunc(f: Function, paramSet: any[], scope): void {
+    const paramSetLength = paramSet.length;
+    const newParamSet: any[] = [];
+    for (let i = 0; i < paramSetLength; i++) {
+        const param = paramSet[i];
         let newParam;
         if (Object.prototype.toString.call( param ) === '[object Array]') {
-          if (param[0] === 'X') {
-            newParam = param[1] * this.w;
-          } else if (param[0] === 'Y') {
-            newParam = param[1] * this.h;
+          const paramType = param[0];
+          const paramVal = param[1];
+          if (paramType === 'X') {
+            newParam = paramVal * this.w;
+          } else if (paramType === 'Y') {
+            newParam = paramVal * this.h;
+          } else if (paramType === 'XY') {
+            newParam = Math.sqrt(Math.pow(paramVal * this.w, 2) + Math.pow(param[2] * this.h, 2));
           }
         }  else {
           newParam = param;
         }
         newParamSet.push(newParam);
       }
-      commandStack[i].apply(this.context, newParamSet);
-    }
+      f.apply(scope, newParamSet);
+  }
+  addAndApply(commandStacks: CommandStacks, f: Function, paramSet: any[], scope): void {
+    commandStacks.functionStack.push(f);
+    commandStacks.paramStack.push(paramSet);
+    this.applyFunc(f, paramSet, scope);
   }
   clickInteract(e: Event) { }
   onPointerDown(e: Event) { }

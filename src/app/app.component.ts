@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
-import { Store, Action } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs/Rx';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Rx';
 
 import { environment } from '../environments/environment';
 import { StringService } from './_services/string.service';
+import { ViewControlService } from './_services/view-control.service';
 import { GREETINGS } from './_text/greetings';
 import { NAMES } from './_text/names';
 import { TIPS } from './_text/tips';
@@ -18,6 +19,7 @@ import {
   SetStringAction,
   SetColorAction,
   SetUnitLengthAction,
+  SetIsPortraitAction,
   SetWorkActiveAction,
   SetCommandStacksMapAction,
   SetCommandStacksAction,
@@ -33,20 +35,20 @@ import {
   ],
   animations: [
     trigger('shutterView', [
-      state('true', onScreenYStyle),
-      state('false', aboveScreenStyle),
-      transition('true<=>false', [
+      state('truestate', onScreenYStyle),
+      state('falsestate', aboveScreenStyle),
+      transition('truestate<=>falsestate', [
         animate(viewTransitionConfig)
       ]),
-      transition('void=>false', [
+      transition('void=>falsestate', [
         aboveScreenStyle,
         animate(viewTransitionConfig, aboveScreenStyle)
       ])
     ]),
     trigger('contentView', [
-      state('true', onScreenYStyle),
-      state('false', onScreenYStyle),
-      transition('true<=>false', [
+      state('truestate', onScreenYStyle),
+      state('falsestate', onScreenYStyle),
+      transition('truestate<=>falsestate', [
         animate(viewTransitionConfig)
       ])
     ])
@@ -56,64 +58,102 @@ export class AppComponent implements OnInit {
   _stringServiceMap: {
     [key: string]: StringService
   } = {};
+  _appViewControlService: ViewControlService;
+  _shutterViewControlService: ViewControlService;
   appView0Alive$: Observable<boolean>;
-  appView0OnScreen$: Observable<boolean>;
   appView1Alive$: Observable<boolean>;
+  appAnimationState$: Observable<boolean>;
   shutterView0Alive$: Observable<boolean>;
-  shutterView0OnScreen$: Observable<boolean>;
   shutterView1Alive$: Observable<boolean>;
+  shutterAnimationState$: Observable<boolean>;
   tip$: Observable<string>;
   rhyme$: Observable<string>;
   color$: Observable<string>;
   unitLength$: Observable<number>;
+  isPortrait$: Observable<boolean>;
   workActive$: Observable<number>;
   commandStacksMap$: Observable<{[key: number]: CommandStacks}>;
+  unitLengthReferences: {
+    uLx2: number,
+    uLx3: number,
+    uLd2: number,
+    bWP: number
+  } = {uLx2: null, uLx3: null, uLd2: null, bWP: null};
   fullGreeting: string[];
+  fullRhyme: string;
   colors: {[key: string]: string} = {};
 
   /* LIFECYCLE HOOK FUNCTIONS */
   constructor(private store: Store<AppState>) {
-    this._stringServiceMap['greeting'] = new StringService();
-    this._stringServiceMap['greeting'].setStrings(GREETINGS);
-    this._stringServiceMap['name'] = new StringService();
-    this._stringServiceMap['name'].setStrings(NAMES);
-    this._stringServiceMap['tip'] = new StringService();
-    this._stringServiceMap['tip'].setStrings(TIPS);
-    this._stringServiceMap['rhyme'] = new StringService();
-    this._stringServiceMap['rhyme'].setStrings(RHYMES);
+    this._stringServiceMap.greeting = new StringService();
+    this._stringServiceMap.greeting.setStrings(GREETINGS);
+    this._stringServiceMap.name = new StringService();
+    this._stringServiceMap.name.setStrings(NAMES);
+    this._stringServiceMap.tip = new StringService();
+    this._stringServiceMap.tip.setStrings(TIPS);
+    this._stringServiceMap.rhyme = new StringService();
+    this._stringServiceMap.rhyme.setStrings(RHYMES);
+    this._appViewControlService = new ViewControlService();
+    this._appViewControlService.setTransitionTime(viewTransitionTime);
+    this._shutterViewControlService = new ViewControlService();
+    this._shutterViewControlService.setTransitionTime(viewTransitionTime);
     this.appView0Alive$ = store.select(state => state.appView.view0Alive);
-    this.appView0OnScreen$ = store.select(state => state.appView.view0OnScreen);
+    this.appAnimationState$ = store.select(state => state.appView.animationState);
     this.appView1Alive$ = store.select(state => state.appView.view1Alive);
     this.shutterView0Alive$ = store.select(state => state.shutterView.view0Alive);
-    this.shutterView0OnScreen$ = store.select(state => state.shutterView.view0OnScreen);
+    this.shutterAnimationState$ = store.select(state => state.shutterView.animationState);
     this.shutterView1Alive$ = store.select(state => state.shutterView.view1Alive);
-    this.tip$ = store.select(state => state.texts['tip'].payload);
-    this.rhyme$ = store.select(state => state.texts['rhyme'].payload);
+    this.tip$ = store.select(state => state.texts.tip.payload);
+    this.rhyme$ = store.select(state => state.texts.rhyme.payload);
     this.color$ = store.select(state => state.color);
     this.unitLength$ = store.select(state => state.unitLength);
+    this.isPortrait$ = store.select(state => state.isPortrait);
     this.workActive$ = store.select(state => state.workActive);
     this.commandStacksMap$ = store.select(state => state.commandStacksMap);
-    this.appView0OnScreen$.subscribe(state => console.log(state));
-    this.shutterView0OnScreen$.subscribe(state => console.log(state));
-    // Observable.combineLatest(this.appView0Alive$, this.appView1Alive$).subscribe(state => console.log(state));
+    this.appAnimationState$.subscribe(state => console.log(state));
+    this.shutterAnimationState$.subscribe(state => console.log(state));
     Observable.combineLatest(
-      store.select(state => state.texts['greeting'].payload),
-      store.select(state => state.texts['name'].payload)
+      this.appView0Alive$,
+      this.appView1Alive$,
+      this.appAnimationState$,
+      store.select(state => state.appView.transitionActive)
+    ).subscribe(state => this._appViewControlService.assertLogic({
+      view0Alive: state[0],
+      view1Alive: state[1],
+      animationState: state[2],
+      transitionActive: state[3]
+    }));
+    Observable.combineLatest(
+      this.shutterView0Alive$,
+      this.shutterView1Alive$,
+      this.shutterAnimationState$,
+      store.select(state => state.shutterView.transitionActive)
+    ).subscribe(state => this._shutterViewControlService.assertLogic({
+      view0Alive: state[0],
+      view1Alive: state[1],
+      animationState: state[2],
+      transitionActive: state[3]
+    }));
+    Observable.combineLatest(
+      store.select(state => state.texts.greeting.payload),
+      store.select(state => state.texts.name.payload)
     ).subscribe(state => this.concatGreeting(state));
+    this.getRandomString('rhyme');
+    this.rhyme$.subscribe(state => this.concatRhyme(state));
     this.color$.subscribe(state => this.getColors(state));
+    this.unitLength$.subscribe(state => this.setUnitLengthReferences(state));
+    this._appViewControlService.payloadStream.subscribe(state => this.setAppView(state));
+    this._shutterViewControlService.payloadStream.subscribe(state => this.setShutterView(state));
   }
   ngOnInit(): void {
     // if (!environment.production) {
-      this.setAppView(['shutterViewAlive', true]);
-      this.setAppView(['contentViewAlive', false]);
-      this.setShutterView(['welcomeViewAlive', true]);
-      this.setShutterView(['aboutViewAlive', false]);
+      this.goAppView(true);
+      this.goShutterView(true);
       this.getRandomString('greeting');
       this.getRandomString('name');
       this.getRandomString('tip');
-      this.getRandomString('rhyme');
       this.setColor('#7486B4');
-      this.calcUnitLength();
+      this.setViewAspects();
       this.setWorkActive(null);
       this.setCommandStacksMap({});
       this.setCommandStacks(new CommandStacks(0));
@@ -144,26 +184,13 @@ export class AppComponent implements OnInit {
   //   }
   //   return Promise.resolve(null);
   // }
-  handleAppView(shutterViewOnScreen: boolean): void {
-    if (shutterViewOnScreen) {
-      console.log('goingshutter');
-      this.goShutter().then(resolve => setTimeout(() => this.turnOffContent(), viewTransitionTime));
-    } else {
-      console.log('goingcontent');
-      this.goContent().then(resolve => setTimeout(() => this.turnOffShutter(), viewTransitionTime));
-    }
+
+  goAppView(view0: boolean): void {
+    this._appViewControlService.goView(view0);
   }
-  // handleShutterView(state: boolean): void {
-  //   console.log('shutter.handleShutterView', state);
-  //   if (this.shutterAnimateState === undefined) {
-  //     this.shutterAnimateState = state;
-  //   }
-  //   if (state !== false) {
-  //     this.goWelcome().then(resolve => setTimeout(() => this.turnOffAbout(), viewTransitionTime));
-  //   } else {
-  //     this.goAbout().then(resolve => setTimeout(() => this.turnOffWelcome(), viewTransitionTime));
-  //   }
-  // }
+  goShutterView(view0: boolean): void {
+    this._shutterViewControlService.goView(view0);
+  }
   getNextString(type: string) {
     this.setString({
       payload: this._stringServiceMap[type].getNextString(),
@@ -177,7 +204,6 @@ export class AppComponent implements OnInit {
     });
   }
   concatGreeting([greeting, name]: string[]): void {
-    console.log('app.concatGreeting');
     if (greeting && name) {
       const namePattern = /\|name\|/;
       const fullGreeting = greeting.split(namePattern);
@@ -185,20 +211,34 @@ export class AppComponent implements OnInit {
       this.fullGreeting = fullGreeting;
     }
   }
+  concatRhyme(originalRhyme: string) {
+    this.fullRhyme = originalRhyme.replace(/\|major\|/, ' in a major way');
+  }
   getColors(color: string): void {
     console.log('colorGet');
-    this.colors['welcomeColor'] = color;
-    this.colors['contentColor'] = '#505781';
-    this.colors['aboutColor'] = '#8CA2D9';
+    this.colors.welcomeColor = color;
+    this.colors.contentColor = '#505781';
+    this.colors.aboutColor = '#8CA2D9';
   }
-  calcUnitLength(): void {
-    this.setUnitLength(Math.sqrt(
-      Math.sqrt(
-        window.innerWidth
-        * window.innerHeight
-        / 6
-      )
-    ));
+  setViewAspects() {
+    const w: number = window.innerWidth;
+    const h: number = window.innerHeight;
+    this.calcUnitLength(w, h);
+    this.calcIsPortrait(w, h);
+  }
+  calcUnitLength(w: number, h: number): void {
+    this.setUnitLength(Math.sqrt(Math.sqrt(w * h / 6)));
+  }
+  calcIsPortrait(w: number, h: number): void {
+    this.setIsPortrait(w < h);
+  }
+  setUnitLengthReferences(unitLength: number) {
+    const uLx2 = unitLength * 2;
+    const uLd2 = unitLength / 2;
+    this.unitLengthReferences.uLx2 = uLx2;
+    this.unitLengthReferences.uLx3 = unitLength * 3;
+    this.unitLengthReferences.uLd2 = uLd2;
+    this.unitLengthReferences.bWP = uLx2 + uLd2;
   }
 
   /* EVENT FUNCTIONS */
@@ -220,11 +260,11 @@ export class AppComponent implements OnInit {
   //     }
   //   }
   // }
-  setAppView(viewSetting: [string, boolean]): void {
-    this.store.dispatch(new SetAppViewAction(viewSetting));
+  setAppView(payload: [string, boolean]) {
+    this.store.dispatch(new SetAppViewAction(payload));
   }
-  setShutterView(viewSetting: [string, boolean]): void {
-    this.store.dispatch(new SetShutterViewAction(viewSetting));
+  setShutterView(payload: [string, boolean]) {
+    this.store.dispatch(new SetShutterViewAction(payload));
   }
   setString(iterableStringInstance: IterableStringInstance): void {
     this.store.dispatch(new SetStringAction(iterableStringInstance));
@@ -234,6 +274,9 @@ export class AppComponent implements OnInit {
   }
   setUnitLength(unitLength: number): void {
     this.store.dispatch(new SetUnitLengthAction(unitLength));
+  }
+  setIsPortrait(isPortrait: boolean): void {
+    this.store.dispatch(new SetIsPortraitAction(isPortrait));
   }
   setWorkActive(id: number): void {
     this.store.dispatch(new SetWorkActiveAction(id));
@@ -246,78 +289,5 @@ export class AppComponent implements OnInit {
   }
   deleteCommandStacks(id: number): void {
     this.store.dispatch(new DeleteCommandStacksAction(id));
-  }
-
-  goShutter(): Promise<null> {
-    console.log('goShutter');
-    this.instantiateShutter().then(resolve => setTimeout(() => this.animateShutter()));
-    return Promise.resolve(null);
-  }
-  instantiateShutter(): Promise<null> {
-    this.store.dispatch(new SetAppViewAction(['shutterViewAlive', true]));
-    return Promise.resolve(null);
-  }
-  animateShutter(): Promise<null> {
-    this.store.dispatch(new SetAppViewAction(['shutterViewOnScreen', true]));
-    return Promise.resolve(null);
-  }
-  turnOffContent(): void {
-    this.store.dispatch(new SetAppViewAction(['contentViewAlive', false]));
-    console.log('turnOffContent');
-  }
-  goContent(): Promise<null> {
-    console.log('goContent');
-    this.instantiateContent().then(resolve => setTimeout(() => this.animateContent()));
-    return Promise.resolve(null);
-  }
-  instantiateContent(): Promise<null> {
-    this.store.dispatch(new SetAppViewAction(['contentViewAlive', true]));
-    return Promise.resolve(null);
-  }
-  animateContent(): Promise<null> {
-    this.store.dispatch(new SetAppViewAction(['shutterViewOnScreen', false]));
-     return Promise.resolve(null);
-  }
-  turnOffShutter(): void {
-    this.store.dispatch(new SetAppViewAction(['shutterViewAlive', false]));
-    console.log('turnOffShutter');
-  }
-  goWelcome(): Promise<null> {
-    console.log('shutter.goWelcome');
-    this.instantiateWelcome().then(resolve => setTimeout(() => this.animateWelcome()));
-    return Promise.resolve(null);
-  }
-  instantiateWelcome(): Promise<null> {
-    console.log('shutter.instantiateWelcome');
-    this.store.dispatch(new SetShutterViewAction(['welcomeViewAlive', true]));
-    return Promise.resolve(null);
-  }
-  animateWelcome(): Promise<null> {
-    console.log('shutter.animateWelcome');
-    this.store.dispatch(new SetShutterViewAction(['welcomeViewOnScreen', true]));
-    return Promise.resolve(null);
-  }
-  turnOffAbout(): void {
-    this.store.dispatch(new SetShutterViewAction(['aboutViewAlive', false]));
-    console.log('aboutOff');
-  }
-  goAbout(): Promise<null> {
-    console.log('goAbout');
-    this.instantiateAbout().then(resolve => setTimeout(() => this.animateAbout()));
-    return Promise.resolve(null);
-  }
-  instantiateAbout(): Promise<null> {
-    console.log('shutter.instantiateAbout');
-    this.store.dispatch(new SetShutterViewAction(['aboutViewAlive', true]));
-    return Promise.resolve(null);
-  }
-  animateAbout(): Promise<null> {
-    console.log('shutter.animateAbout');
-    this.store.dispatch(new SetShutterViewAction(['welcomeViewOnScreen', false]));
-    return Promise.resolve(null);
-  }
-  turnOffWelcome(): void {
-    this.store.dispatch(new SetShutterViewAction(['welcomeViewAlive', false]));
-    console.log('welcomeOff');
   }
 }

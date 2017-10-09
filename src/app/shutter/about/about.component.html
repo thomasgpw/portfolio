@@ -3,13 +3,13 @@
   <div
   id="rightArrow" class="button button-about"
   [inlineSVG]="arrowPath"
-  (onSVGInserted)="styleRightArrowFunc($event, unitLength)"
+  (onSVGInserted)="styleRightArrowFunc($event)"
   (click)="shutterToggleFunc()">
   </div>
   <div
   id="downArrow" class="button button-app-content"
   [inlineSVG]="arrowPath"
-  (onSVGInserted)="styleDownArrowShutterFunc($event, unitLength)"
+  (onSVGInserted)="styleDownArrowShutterFunc($event)"
   (click)="goContentFunc()">
   </div>
   <div id="aboutText">
@@ -19,6 +19,6 @@
     my Google Drive folder </a> </p>
   </div>
   <div id="rhyme" class="button" (click)='getNextRhymeFunc()'>My name is Thomas and I'm here to say, <br>
-    {{rhyme}} in a major way!
+    {{rhyme}}!
   </div>
 </div>

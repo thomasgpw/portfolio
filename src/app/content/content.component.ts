@@ -16,7 +16,7 @@ import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
   providers: [
     WorkWrapperCollectionService
   ],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('workAnimations', [
       state('wwGrid', gridWorkStyle),
@@ -33,9 +33,14 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Output() setWorkActiveEvent: EventEmitter<number> = new EventEmitter();
   @Output() setCommandStacksEvent: EventEmitter<CommandStacks> = new EventEmitter();
   @Output() deleteComandStacksEvent: EventEmitter<number> = new EventEmitter();
-  @Input() welcomeAlive: boolean;
+  @Input() shutterView0Alive: boolean;
   @Input() unitLength: number;
+  @Input() uLx2: number;
+  @Input() uLx3: number;
+  @Input() uLd2: number;
+  @Input() bWP: number;
   @Input() workActive: number;
+  @Input() isPortrait: boolean;
   @Input() commandStacksMap: {[key: number]: CommandStacks};
   @Input() colors: {[key: string]: string};
 
@@ -54,11 +59,11 @@ export class ContentComponent implements OnInit, OnDestroy {
     (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
     this.stylePage(contentEl);
     this.commandStacksKeys = Object.keys(this.commandStacksMap);
-    if (this.welcomeAlive) {
-      this.tab.firstElementChild.setAttributeNS(null, 'fill', this.colors['welcomeColor']);
-    } else {
-      this.tab.firstElementChild.setAttributeNS(null, 'fill', this.colors['aboutColor']);
-    }
+    this.tab.firstElementChild.setAttributeNS(null, 'fill',
+      this.shutterView0Alive
+      ? this.colors['welcomeColor']
+      : this.colors['aboutColor']
+    );
     if (this.workActive !== null) {
       this.workInitFunc();
     }
@@ -69,13 +74,13 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
   stylePage(contentEl: HTMLElement): void {
-    this.tab = contentEl.appendChild(generateSvgTab(window.innerWidth, this.unitLength));
+    this.tab = contentEl.appendChild(generateSvgTab(window.innerWidth, this.unitLength, this.uLx2));
   }
-  styleDownArrowContentFunc(el: SVGElement, unitLength: number, windowInnerWidth: number = window.innerWidth): void {
-    styleDownArrowContent(el, windowInnerWidth, unitLength);
+  styleDownArrowContentFunc(el: SVGElement, windowInnerWidth: number = window.innerWidth): void {
+    styleDownArrowContent(el.style, windowInnerWidth, this.uLx2, this.uLx3);
   }
-  styleGridButtonFunc(el: SVGElement, unitLength: number, windowInnerHeight: number = window.innerHeight): void {
-    styleGridButton(el, windowInnerHeight, unitLength);
+  styleGridButtonFunc(el: SVGElement, windowInnerHeight: number = window.innerHeight): void {
+    styleGridButton(el.style, windowInnerHeight, this.uLx3);
   }
   addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
     this._workWrapperColectionService.addWorkWrapper(workWrapperComponentInstance);

@@ -8,10 +8,16 @@ const SET_SHUTTER_VIEW = 'SET_SHUTTER_VIEW';
 const SET_STRING = 'SET_STRING';
 const SET_COLOR = 'SET_COLOR';
 const SET_UNIT_LENGTH = 'SET_UNIT_LENGTH';
+const SET_IS_PORTRAIT = 'SET_IS_PORTRAIT';
 const SET_WORK_ACTIVE = 'SET_WORK_ACTIVE';
 const SET_COMMAND_STACKS_MAP = 'SET_COMMAND_STACKS_MAP';
 const SET_COMMAND_STACKS = 'SET_COMMAND_STACKS';
 const DELETE_COMMAND_STACKS = 'DELETE_COMMAND_STACKS';
+
+export const VIEW0_ALIVE = 'VIEW0_ALIVE';
+export const VIEW1_ALIVE = 'VIEW1_ALIVE';
+export const ANIMATION_STATE = 'ANIMATION_STATE';
+export const TRANSITION_ACTIVE = 'TRANSITION_ACTIVE';
 
 /* ACTIONS */
 export class DummyAction implements Action {
@@ -38,6 +44,10 @@ export class SetUnitLengthAction implements Action {
   readonly type = SET_UNIT_LENGTH;
   constructor(public payload: number) {}
 }
+export class SetIsPortraitAction implements Action {
+  readonly type = SET_IS_PORTRAIT;
+  constructor(public payload: boolean) {}
+}
 export class SetWorkActiveAction implements Action {
   readonly type = SET_WORK_ACTIVE;
   constructor(public payload: number) {}
@@ -56,18 +66,24 @@ export class DeleteCommandStacksAction implements Action {
 }
 
 /* REDUCERS */
-export function appViewReducer(state: ViewState = {view0Alive: null, view0OnScreen: null, view1Alive: null}, action: Actions): ViewState {
+export function appViewReducer(state: ViewState =
+  {view0Alive: null, animationState: null, view1Alive: null, transitionActive: null},
+  action: Actions): ViewState {
   switch (action.type) {
     case SET_APP_VIEW:
       const payload = action.payload;
       switch (payload[0]) {
-        case 'shutterViewAlive':
+        case VIEW0_ALIVE:
           state.view0Alive = payload[1];
-          state.view0OnScreen = payload[1];
           break;
-        case 'contentViewAlive':
+        case VIEW1_ALIVE:
           state.view1Alive = payload[1];
-          state.view0OnScreen = !payload[1];
+          break;
+        case ANIMATION_STATE:
+          state.animationState = payload[1];
+          break;
+        case TRANSITION_ACTIVE:
+          state.transitionActive = payload[1];
           break;
         default:
           break;
@@ -78,18 +94,22 @@ export function appViewReducer(state: ViewState = {view0Alive: null, view0OnScre
   }
 }
 export function shutterViewReducer(state: ViewState
-  = {view0Alive: null, view0OnScreen: null, view1Alive: null}, action: Actions): ViewState {
+  = {view0Alive: null, animationState: null, view1Alive: null, transitionActive: null}, action: Actions): ViewState {
   switch (action.type) {
     case SET_SHUTTER_VIEW:
       const payload = action.payload;
       switch (payload[0]) {
-        case 'welcomeViewAlive':
+        case VIEW0_ALIVE:
           state.view0Alive = payload[1];
-          state.view0OnScreen = payload[1];
           break;
-        case 'aboutViewAlive':
+        case VIEW1_ALIVE:
           state.view1Alive = payload[1];
-          state.view0OnScreen = !payload[1];
+          break;
+        case ANIMATION_STATE:
+          state.animationState = payload[1];
+          break;
+        case TRANSITION_ACTIVE:
+          state.transitionActive = payload[1];
           break;
         default:
           break;
@@ -131,6 +151,14 @@ export function unitLengthReducer(state: number, action: Actions): number {
       return state;
   }
 }
+export function isPortraitReducer(state: boolean, action: Actions): boolean {
+  switch (action.type) {
+    case SET_IS_PORTRAIT:
+      return action.payload;
+    default:
+      return state;
+  }
+}
 export function workActiveReducer(state: number, action: Actions): number {
   switch (action.type) {
     case SET_WORK_ACTIVE:
@@ -162,6 +190,7 @@ export type Actions
   | SetStringAction
   | SetColorAction
   | SetUnitLengthAction
+  | SetIsPortraitAction
   | SetWorkActiveAction
   | SetCommandStacksAction
   | DeleteCommandStacksAction;
@@ -172,6 +201,7 @@ export const reducers: ActionReducerMap<AppState> = {
   texts: textsReducer,
   color: colorReducer,
   unitLength: unitLengthReducer,
+  isPortrait: isPortraitReducer,
   workActive: workActiveReducer,
   commandStacksMap: commandStacksMapReducer
 };

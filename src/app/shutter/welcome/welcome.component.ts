@@ -5,7 +5,7 @@ import { styleDownArrowShutter, styleLeftArrow } from '../../../apply-styles';
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WelcomeComponent implements OnInit {
   @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
@@ -18,6 +18,8 @@ export class WelcomeComponent implements OnInit {
   @Input() fullGreeting: string[3];
   @Input() tip: string;
   @Input() unitLength: number;
+  @Input() uLx2: number;
+  @Input() uLx3: number;
   @Input() welcomeColor: string;
 
   arrowPath = '../../../assets/arrow.svg';
@@ -27,11 +29,12 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
     (document.getElementById('welcome') as HTMLElement).style.backgroundColor = this.welcomeColor;
   }
-  styleLeftArrowFunc(el: SVGAElement, unitLength: number, windowInnerHeight: number = window.innerHeight) {
-    styleLeftArrow(el, windowInnerHeight, unitLength);
+  styleLeftArrowFunc(el: SVGAElement, windowInnerHeight: number = window.innerHeight) {
+    styleLeftArrow(el.style, windowInnerHeight, this.uLx2, this.uLx3);
+    el.setAttribute('transform', 'rotate(90)');
   }
-  styleDownArrowShutterFunc(el: SVGAElement, unitLength: number, windowInnerWidth: number = window.innerWidth) {
-    styleDownArrowShutter(el, windowInnerWidth, unitLength);
+  styleDownArrowShutterFunc(el: SVGAElement, windowInnerWidth: number = window.innerWidth) {
+    styleDownArrowShutter(el.style, windowInnerWidth, this.uLx2, this.uLx3);
   }
 
   /* EVENT FUNCTIONS */
