@@ -12,9 +12,10 @@ export class AboutComponent implements OnInit {
   @Output() setShutterViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() getNextRhymeEvent: EventEmitter<null> = new EventEmitter();
   @Input() rhyme: string;
-  @Input() unitLength: number;
-  @Input() uLx2: number;
-  @Input() uLx3: number;
+  @Input() uLdwx3: string;
+  @Input() uLdhx2: string;
+  @Input() uLdwOffset: string;
+  @Input() uLdhOffset: string;
   @Input() aboutColor: string;
 
   arrowPath = '../../../assets/arrow.svg';
@@ -24,12 +25,12 @@ export class AboutComponent implements OnInit {
   ngOnInit(): void {
     (document.getElementById('about') as HTMLElement).style.backgroundColor = this.aboutColor;
   }
-  styleRightArrowFunc(el: SVGAElement, windowInnerHeight: number = window.innerHeight) {
-    styleRightArrow(el.style, windowInnerHeight, this.uLx2, this.uLx3);
+  styleRightArrowFunc(el: SVGAElement) {
+    styleRightArrow(el.style, this.uLdwx3, this.uLdhx2, this.uLdhOffset);
     el.setAttribute('transform', 'rotate(270)');
   }
-  styleDownArrowShutterFunc(el: SVGAElement, windowInnerWidth: number = window.innerWidth) {
-    styleDownArrowShutter(el.style, windowInnerWidth, this.uLx2, this.uLx3);
+  styleDownArrowShutterFunc(el: SVGAElement) {
+    styleDownArrowShutter(el.style, this.uLdwx3, this.uLdhx2, this. uLdwOffset);
   }
 
   /* EVENT FUNCTIONS */

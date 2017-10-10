@@ -1,31 +1,33 @@
 <div class="canvasOverlay" *ngIf='work.active'>
-  <div class="undo"
+  <div class="undo button"
   [inlineSVG]=undoPath
   (onSVGInserted)='styleUndoFunc($event)'
   (click)='work.undo()'
   >
   </div>
-  <div class="redo"
+  <div class="redo button"
   [inlineSVG]=undoPath
   (onSVGInserted)='styleRedoFunc($event)'
+  (click)='work.redo()'
   >
   </div>
-  <div class="settings"
+  <div class="settings button"
   [inlineSVG]=settingsPath
   (onSVGInserted)='styleSettingsFunc($event)'
   >
   </div>
-  <div class="delete"
+  <div class="delete button"
   [inlineSVG]=deletePath
   (onSVGInserted)='styleDeleteFunc($event)'
+  (click)='work.init()'
   >
   </div>
-  <div class="upload"
+  <div class="upload button"
   [inlineSVG]=uploadPath
   (onSVGInserted)='styleUploadFunc($event)'
   >
   </div>
-  <div class="download"
+  <div class="download button"
   [inlineSVG]=downloadPath
   (onSVGInserted)='styleDownloadFunc($event)'
   >

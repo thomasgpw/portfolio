@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Output, Input, EventEmitter, ViewChildren, QueryList, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, state, animate, transition} from '@angular/animations';
 
 import { WorkWrapperCollectionService } from '../_services/work-wrapper-collection.service';
@@ -35,10 +35,19 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Output() deleteComandStacksEvent: EventEmitter<number> = new EventEmitter();
   @Input() shutterView0Alive: boolean;
   @Input() unitLength: number;
-  @Input() uLx2: number;
-  @Input() uLx3: number;
-  @Input() uLd2: number;
-  @Input() bWP: number;
+  @Input() uLdwx3: string;
+  @Input() uLdhx2: string;
+  @Input() uLdhx3: string;
+  @Input() uLdwOffset: string;
+  @Input() uLdhOffset: string;
+  @Input() uLdcwx2: string;
+  @Input() uLdchx2: string;
+  @Input() uLd2cw: string;
+  @Input() uLd2ch: string;
+  @Input() bWPdcw: string;
+  @Input() bWPdcwx2: string;
+  @Input() bWPdcwx3: string;
+  @Input() bWPdch: string;
   @Input() workActive: number;
   @Input() isPortrait: boolean;
   @Input() commandStacksMap: {[key: number]: CommandStacks};
@@ -57,7 +66,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const contentEl = document.getElementById('content');
     (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
-    this.stylePage(contentEl);
+    this.createTab(contentEl);
     this.commandStacksKeys = Object.keys(this.commandStacksMap);
     this.tab.firstElementChild.setAttributeNS(null, 'fill',
       this.shutterView0Alive
@@ -73,17 +82,25 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
-  stylePage(contentEl: HTMLElement): void {
-    this.tab = contentEl.appendChild(generateSvgTab(window.innerWidth, this.unitLength, this.uLx2));
+  updateView(): void {
+    this.styleTab(document.getElementById('content'));
+    this.styleDownArrowContentFunc(document.getElementById('downArrow').children[0] as SVGElement);
+    if (this.gridButton) {
+      this.styleGridButtonFunc(document.getElementById('gridButton').children[0] as SVGElement);
+    }
   }
-  styleDownArrowContentFunc(el: SVGElement, windowInnerWidth: number = window.innerWidth): void {
-    styleDownArrowContent(el.style, windowInnerWidth, this.uLx2, this.uLx3);
+  createTab(contentEl: HTMLElement): void {
+    this.tab = contentEl.appendChild(generateSvgTab(window.innerWidth, this.unitLength, this.unitLength * 2));
   }
-  styleGridButtonFunc(el: SVGElement, windowInnerHeight: number = window.innerHeight): void {
-    styleGridButton(el.style, windowInnerHeight, this.uLx3);
+  styleTab(contentEl: HTMLElement): void {
+    // Move generate and style tab to diff places one on init other on change&init.
+    this.tab = generateSvgTab(window.innerWidth, this.unitLength, this.unitLength * 2);
   }
-  addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
-    this._workWrapperColectionService.addWorkWrapper(workWrapperComponentInstance);
+  styleDownArrowContentFunc(el: SVGElement): void {
+    styleDownArrowContent(el.style, this.uLdwx3, this.uLdhx2, this.uLdhx3, this.uLdwOffset);
+  }
+  styleGridButtonFunc(el: SVGElement): void {
+    styleGridButton(el.style, this.uLdwx3, this.uLdhx3, this. uLdhOffset);
   }
   getWorkWrapper(id: number): WorkWrapperComponent {
     return this._workWrapperColectionService.getWorkWrapper(id);
@@ -137,6 +154,9 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
   resizeWork(e): void {
     this.getWorkWrapper(e.element.id.toString()).work.resizeCanvas();
+  }
+  addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
+    this._workWrapperColectionService.addWorkWrapper(workWrapperComponentInstance);
   }
   activateWorkHandler(clickedEl: Element): void {
     const id = parseInt(clickedEl.id, 10);

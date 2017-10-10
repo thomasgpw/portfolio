@@ -17,9 +17,10 @@ export class WelcomeComponent implements OnInit {
   @Output() setNameEvent: EventEmitter<string>  = new EventEmitter();
   @Input() fullGreeting: string[3];
   @Input() tip: string;
-  @Input() unitLength: number;
-  @Input() uLx2: number;
-  @Input() uLx3: number;
+  @Input() uLdwx3: string;
+  @Input() uLdhx2: string;
+  @Input() uLdwOffset: string;
+  @Input() uLdhOffset: string;
   @Input() welcomeColor: string;
 
   arrowPath = '../../../assets/arrow.svg';
@@ -29,12 +30,12 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
     (document.getElementById('welcome') as HTMLElement).style.backgroundColor = this.welcomeColor;
   }
-  styleLeftArrowFunc(el: SVGAElement, windowInnerHeight: number = window.innerHeight) {
-    styleLeftArrow(el.style, windowInnerHeight, this.uLx2, this.uLx3);
+  styleLeftArrowFunc(el: SVGAElement) {
+    styleLeftArrow(el.style, this.uLdwx3, this.uLdhx2, this.uLdhOffset);
     el.setAttribute('transform', 'rotate(90)');
   }
-  styleDownArrowShutterFunc(el: SVGAElement, windowInnerWidth: number = window.innerWidth) {
-    styleDownArrowShutter(el.style, windowInnerWidth, this.uLx2, this.uLx3);
+  styleDownArrowShutterFunc(el: SVGAElement) {
+    styleDownArrowShutter(el.style, this.uLdwx3, this.uLdhx2, this.uLdwOffset);
   }
 
   /* EVENT FUNCTIONS */

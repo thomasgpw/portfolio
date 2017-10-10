@@ -44,8 +44,10 @@ export class SpecificWork extends Work {
     this.drawDotList();
   }
   onPointerDown (e: PointerEvent): void {
-    this.pointerDown = true;
-    this.drawConnections(this.context, e.offsetX / this.w, e.offsetY / this.h);
+    if (!e.srcElement.closest('svg')) {
+      this.pointerDown = true;
+      this.drawConnections(this.context, e.offsetX / this.w, e.offsetY / this.h);
+    }
   }
   onPointerMove (e: PointerEvent): void {
     if (this.pointerDown) {

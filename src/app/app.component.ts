@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
 import { Store } from '@ngrx/store';
@@ -25,6 +25,8 @@ import {
   SetCommandStacksAction,
   DeleteCommandStacksAction
 } from './app.reducers';
+import { ShutterComponent } from './shutter/shutter.component';
+import { ContentComponent } from './content/content.component';
 
 @Component({
   selector: 'app-root',
@@ -55,6 +57,8 @@ import {
   ]
 })
 export class AppComponent implements OnInit {
+  @ViewChild(ShutterComponent) private shutterInstance: ShutterComponent;
+  @ViewChild(ContentComponent) private contentInstance: ContentComponent;
   _stringServiceMap: {
     [key: string]: StringService
   } = {};
@@ -74,11 +78,34 @@ export class AppComponent implements OnInit {
   workActive$: Observable<number>;
   commandStacksMap$: Observable<{[key: number]: CommandStacks}>;
   unitLengthReferences: {
-    uLx2: number,
-    uLx3: number,
-    uLd2: number,
-    bWP: number
-  } = {uLx2: null, uLx3: null, uLd2: null, bWP: null};
+    uLdwx3: string,
+    uLdhx2: string,
+    uLdhx3: string,
+    uLdwOffset: string,
+    uLdhOffset: string,
+    uLdcwx2: string,
+    uLdchx2: string,
+    uLd2cw: string,
+    uLd2ch: string,
+    bWPdcw: string,
+    bWPdcwx2: string,
+    bWPdcwx3: string,
+    bWPdch: string
+  } = {
+    uLdwx3: null,
+    uLdhx2: null,
+    uLdhx3: null,
+    uLdwOffset: null,
+    uLdhOffset: null,
+    uLdcwx2: null,
+    uLdchx2: null,
+    uLd2cw: null,
+    uLd2ch: null,
+    bWPdcw: null,
+    bWPdcwx2: null,
+    bWPdcwx3: null,
+    bWPdch: null
+  };
   fullGreeting: string[];
   fullRhyme: string;
   colors: {[key: string]: string} = {};
@@ -225,6 +252,12 @@ export class AppComponent implements OnInit {
     const h: number = window.innerHeight;
     this.calcUnitLength(w, h);
     this.calcIsPortrait(w, h);
+    if (this.shutterInstance) {
+      this.shutterInstance.updateView();
+    }
+    if (this.contentInstance) {
+      this.contentInstance.updateView();
+    }
   }
   calcUnitLength(w: number, h: number): void {
     this.setUnitLength(Math.sqrt(Math.sqrt(w * h / 6)));
@@ -233,12 +266,35 @@ export class AppComponent implements OnInit {
     this.setIsPortrait(w < h);
   }
   setUnitLengthReferences(unitLength: number) {
-    const uLx2 = unitLength * 2;
-    const uLd2 = unitLength / 2;
-    this.unitLengthReferences.uLx2 = uLx2;
-    this.unitLengthReferences.uLx3 = unitLength * 3;
-    this.unitLengthReferences.uLd2 = uLd2;
-    this.unitLengthReferences.bWP = uLx2 + uLd2;
+    unitLength *= 100;
+    const percent = '%';
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const uLdw = unitLength / windowWidth;
+    const uLdh = unitLength / windowHeight;
+    const uLdwx3 = uLdw * 3;
+    const uLdhx3 = uLdh * 3;
+    this.unitLengthReferences.uLdwx3 = uLdwx3 + percent;
+    this.unitLengthReferences.uLdhx2 = (uLdh * 2) + percent;
+    this.unitLengthReferences.uLdhx3 = uLdhx3 + percent;
+    this.unitLengthReferences.uLdwOffset = (50 - (uLdwx3 / 2)) + percent;
+    this.unitLengthReferences.uLdhOffset = (50 - (uLdhx3 / 2)) + percent;
+    const uLdcw = unitLength / (windowWidth * 0.8);
+    const uLdch = unitLength / (windowHeight * 0.8);
+    const uLdcwx2 = uLdcw * 2;
+    const uLdchx2 = uLdch * 2;
+    const uLd2cw = uLdcw / 2;
+    const uLd2ch = uLdch / 2;
+    const bWPcw = uLdcwx2 + uLd2cw;
+    this.unitLengthReferences.uLdcwx2 = uLdcwx2 + percent;
+    this.unitLengthReferences.uLdchx2 = uLdchx2 + percent;
+    this.unitLengthReferences.uLd2cw = uLd2cw + percent;
+    this.unitLengthReferences.uLd2ch = uLd2ch + percent;
+    this.unitLengthReferences.bWPdcw = bWPcw + percent;
+    this.unitLengthReferences.bWPdcwx2 = (bWPcw * 2) + percent;
+    this.unitLengthReferences.bWPdcwx3 = (bWPcw * 3) + percent;
+    this.unitLengthReferences.bWPdch = (uLdchx2 + uLd2ch) + percent;
+    // this.unitLengthReferences.bWP = uLx2 + uLd2;
   }
 
   /* EVENT FUNCTIONS */

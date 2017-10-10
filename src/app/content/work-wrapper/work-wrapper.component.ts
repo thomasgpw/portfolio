@@ -17,10 +17,14 @@ import {
 export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Output() workWrapperInitEvent: EventEmitter<WorkWrapperComponent> = new EventEmitter();
   @Output() setCommandStacksEvent: EventEmitter<CommandStacks> = new EventEmitter();
-  @Input() unitLength: number;
-  @Input() uLx2: number;
-  @Input() uLd2: number;
-  @Input() bWP: number;
+  @Input() uLdcwx2: string;
+  @Input() uLdchx2: string;
+  @Input() uLd2cw: string;
+  @Input() uLd2ch: string;
+  @Input() bWPdcw: string;
+  @Input() bWPdcwx2: string;
+  @Input() bWPdcwx3: string;
+  @Input() bWPdch: string;
   @Input() isPortrait: boolean;
   @Input() commandStacks: CommandStacks;
   work: Work;
@@ -29,10 +33,6 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   deletePath = '../../../assets/iconmonstr-trash-can-2.svg';
   uploadPath = '../../../assets/iconmonstr-upload-17.svg';
   downloadPath = '../../../assets/iconmonstr-download-7-edited.svg';
-  uLx2String: string;
-  uLd2String: string;
-  bWPString: string;
-  bWPx2String: string;
 
   /* LIFECYCLE HOOK FUNCTIONS */
   ngOnInit(): void {
@@ -40,10 +40,6 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     this.work.setCommandStacks(this.commandStacks);
     this.work.init();
     this.workWrapperInitEvent.emit(this);
-    this.uLx2String = this.uLx2.toString();
-    this.uLd2String = this.uLd2.toString();
-    this.bWPString = this.bWP.toString();
-    this.bWPx2String = (this.bWP * 2).toString();
   }
   ngOnDestroy(): void {
     // this.setCommandStacksEvent.emit(this.work.getCommandStacks());
@@ -55,35 +51,35 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     return Promise.resolve(null);
   }
   styleUndoFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLx2String, this.uLd2String, '0');
-    const rightOffset: string = this.isPortrait ? (this.bWP * 3).toString() : this.bWPx2String;
-    styleRightOffset(el.style, this.uLd2String, rightOffset);
+    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    const rightOffset: string = this.isPortrait ? this.bWPdcwx3 : this.bWPdcwx2;
+    styleRightOffset(el.style, this.uLd2ch, rightOffset);
   }
   styleRedoFunc(el: SVGElement) {
     el.setAttribute('transform', 'scale(-1, 1)');
-    styleWorkWrapperButton(el.style, this.uLx2String, this.uLd2String, '0');
-    const rightOffset: string = this.isPortrait ? this.bWPx2String : this.bWPString;
-    styleRedoOffset(el.style, this.uLd2String, rightOffset);
+    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    const redoOffset: string = this.isPortrait ? this.bWPdcwx2 : this.bWPdcw;
+    styleRedoOffset(el.style, this.uLd2cw, redoOffset);
   }
   styleSettingsFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLx2String, this.uLd2String, '0');
-    styleRightOffset(el.style, this.uLd2String, '0');
+    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleRightOffset(el.style, this.uLd2cw, '0');
   }
   styleDeleteFunc(el: SVGElement) {
-    const topOffset: string = this.isPortrait ? '0' : this.bWPString;
-    styleWorkWrapperButton(el.style, this.uLx2String, this.uLd2String, topOffset);
-    const rightOffset: string = this.isPortrait ? this.bWPString : '0';
-    styleRightOffset(el.style, this.uLd2String, rightOffset);
+    const topOffset: string = this.isPortrait ? '0' : this.bWPdch;
+    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
+    const rightOffset: string = this.isPortrait ? this.bWPdcw : '0';
+    styleRightOffset(el.style, this.uLd2cw, rightOffset);
   }
   styleUploadFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLx2String, this.uLd2String, '0');
-    styleLeftOffset(el.style, this.uLd2String, '0');
+    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleLeftOffset(el.style, this.uLd2cw, '0');
   }
   styleDownloadFunc(el: SVGElement) {
-    const topOffset: string = this.isPortrait ? '0' : this.bWPString;
-    styleWorkWrapperButton(el.style, this.uLx2String, this.uLd2String, topOffset);
-    const leftOffset: string = this.isPortrait ? this.bWPString : '0';
-    styleLeftOffset(el.style, this.uLd2String, leftOffset);
+    const topOffset: string = this.isPortrait ? '0' : this.bWPdch;
+    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
+    const leftOffset: string = this.isPortrait ? this.bWPdcw : '0';
+    styleLeftOffset(el.style, this.uLd2cw, leftOffset);
   }
 
   /* EVENT FUNCTIONS */
@@ -100,7 +96,6 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @HostListener('window: pointerup') onPointerUp() {
     if (this.work.active) {
       this.work.onPointerUp();
-      // this.setCommandStacksEvent.emit(this.work.getCommandStacks());
     }
   }
 }

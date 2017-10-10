@@ -1,9 +1,11 @@
-import { Component, OnInit, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
 import { Observable } from 'rxjs/Rx';
 import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
 import { generateSvgHighlightBar } from '../../assets/generate-svg-highlight-bar';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { AboutComponent } from './about/about.component';
 
 @Component({
   selector: 'app-shutter',
@@ -42,9 +44,13 @@ export class ShutterComponent implements OnInit {
   @Input() tip: string;
   @Input() rhyme: string;
   @Input() unitLength: number;
-  @Input() uLx2: number;
-  @Input() uLx3: number;
+  @Input() uLdwx3: string;
+  @Input() uLdhx2: string;
+  @Input() uLdwOffset: string;
+  @Input() uLdhOffset: string;
   @Input() colors: {[key: string]: string};
+  @ViewChild(WelcomeComponent) welcomeInstance: WelcomeComponent;
+  @ViewChild(AboutComponent) aboutInstance: AboutComponent;
 
   bar: SVGElement;
 
@@ -81,5 +87,8 @@ export class ShutterComponent implements OnInit {
   }
   getNextRhymeFunc(): void {
     this.getNextRhymeEvent.emit(null);
+  }
+  updateView(): void {
+
   }
 }
