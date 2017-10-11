@@ -57,8 +57,8 @@ import { ContentComponent } from './content/content.component';
   ]
 })
 export class AppComponent implements OnInit {
-  @ViewChild(ShutterComponent) private shutterInstance: ShutterComponent;
-  @ViewChild(ContentComponent) private contentInstance: ContentComponent;
+  @ViewChild(ShutterComponent) shutterInstance: ShutterComponent;
+  @ViewChild(ContentComponent) contentInstance: ContentComponent;
   _stringServiceMap: {
     [key: string]: StringService
   } = {};
@@ -298,7 +298,7 @@ export class AppComponent implements OnInit {
   }
 
   /* EVENT FUNCTIONS */
-  // scrollFunc(e: WheelEvent): void {
+  scrollFunc(e: WheelEvent): void {
   //   if (e.ctrlKey === false && e.altKey === false) {
   //     e.preventDefault();
   //     const shutterAlive = this.shutterAlive;
@@ -315,7 +315,7 @@ export class AppComponent implements OnInit {
   //       this.setShutterView(true);
   //     }
   //   }
-  // }
+  }
   setAppView(payload: [string, boolean]) {
     this.store.dispatch(new SetAppViewAction(payload));
   }

@@ -1,5 +1,5 @@
-import { Work } from '../_works/work';
 import { Component, Input, Output, EventEmitter, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Work } from '../_works/work';
 import { SpecificWork } from '../_works/points-to-point';
 import { CommandStacks } from '../../app.datatypes';
 import {

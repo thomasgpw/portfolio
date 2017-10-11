@@ -6,9 +6,9 @@ import { WorkWrapperComponent } from '../content/work-wrapper/work-wrapper.compo
 export class WorkWrapperCollectionService {
   private WORK_WRAPPERS: {[key: number]: WorkWrapperComponent};
   private active: number;
-  constructor(activeLast: number) {
+  constructor() {
     this.WORK_WRAPPERS = {};
-    this.active = activeLast;
+    this.active = null;
   }
   addWorkWrapper(workWrapper: WorkWrapperComponent) {
     console.log('addworkwrapper');

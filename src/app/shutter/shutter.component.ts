@@ -31,7 +31,7 @@ import { AboutComponent } from './about/about.component';
 })
 export class ShutterComponent implements OnInit {
   @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
-  @Output() setShutterViewEvent: EventEmitter<[string, boolean]> = new EventEmitter();
+  @Output() setShutterViewEvent: EventEmitter<boolean> = new EventEmitter();
   @Output() getNextGreetingEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getRandomNameEvent: EventEmitter<null>  = new EventEmitter();
   @Output() setNameEvent: EventEmitter<string>  = new EventEmitter();
@@ -40,7 +40,7 @@ export class ShutterComponent implements OnInit {
   @Input() shutterView0Alive: boolean;
   @Input() shutterAnimationState: boolean;
   @Input() shutterView1Alive: boolean;
-  @Input() fullGreeting: string[3];
+  @Input() fullGreeting: string[];
   @Input() tip: string;
   @Input() rhyme: string;
   @Input() unitLength: number;
@@ -70,8 +70,8 @@ export class ShutterComponent implements OnInit {
   setAppViewFunc(): void {
     this.setAppViewEvent.emit(null);
   }
-  setShutterViewFunc(viewSetting: [string, boolean]): void {
-    this.setShutterViewEvent.emit(viewSetting);
+  setShutterViewFunc(view0Alive: boolean): void {
+    this.setShutterViewEvent.emit(view0Alive);
   }
   getNextGreetingFunc(): void {
     this.getNextGreetingEvent.emit(null);

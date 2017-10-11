@@ -4,7 +4,7 @@
 >
   <div class='page shutter'
   *ngIf='(appView0Alive$ | async)'
-  [@shutterView]='(appAnimationState$ | async) + "state"'
+  [@shutterView]='((appAnimationState$ | async) + "state").toString()'
   >
     <app-shutter
     [shutterView0Alive]='(shutterView0Alive$ | async)'
@@ -23,7 +23,7 @@
     (setShutterViewEvent)='goShutterView($event)'
     (getNextGreetingEvent)='getNextString("greeting")'
     (getRandomNameEvent)='getRandomString("name")'
-    (setNameEvent)='setString($event, "name")'
+    (setNameEvent)='setString(IterableStringInstance($event, "name"))'
     (getNextTipEvent)='getNextString("tip")'
     (getNextRhymeEvent)='getNextString("rhyme")'
     >
@@ -32,7 +32,7 @@
   </div>
   <div class='page content'
   *ngIf='appView1Alive$ | async'
-  [@contentView]='(!(appAnimationState$ | async)) + "state"'
+  [@contentView]='((!(appAnimationState$ | async)) + "state").toString()'
   >
     <app-content
     [shutterView0Alive]='(shutterView0Alive$ | async)'

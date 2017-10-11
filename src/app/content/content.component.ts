@@ -60,7 +60,8 @@ export class ContentComponent implements OnInit, OnDestroy {
   gridButtonPath = '../../assets/gridbutton.svg';
   readonly _workWrapperColectionService: WorkWrapperCollectionService;
   constructor() {
-    this._workWrapperColectionService = new WorkWrapperCollectionService(this.workActive);
+    this._workWrapperColectionService = new WorkWrapperCollectionService();
+    this._workWrapperColectionService.setActive(this.workActive);
   }
 
   ngOnInit(): void {

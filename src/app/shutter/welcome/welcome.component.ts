@@ -15,7 +15,7 @@ export class WelcomeComponent implements OnInit {
   @Output() getRandomGreetingEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getRandomNameEvent: EventEmitter<null>  = new EventEmitter();
   @Output() setNameEvent: EventEmitter<string>  = new EventEmitter();
-  @Input() fullGreeting: string[3];
+  @Input() fullGreeting: string[];
   @Input() tip: string;
   @Input() uLdwx3: string;
   @Input() uLdhx2: string;

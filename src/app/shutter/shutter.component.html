@@ -1,7 +1,7 @@
 <div class='shutter' id='shutter' >
   <div
   *ngIf='shutterView0Alive'
-  [@welcomeView]='(shutterAnimationState) + "state"'
+  [@welcomeView]='((shutterAnimationState) + "state").toString()'
   (@welcomeView.done)='logData($event)'
   class='page welcome'
   id='welcome'
@@ -13,7 +13,7 @@
     [uLdhx2]='uLdhx2'
     [uLdwOffset]='uLdwOffset'
     [uLdhOffset]='uLdhOffset'
-    [welcomeColor]='colors["welcomeColor"]'
+    [welcomeColor]='colors.welcomeColor'
     (setAppViewEvent)='setAppViewFunc()'
     (setShutterViewEvent)='setShutterViewFunc(false)'
     (getNextGreetingEvent)='getNextGreetingFunc()'
@@ -26,7 +26,7 @@
   </div>
   <div
   *ngIf='shutterView1Alive'
-  [@aboutView]='(!shutterAnimationState) + "state"'
+  [@aboutView]='((!shutterAnimationState) + "state").toString()'
   (@aboutView.done)='logData($event)'
   class='page about'
   id='about'
@@ -37,7 +37,7 @@
     [uLdhx2]='uLdhx2'
     [uLdwOffset]='uLdwOffset'
     [uLdhOffset]='uLdhOffset'
-    [aboutColor]='colors["aboutColor"]'
+    [aboutColor]='colors.aboutColor'
     (setAppViewEvent)='setAppViewFunc()'
     (setShutterViewEvent)='setShutterViewFunc(true)'
     (getNextRhymeEvent)='getNextRhymeFunc()'
