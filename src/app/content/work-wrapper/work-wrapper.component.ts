@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { Work } from '../_works/work';
-import { SpecificWork } from '../_works/points-to-point';
 import { CommandStacks } from '../../app.datatypes';
 import {
   styleWorkWrapperButton,
@@ -36,9 +35,6 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
 
   /* LIFECYCLE HOOK FUNCTIONS */
   ngOnInit(): void {
-    this.work = new SpecificWork(document.getElementsByClassName('canvasWrapper')[this.commandStacks.id]);
-    this.work.setCommandStacks(this.commandStacks);
-    this.work.init();
     this.workWrapperInitEvent.emit(this);
   }
   ngOnDestroy(): void {
@@ -46,8 +42,15 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
-  redrawAll(values: number[]): Promise<null> {
-    this.work.redrawAll();
+  download(instance: WorkWrapperComponent) {
+    const work = this.work;
+    const link = document.getElementById('downloadLink') as HTMLAnchorElement;
+    link.href = work.canvas.toDataURL();
+    link.download = 'canvas.png';
+    link.click();
+  }
+  drawAll(values: number[]): Promise<null> {
+    this.work.drawAll();
     return Promise.resolve(null);
   }
   styleUndoFunc(el: SVGElement) {

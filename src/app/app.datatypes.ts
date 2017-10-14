@@ -6,18 +6,20 @@ export interface AppState {
   unitLength: number;
   isPortrait: boolean;
   workActive: number;
-  commandStacksMap: {[key: number]: CommandStacks};
+  workStates: {[key: string]: any};
 }
-export class CommandStacks {
-  id: number;
-  functionStack: Function[];
-  paramStack: any[];
-  constructor(id: number, functionStack: Function[] = [], paramStack: any[] = []) {
-    this.id = id;
-    this.functionStack = functionStack;
-    this.paramStack = paramStack;
-  }
-}
+// export class CommandStacks {
+//   id: number;
+//   functionStack: Function[];
+//   paramStack: any[];
+//   miscData: any[];
+//   constructor(id: number, functionStack: Function[] = [], paramStack: any[] = [], miscData: any[] = []) {
+//     this.id = id;
+//     this.functionStack = functionStack;
+//     this.paramStack = paramStack;
+//     this.miscData = miscData;
+//   }
+// }
 export class IterableStringMap {
   [key: string]: IterableStringInstance;
 }

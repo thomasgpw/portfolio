@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, state, animate, transition} from '@angular/animations';
 
-import { WorkWrapperCollectionService } from '../_services/work-wrapper-collection.service';
+import { WorkManagerService } from '../_services/work-manager.service';
 import { CommandStacks } from '../app.datatypes';
 import { generateSvgTab } from '../../assets/generate-svg-tab';
 import { styleDownArrowContent, styleGridButton } from '../../apply-styles';
 import { workTransitionConfig, gridWorkStyle, activeWorkStyle, rowWorkStyle } from '../_animations/styles';
-import { worksList } from './works-list';
 import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
 
 @Component({
@@ -14,7 +13,7 @@ import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
   templateUrl: './content.component.html',
   styleUrls: ['./content.component.css'],
   providers: [
-    WorkWrapperCollectionService
+    WorkManagerService
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
@@ -50,7 +49,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() bWPdch: string;
   @Input() workActive: number;
   @Input() isPortrait: boolean;
-  @Input() commandStacksMap: {[key: number]: CommandStacks};
+  @Input() workStates: {[key: number]: CommandStacks};
   @Input() colors: {[key: string]: string};
 
   commandStacksKeys;
@@ -58,17 +57,17 @@ export class ContentComponent implements OnInit, OnDestroy {
   tab: SVGElement;
   arrowPath = '../../assets/arrow.svg';
   gridButtonPath = '../../assets/gridbutton.svg';
-  readonly _workWrapperColectionService: WorkWrapperCollectionService;
+  readonly _workManagerService: WorkManagerService;
   constructor() {
-    this._workWrapperColectionService = new WorkWrapperCollectionService();
-    this._workWrapperColectionService.setActive(this.workActive);
+    this._workManagerService = new WorkManagerService();
+    this._workManagerService.setActive(this.workActive);
   }
 
   ngOnInit(): void {
     const contentEl = document.getElementById('content');
     (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
     this.createTab(contentEl);
-    this.commandStacksKeys = Object.keys(this.commandStacksMap);
+    this.commandStacksKeys = Object.keys(this.workStates);
     this.tab.firstElementChild.setAttributeNS(null, 'fill',
       this.shutterView0Alive
       ? this.colors['welcomeColor']
@@ -79,7 +78,6 @@ export class ContentComponent implements OnInit, OnDestroy {
     }
   }
   ngOnDestroy(): void {
-    this._workWrapperColectionService.destroy();
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
@@ -104,7 +102,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     styleGridButton(el.style, this.uLdwx3, this.uLdhx3, this. uLdhOffset);
   }
   getWorkWrapper(id: number): WorkWrapperComponent {
-    return this._workWrapperColectionService.getWorkWrapper(id);
+    return this._workManagerService.getWorkWrapper(id);
   }
   getStatus(i: string): string {
     const pattern = /^ww/;
@@ -157,7 +155,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.getWorkWrapper(e.element.id.toString()).work.resizeCanvas();
   }
   addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
-    this._workWrapperColectionService.addWorkWrapper(workWrapperComponentInstance);
+    this._workManagerService.addWorkWrapper(workWrapperComponentInstance);
   }
   activateWorkHandler(clickedEl: Element): void {
     const id = parseInt(clickedEl.id, 10);

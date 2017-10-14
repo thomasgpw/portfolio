@@ -1,4 +1,5 @@
 <div class="canvasOverlay" *ngIf='work.active'>
+  <a id="downloadLink" hidden></a>
   <div class="undo button"
   [inlineSVG]=undoPath
   (onSVGInserted)='styleUndoFunc($event)'
@@ -30,6 +31,7 @@
   <div class="download button"
   [inlineSVG]=downloadPath
   (onSVGInserted)='styleDownloadFunc($event)'
+  (click)='download(this)'
   >
   </div>
 </div>

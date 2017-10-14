@@ -1,13 +1,6 @@
-import { Work } from './work';
+import { Work, Point } from './work';
 
-class Point {
-  x: number;
-  y: number;
-  constructor (x, y) {
-    this.x = x;
-    this.y = y;
-  }
-}
+
 class DrawPoint extends Point {
   color: string;
   constructor (x, y, color) {
@@ -15,22 +8,27 @@ class DrawPoint extends Point {
     this.color = color;
   }
 }
-export class SpecificWork extends Work {
+export class PointsToPoint extends Work {
 
   pointerDown = false;
-  dotList: Array<DrawPoint>;
+  workData: {centerPoints: Array<DrawPoint>, points: Array<Point>};
   r: number;
 
-  constructor (parentElement: Element) {
-    super(parentElement);
+  constructor (parentElement: Element, workData) {
+    super(parentElement, workData);
   }
   init(): void {
+    super.init();
+    this.generatePoints();
+  }
+  generatePoints() {
     const w = this.w;
     const h = this.h;
-    super.init(this.context, w, h);
-    this.dotList = [];
+    const centerPoints = this.workData.centerPoints;
+    centerPoints = [];
     this.r = 10;
-    for (let i = 0; i < (Math.sqrt(w * h) / 200) ; i++) {
+    const dotNum = Math.sqrt(w * h) / 200;
+    for (let i = 0; i < dotNum ; i++) {
       this.dotList.push(new DrawPoint(
         Math.random(),
         Math.random(),
@@ -39,9 +37,7 @@ export class SpecificWork extends Work {
         + (Math.floor(Math.random() * 256)).toString(16)
         + (Math.floor(Math.random() * 256)).toString(16)
       ));
-      console.log(this.dotList[i].color);
     }
-    this.drawDotList();
   }
   onPointerDown (e: PointerEvent): void {
     if (!e.srcElement.closest('svg')) {
@@ -59,39 +55,40 @@ export class SpecificWork extends Work {
   }
   drawDotList(context: CanvasRenderingContext2D = this.context) {
     const dotList = this.dotList;
-    const dotListLength = dotList.length;
     const r = this.r;
-    for (let i = 0; i < dotListLength; i++) {
-      const dot = dotList[i];
+    const arc = context.arc;
+    const fill = context.fill.bind(context);
+    for (const dot of dotList) {
       context.beginPath();
       this.setStrokeStyle(dot.color, context);
-      this.applyFunc(context.arc, [['X', dot.x], ['Y', dot.y], r, 0, 2 * Math.PI, false], context);
-      context.fill();
+      this.applyFunc(arc, [['X', dot.x], ['Y', dot.y], r, 0, 2 * Math.PI, false], context);
+      fill();
     }
   }
   drawConnections (context: CanvasRenderingContext2D, pointerX: number, pointerY: number) {
     const commandStacks = this.commandStacks;
     const w = this.w;
     const h = this.h;
-    const emptyArray = [];
+    const emptyArray: undefined[] = [];
     const addAndApply = this.addAndApply.bind(this);
     const beginPath = context.beginPath;
     const stroke = context.stroke;
-    for (const dot of this.dotList) {
+    const dotList = this.dotList;
+    for (const dot of dotList) {
       const x = dot.x;
       const y = dot.y;
 
       addAndApply(commandStacks, beginPath, emptyArray, context);
-      addAndApply(commandStacks, this.setStrokeStyle, [dot.color, context], this);
-      addAndApply(commandStacks, context.moveTo, [['X', pointerX], ['Y', pointerY]], context);
-      addAndApply(commandStacks, context.lineTo, [['X', x], ['Y', y]], context);
+      // addAndApply(commandStacks, this.setStrokeStyle, [dot.color, context], context);
+      addAndApply(commandStacks, context.moveTo, [['X', pointerX], ['Y', pointerY]], context, w, h);
+      addAndApply(commandStacks, context.lineTo, [['X', x], ['Y', y]], context, w, h);
       addAndApply(commandStacks, stroke, emptyArray, context);
       addAndApply(commandStacks, beginPath, emptyArray, context);
       addAndApply(commandStacks, context.arc, [
         ['X', x], ['Y', y],
         ['XY', pointerX - x, pointerY - y],
         0, 2 * Math.PI, false
-      ], context);
+      ], context, w, h);
       addAndApply(commandStacks, stroke, emptyArray, context);
     }
     addAndApply(commandStacks, context.closePath, emptyArray, context);

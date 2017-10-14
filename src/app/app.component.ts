@@ -76,7 +76,7 @@ export class AppComponent implements OnInit {
   unitLength$: Observable<number>;
   isPortrait$: Observable<boolean>;
   workActive$: Observable<number>;
-  commandStacksMap$: Observable<{[key: number]: CommandStacks}>;
+  workStates$: Observable<{[key: number]: CommandStacks}>;
   unitLengthReferences: {
     uLdwx3: string,
     uLdhx2: string,
@@ -136,7 +136,7 @@ export class AppComponent implements OnInit {
     this.unitLength$ = store.select(state => state.unitLength);
     this.isPortrait$ = store.select(state => state.isPortrait);
     this.workActive$ = store.select(state => state.workActive);
-    this.commandStacksMap$ = store.select(state => state.commandStacksMap);
+    this.workStates$ = store.select(state => state.workStates);
     this.appAnimationState$.subscribe(state => console.log(state));
     this.shutterAnimationState$.subscribe(state => console.log(state));
     Observable.combineLatest(
@@ -192,7 +192,7 @@ export class AppComponent implements OnInit {
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
   // initGraphics(): Promise<null> {
-  //   this.calcAspectLengths().then(data => this.redrawAll(data));
+  //   this.calcAspectLengths().then(data => this.drawAll(data));
   //   return Promise.resolve(null);
   // }
   // calcAspectLengths(): Promise<number[]> {
@@ -202,12 +202,12 @@ export class AppComponent implements OnInit {
   //   this.height = height;
   //   return Promise.resolve([width, height]);
   // }
-  // redrawAll(values: number[]): Promise<null> {
+  // drawAll(values: number[]): Promise<null> {
   //   if (this.appView) {
-  //     this.shutterInstance.redrawAll(values);
+  //     this.shutterInstance.drawAll(values);
   //   }
   //   if (this.contentAlive) {
-  //     this.contentInstance.redrawAll(values);
+  //     this.contentInstance.drawAll(values);
   //   }
   //   return Promise.resolve(null);
   // }
@@ -337,8 +337,8 @@ export class AppComponent implements OnInit {
   setWorkActive(id: number): void {
     this.store.dispatch(new SetWorkActiveAction(id));
   }
-  setCommandStacksMap(commandStacksMap: {[key: number]: CommandStacks}) {
-    this.store.dispatch(new SetCommandStacksMapAction(commandStacksMap));
+  setCommandStacksMap(workStates: {[key: number]: CommandStacks}) {
+    this.store.dispatch(new SetCommandStacksMapAction(workStates));
   }
   setCommandStacks(commandStacks: CommandStacks): void {
     this.store.dispatch(new SetCommandStacksAction(commandStacks));

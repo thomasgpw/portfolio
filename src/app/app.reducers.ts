@@ -167,7 +167,7 @@ export function workActiveReducer(state: number, action: Actions): number {
       return state;
   }
 }
-export function commandStacksMapReducer(state: {[key: number]: CommandStacks}, action: Actions): {[key: number]: CommandStacks} {
+export function workStatesReducer(state: {[key: number]: CommandStacks}, action: Actions): {[key: number]: CommandStacks} {
   const payload = action.payload;
   switch (action.type) {
     case SET_COMMAND_STACKS_MAP:
@@ -203,7 +203,7 @@ export const reducers: ActionReducerMap<AppState> = {
   unitLength: unitLengthReducer,
   isPortrait: isPortraitReducer,
   workActive: workActiveReducer,
-  commandStacksMap: commandStacksMapReducer
+  workStates: workStatesReducer
 };
 
 

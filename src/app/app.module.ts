@@ -29,7 +29,7 @@ const stateFromMemory: AppState = undefined;
 //   color: '#7486B4',
 //   unitLength: null,
 //   workActive: null,
-//   commandStacksMap: {}
+//   workStates: {}
 // };
 // export function getInitialState() {
 //   return {...initialState, ...stateFromMemory};
