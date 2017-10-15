@@ -13,7 +13,8 @@ export abstract class Work {
   context: CanvasRenderingContext2D;
   active: boolean;
   workData: any;
-  
+  undoData: any;
+
   constructor (parentEl: Element, workData) {
     const canvas = document.createElement('canvas');
     this.context = canvas.getContext('2d');
@@ -31,10 +32,10 @@ export abstract class Work {
     canvas.height = h;
     this.w = w;
     this.h = h;
-    this.drawAll();
+    this.drawAll(this.context);
   }
   activate(): Promise<null> {
-    this.drawAll();
+    this.drawAll(this.context);
     this.active = true;
     return Promise.resolve(null);
   }
@@ -46,15 +47,18 @@ export abstract class Work {
   init(): void {
     this.clearCanvas();
     this.clearWorkData();
+    this.clearRedoData();
   }
   clearCanvas(context: CanvasRenderingContext2D = this.context, w: number = this.w, h: number = this.h): void {
     context.clearRect(0, 0, w, h);
   }
   setWorkData(workData): void {
     this.workData = workData;
-    this.drawAll();
+    this.drawAll(this.context);
   }
+  abstract drawAll(context: CanvasRenderingContext2D): void;
   abstract undo(): void;
   abstract redo(): void;
   abstract clearWorkData(): void;
+  abstract clearRedoData(): void;
 }
