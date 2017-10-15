@@ -1,0 +1,28 @@
+.work-wrapper-view-container{
+  margin: 2.5%;
+  float:left;
+  border: 3px solid #777;
+  border-radius: 5%;
+  background: white;
+}
+.work-wrapper-view-container:hover {
+  box-shadow: 0 0 3px 5px #555
+}
+.wwGrid {
+  height: 25%;
+  width: 25%;
+}
+.wwRow {
+  height:10%;
+  width:10%;
+  position: absolute;
+  top:85%;
+  /*background: blue;*/
+}
+.wwActive {
+  height: 80%;
+  width: 80%;
+  position: fixed;
+  top: 0;
+  /*background: red;*/
+}

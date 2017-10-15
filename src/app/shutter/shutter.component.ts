@@ -58,7 +58,7 @@ export class ShutterComponent implements OnInit {
   constructor() {
   }
   ngOnInit(): void {
-    this.bar = document.getElementById('shutter').appendChild(generateSvgHighlightBar(window.innerWidth, this.unitLength));
+    this.updateView();
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
@@ -89,6 +89,6 @@ export class ShutterComponent implements OnInit {
     this.getNextRhymeEvent.emit(null);
   }
   updateView(): void {
-
+    this.bar = generateSvgHighlightBar(document.getElementById('svgHighlightBarContainer'), window.innerWidth, this.unitLength);
   }
 }

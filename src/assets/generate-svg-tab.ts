@@ -1,19 +1,18 @@
-export function generateSvgTab (wView: number, unitLength: number, uLx2: number): SVGElement {
-
+export function generateSvgTab (el: HTMLElement, wView: number, unitLength: number, uLx2: number): SVGElement {
   // Sizing Variables
-  const hTotal = unitLength * 4;
+  const hTotal = unitLength * 4.5;
+  const hTotalString = hTotal.toString();
+  const wViewString = wView.toString();
+  const barHeightString = (unitLength * 1.5).toString();
 
+  el.innerHTML = '';
   // SVG Element
-  const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const svgEl = el.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'svg'));
+  svgEl.classList.add('svgTab');
   const setSvgElAttr = svgEl.setAttributeNS.bind(svgEl);
-  setSvgElAttr(null, 'width', wView.toString());
-  setSvgElAttr(null, 'height', hTotal.toString());
-  setSvgElAttr(null, 'viewBox', '0 0 ' + wView + ' ' + hTotal);
-  const svgElStyle = svgEl.style;
-  svgElStyle.position = 'fixed';
-  svgElStyle.top = '0';
-  svgElStyle.left = '0';
-  svgElStyle.pointerEvents = 'none';
+  setSvgElAttr(null, 'width', wViewString);
+  setSvgElAttr(null, 'height', hTotalString);
+  setSvgElAttr(null, 'viewBox', '0 0 ' + wView + ' ' + hTotalString);
 
   const g = svgEl.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'g'));
 
@@ -21,25 +20,26 @@ export function generateSvgTab (wView: number, unitLength: number, uLx2: number)
   const setBarAttr = bar.setAttributeNS.bind(bar);
   setBarAttr(null, 'x', '0');
   setBarAttr(null, 'y', '0');
-  setBarAttr(null, 'width', wView.toString());
-  setBarAttr(null, 'height', unitLength.toString());
+  setBarAttr(null, 'width', wView);
+  setBarAttr(null, 'height', barHeightString.toString());
 
   const tab = g.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'path'));
-  tab.setAttributeNS(null, 'd', generateTabPath(wView, unitLength, uLx2, hTotal));
+  tab.setAttributeNS(null, 'd', generateTabPath(wView, unitLength, uLx2, hTotal, barHeightString));
   return svgEl;
 }
-function generateTabPath (wView: number, unitLength: number, uLx2: number, hTotal: number): string {
+function generateTabPath (wView: number, unitLength: number, uLx2: number, hTotal: number, barHeightString: string): string {
   const quarterCircleBezierOffset = hTotal * (Math.sqrt(2) - 1) / 3;
-  return 'M ' + ((wView - (unitLength * 6)) / 2) + ',' + unitLength +
-    ' a ' + unitLength + ',' + unitLength + ' 0 0 1 ' + unitLength + ',' + unitLength +
-    ' l 0,' + unitLength +
-    ' c 0,' + quarterCircleBezierOffset + ' ' + (unitLength - quarterCircleBezierOffset) + ',' + unitLength +
-      ' ' + unitLength + ',' + unitLength +
+  const uLString = unitLength.toString();
+  return 'M ' + ((wView - (unitLength * 6)) / 2) + ',' + barHeightString +
+    ' a ' + uLString + ',' + uLString + ' 0 0 1 ' + uLString + ',' + uLString +
+    ' l 0,' + uLString +
+    ' c 0,' + quarterCircleBezierOffset + ' ' + (unitLength - quarterCircleBezierOffset) + ',' + uLString +
+      ' ' + uLString + ',' + uLString +
     ' l ' + unitLength * 2 + ',0' +
-    ' c ' + -quarterCircleBezierOffset + ',0 ' + unitLength + ',' + (unitLength - quarterCircleBezierOffset) +
-      ' ' + unitLength + ',' + -unitLength +
+    ' c ' + -quarterCircleBezierOffset + ',0 ' + uLString + ',' + (unitLength - quarterCircleBezierOffset) +
+      ' ' + uLString + ',' + -uLString +
     ' l 0,' + -unitLength +
-    ' a ' + unitLength + ',' + unitLength + ' 0 0 1 ' + unitLength + ',' + -unitLength +
+    ' a ' + uLString + ',' + uLString + ' 0 0 1 ' + uLString + ',' + -unitLength +
     ' l ' + '0,' + -unitLength +
     ' l ' + unitLength * -5 + ',0' +
     ' l ' + '0,' + unitLength * 0.9 +

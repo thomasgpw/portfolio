@@ -67,13 +67,8 @@ export class ContentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const contentEl = document.getElementById('content');
     (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
-    this.createTab(contentEl);
+    this.createTab();
     this.commandStacksKeys = Object.keys(this.commandStacksMap);
-    this.tab.firstElementChild.setAttributeNS(null, 'fill',
-      this.shutterView0Alive
-      ? this.colors['welcomeColor']
-      : this.colors['aboutColor']
-    );
     if (this.workActive !== null) {
       this.workInitFunc();
     }
@@ -84,18 +79,19 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
   updateView(): void {
-    this.styleTab(document.getElementById('content'));
+    this.createTab();
     this.styleDownArrowContentFunc(document.getElementById('downArrow').children[0] as SVGElement);
     if (this.gridButton) {
       this.styleGridButtonFunc(document.getElementById('gridButton').children[0] as SVGElement);
     }
   }
-  createTab(contentEl: HTMLElement): void {
-    this.tab = contentEl.appendChild(generateSvgTab(window.innerWidth, this.unitLength, this.unitLength * 2));
-  }
-  styleTab(contentEl: HTMLElement): void {
-    // Move generate and style tab to diff places one on init other on change&init.
-    this.tab = generateSvgTab(window.innerWidth, this.unitLength, this.unitLength * 2);
+  createTab(): void {
+    this.tab = generateSvgTab(document.getElementById('svgTab'), window.innerWidth, this.unitLength, this.unitLength * 2);
+    this.tab.firstElementChild.setAttributeNS(null, 'fill',
+      this.shutterView0Alive
+      ? this.colors['welcomeColor']
+      : this.colors['aboutColor']
+    );
   }
   styleDownArrowContentFunc(el: SVGElement): void {
     styleDownArrowContent(el.style, this.uLdwx3, this.uLdhx2, this.uLdhx3, this.uLdwOffset);

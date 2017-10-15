@@ -29,7 +29,7 @@ export function styleDownArrowContent(elStyle: CSSStyleDeclaration,
   elStyle.position = 'fixed';
   elStyle.width = uLdwx3;
   elStyle.height = uLdhx2;
-  elStyle.top = uLdhx3;
+  elStyle.top = uLdhx2;
   elStyle.left = uLdwOffset;
   elStyle.zIndex = '2';
 }

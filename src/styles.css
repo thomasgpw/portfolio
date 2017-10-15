@@ -16,18 +16,12 @@ body { padding:0; margin:0; }
   max-width: 100%;
   overflow-wrap: break-word;
 }
-.app-content {
+.content {
   overflow-y: auto;
   overflow-x: auto;
   z-index: -1;
 }
 .shutter {
-  z-index: 1;
-}
-.about {
-  z-index: -1;
-}
-.welcome {
   z-index: 1;
 }
 
@@ -36,37 +30,20 @@ body { padding:0; margin:0; }
   z-index: 2;
   /*position: fixed;*/
 }
-.work-wrapper-view-container{
-  margin: 2.5%;
-  float:left;
-  border: 3px solid #777;
-  border-radius: 5%;
-  background: white;
+.svgHighlightBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 3;
+  color: black;
 }
-.work-wrapper-view-container:hover {
-  box-shadow: 0 0 3px 5px #555
+.svgHighlightBar:hover {
+  color: white;
 }
-.wwGrid {
-  height: 25%;
-  width: 25%;
-}
-.wwRow {
-  height:10%;
-  width:10%;
-  position: absolute;
-  top:85%;
-  /*background: blue;*/
-}
-.wwActive {
-  height: 80%;
-  width: 80%;
+.svgTab {
   position: fixed;
   top: 0;
-  /*background: red;*/
-}
-.canvasOverlay {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  right: 0;
+  left: 0;
+  pointer-events: none;
 }

@@ -28,6 +28,7 @@ export class WelcomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log(document.getElementsByClassName('welcome')[0]);
     (document.getElementById('welcome') as HTMLElement).style.backgroundColor = this.welcomeColor;
   }
   styleLeftArrowFunc(el: SVGAElement) {
