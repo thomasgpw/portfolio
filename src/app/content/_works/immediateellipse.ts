@@ -1,39 +1,32 @@
-import { Work, Point } from './work';
+import { Point, EllipseSet, ImmediateEllipseData } from './work.datatypes';
+import { Work } from './work';
 
-class EllipseSet {
-  public readonly center: Point;
-  public points: Array<Point>;
-  constructor(center: Point) {
-    this.center = center;
-    this.points = [];
-  }
-}
 export class ImmediateEllipse extends Work {
 
   pointerDown = false;
   setNum: number;
   undoSetNum: number;
-  workData: Array<EllipseSet>;
-  undoData: Array<EllipseSet>;
-  constructor (parentElement: Element, workData) {
-    super(parentElement, workData);
+  workData: ImmediateEllipseData;
+  undoData: ImmediateEllipseData;
+  readonly type: string;
+  constructor (parentElement: Element) {
+    super(parentElement);
     this.setNum = 0;
-  }
-  setWorkData(workData: Array<EllipseSet>): void {
-    super.setWorkData(workData);
+    this.type = 'ImmediateEllipse';
+    this.setWorkData([]);
   }
   init(): void {
     super.init();
   }
-  moveLastPoint(fromData: Array<EllipseSet>, toData: Array<EllipseSet>, fromSetNum: number, toSetNum: number): void {
+  moveLastPoint(fromData: ImmediateEllipseData, toData: ImmediateEllipseData, fromSetNum: number, toSetNum: number): void {
     if (fromData[fromSetNum].points.length === 0) {
       delete fromData[fromSetNum];
       fromSetNum -= 1;
     }
     if (fromSetNum === -1) {
-      /* nothing to undo */
+      /* nothing to change */
       fromSetNum = 0;
-      console.log('nothing to undo');
+      console.log('nothing to change');
     } else {
       const ellipseSet = fromData[fromSetNum];
       const undoCenter = ellipseSet.center;
@@ -74,17 +67,17 @@ export class ImmediateEllipse extends Work {
     const setLength = ellipseSet.points.length;
     const center = ellipseSet.center;
     const points = ellipseSet.points;
-    const draw = this.draw.bind(this);
+    const draw = this.draw.bind(this, context, center);
     for (let i = 0; i < setLength; i++) {
-      draw(context, center, points[i]);
+      draw(points[i]);
     }
   }
   drawAll(context: CanvasRenderingContext2D): void {
     const workData = this.workData;
     const workDataLength = workData.length;
-    const drawEllipseSet = this.drawEllipseSet.bind(this);
+    const drawEllipseSet = this.drawEllipseSet.bind(this, context);
     for (let i = 0; i < workDataLength; i++) {
-      drawEllipseSet(context, workData[i]);
+      drawEllipseSet(workData[i]);
     }
   }
   onPointerDown (e: PointerEvent): void {
@@ -99,12 +92,12 @@ export class ImmediateEllipse extends Work {
   onPointerUp (): void {
     this.pointerDown = false;
   }
-  addEllipseSet(center: Point, data: Array<EllipseSet>): number {
+  addEllipseSet(center: Point, data: ImmediateEllipseData): number {
     const setNum = data.length + 1;
     data[setNum] = new EllipseSet(center);
     return setNum;
   }
-  addEllipse(pointer: Point, data: Array<EllipseSet>, setNum: number): void {
+  addEllipse(pointer: Point, data: ImmediateEllipseData, setNum: number): void {
     const ellipseSet = data[setNum];
     ellipseSet.points.push(pointer);
     this.draw(this.context, ellipseSet.center, pointer);
@@ -112,7 +105,7 @@ export class ImmediateEllipse extends Work {
   clearWorkData(): void {
     this.workData = [];
   }
-  clearRedoData(): void {
+  clearUndoData(): void {
     this.undoData = [];
   }
 }

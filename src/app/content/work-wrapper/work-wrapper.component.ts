@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { WorkData } from '../_works/work-data.datatype';
 import { Work } from '../_works/work';
-import { CommandStacks } from '../../app.datatypes';
 import {
   styleWorkWrapperButton,
   styleRightOffset,
@@ -15,7 +15,7 @@ import {
 })
 export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Output() workWrapperInitEvent: EventEmitter<WorkWrapperComponent> = new EventEmitter();
-  @Output() setCommandStacksEvent: EventEmitter<CommandStacks> = new EventEmitter();
+  @Output() setWorkDataEvent: EventEmitter<WorkData> = new EventEmitter();
   @Input() uLdcwx2: string;
   @Input() uLdchx2: string;
   @Input() uLd2cw: string;
@@ -25,7 +25,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Input() bWPdcwx3: string;
   @Input() bWPdch: string;
   @Input() isPortrait: boolean;
-  @Input() commandStacks: CommandStacks;
+  @Input() workData: WorkData;
   work: Work;
   undoPath = '../../../assets/iconmonstr-undo-2.svg';
   settingsPath = '../../../assets/iconmonstr-gear-1.svg';
@@ -38,9 +38,15 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     this.workWrapperInitEvent.emit(this);
   }
   ngOnDestroy(): void {
-    // this.setCommandStacksEvent.emit(this.work.getCommandStacks());
+    // this.setWorkDataEvent.emit(this.work.getWorkData());
   }
-
+  getWorkActive(): boolean {
+    if (!this.work) {
+      return false;
+    } else {
+      return this.work.active;
+    }
+  }
   /* ON CHANGE SPECIFIC FUNCTIONS */
   download(instance: WorkWrapperComponent) {
     const work = this.work;
@@ -50,7 +56,8 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     link.click();
   }
   drawAll(values: number[]): Promise<null> {
-    this.work.drawAll();
+    const work = this.work;
+    work.drawAll(work.context);
     return Promise.resolve(null);
   }
   styleUndoFunc(el: SVGElement) {

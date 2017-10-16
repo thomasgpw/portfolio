@@ -1,28 +1,22 @@
-export class Point {
-  x: number;
-  y: number;
-  constructor (x, y) {
-    this.x = x;
-    this.y = y;
-  }
-}
+import { WorkData } from './work-data.datatype';
+
 export abstract class Work {
+  type: string;
   w: number;
   h: number;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   active: boolean;
-  workData: any;
-  undoData: any;
+  workData: WorkData;
+  undoData: WorkData;
 
-  constructor (parentEl: Element, workData) {
+  constructor (parentEl: Element) {
     const canvas = document.createElement('canvas');
     this.context = canvas.getContext('2d');
     parentEl.appendChild(canvas);
     this.active = false;
     this.canvas = canvas;
     this.resizeCanvas(canvas, parentEl);
-    this.setWorkData(workData);
   }
   resizeCanvas(canvas: HTMLCanvasElement = this.canvas, parentEl: Element = canvas.closest('.work-wrapper-view-container')): void {
     const canvasstyle = canvas.style;
@@ -32,7 +26,6 @@ export abstract class Work {
     canvas.height = h;
     this.w = w;
     this.h = h;
-    this.drawAll(this.context);
   }
   activate(): Promise<null> {
     this.drawAll(this.context);
@@ -47,12 +40,12 @@ export abstract class Work {
   init(): void {
     this.clearCanvas();
     this.clearWorkData();
-    this.clearRedoData();
+    this.clearUndoData();
   }
   clearCanvas(context: CanvasRenderingContext2D = this.context, w: number = this.w, h: number = this.h): void {
     context.clearRect(0, 0, w, h);
   }
-  setWorkData(workData): void {
+  setWorkData(workData: WorkData): void {
     this.workData = workData;
     this.drawAll(this.context);
   }
@@ -60,5 +53,8 @@ export abstract class Work {
   abstract undo(): void;
   abstract redo(): void;
   abstract clearWorkData(): void;
-  abstract clearRedoData(): void;
+  abstract clearUndoData(): void;
+  abstract onPointerDown(Event): void;
+  abstract onPointerMove(Event): void;
+  abstract onPointerUp(): void;
 }

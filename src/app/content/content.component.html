@@ -13,9 +13,9 @@
   (onSVGInserted)='styleDownArrowContentFunc($event)'
   (click)=setAppViewFunc()>
   </div>
-  <div *ngFor='let commandStacksKey of commandStacksKeys;'
-  [id]='commandStacksKey' class='work-wrapper-view-container wwGrid'
-  [@workAnimations]='getStatus(commandStacksKey)'
+  <div *ngFor='let workType of workTypes;'
+  [id]='workType' class='work-wrapper-view-container wwGrid'
+  [@workAnimations]='getStatus(workType)'
   (@workAnimations.done)='resizeWork($event)'
   (click)='workClickFunc($event)'
   >
@@ -29,7 +29,7 @@
     [bWPdcwx3]='bWPdcwx3'
     [bWPdch]='bWPdch'
     [isPortrait]='isPortrait'
-    [commandStacks]='workStates[commandStacksKey]'
+    [workData]='workStates[workType]'
     (workWrapperInitEvent)='addWorkWrapperFunc($event)'
     >
       loading

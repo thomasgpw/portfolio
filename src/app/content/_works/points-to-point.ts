@@ -1,35 +1,32 @@
-import { Work, Point } from './work';
+import { Point, ColorPoint, PointsToPointData } from './work.datatypes';
+import { Work } from './work';
 
-
-class DrawPoint extends Point {
-  color: string;
-  constructor (x, y, color) {
-    super(x, y);
-    this.color = color;
-  }
-}
 export class PointsToPoint extends Work {
 
   pointerDown = false;
-  workData: {centerPoints: Array<DrawPoint>, points: Array<Point>};
+  workData: PointsToPointData;
+  undoData: PointsToPointData;
   r: number;
-
-  constructor (parentElement: Element, workData) {
-    super(parentElement, workData);
+  readonly type: string;
+  constructor (parentElement: Element) {
+    super(parentElement);
+    this.r = 10;
+    this.type = 'PointsToPoint';
+    this.setWorkData({centerPoints: [], points: []});
   }
   init(): void {
     super.init();
     this.generatePoints();
   }
-  generatePoints() {
+  generatePoints(): void {
     const w = this.w;
     const h = this.h;
+    this.workData.centerPoints = [];
     const centerPoints = this.workData.centerPoints;
-    centerPoints = [];
     this.r = 10;
     const dotNum = Math.sqrt(w * h) / 200;
     for (let i = 0; i < dotNum ; i++) {
-      this.dotList.push(new DrawPoint(
+      centerPoints.push(new ColorPoint(
         Math.random(),
         Math.random(),
         '#'
@@ -39,59 +36,94 @@ export class PointsToPoint extends Work {
       ));
     }
   }
+  moveLastPoint(fromPoints: Array<Point>, toPoints: Array<Point>): void {
+    if (fromPoints.length === 0) {
+      /* nothing to change */
+      console.log('nothing to change');
+    } else {
+      toPoints.push(fromPoints.pop());
+    }
+  }
+  undo(): void {
+    this.moveLastPoint(this.workData.points, this.undoData.points);
+    this.drawAll(this.context);
+  }
+  redo(): void {
+    const undoPoints = this.undoData.points;
+    this.moveLastPoint(undoPoints, this.workData.points);
+    this.drawPoint(this.context, undoPoints[undoPoints.length - 1]);
+  }
+  draw(context: CanvasRenderingContext2D, point: Point, centerPoint: ColorPoint) {
+    const w = this.w;
+    const h = this.h;
+    const centerX = centerPoint.x;
+    const centerY = centerPoint.y;
+    const pointX = point.x;
+    const pointY = point.y;
+    const adjustedCenterX = centerX * w;
+    const adjustedCenterY = centerY * h;
+    const circumference = 2 * Math.PI;
+    context.beginPath();
+    context.strokeStyle = centerPoint.color;
+    context.moveTo(adjustedCenterX, adjustedCenterY);
+    context.lineTo(pointX * w, pointY * h);
+    context.stroke();
+    context.beginPath();
+    context.arc(
+      adjustedCenterX, adjustedCenterY,
+      Math.sqrt(Math.pow((centerX - pointX) * w, 2) + Math.pow((centerY - pointY) * h, 2)),
+      0, circumference, false
+    );
+    context.stroke();
+    context.beginPath();
+    context.arc(
+      adjustedCenterX, adjustedCenterY,
+      this.r, 0, circumference, false
+    );
+    context.fill();
+  }
+  drawPoint(context: CanvasRenderingContext2D, point: Point) {
+    const pointX = point.x;
+    const pointY = point.y;
+    const centerPoints = this.workData.centerPoints;
+    const dotNum = centerPoints.length;
+    const draw = this.draw.bind(this, context, point);
+    for (let i = 0; i < dotNum; i++) {
+      draw(centerPoints[i]);
+    }
+  }
+  drawAll(context: CanvasRenderingContext2D) {
+    const workData = this.workData;
+    const centerPoints = workData.centerPoints;
+    const points = workData.points;
+    const pointsLength = points.length;
+    const drawPoint = this.drawPoint.bind(this, context);
+    for (let i = 0; i < pointsLength; i++) {
+      drawPoint(points[i]);
+    }
+  }
   onPointerDown (e: PointerEvent): void {
     if (!e.srcElement.closest('svg')) {
       this.pointerDown = true;
-      this.drawConnections(this.context, e.offsetX / this.w, e.offsetY / this.h);
+      this.addPoint(new Point(e.offsetX / this.w, e.offsetY / this.h));
     }
   }
   onPointerMove (e: PointerEvent): void {
     if (this.pointerDown) {
-      this.drawConnections(this.context, e.offsetX / this.w, e.offsetY / this.h);
+      this.addPoint(new Point(e.offsetX / this.w, e.offsetY / this.h));
     }
   }
   onPointerUp (): void {
     this.pointerDown = false;
   }
-  drawDotList(context: CanvasRenderingContext2D = this.context) {
-    const dotList = this.dotList;
-    const r = this.r;
-    const arc = context.arc;
-    const fill = context.fill.bind(context);
-    for (const dot of dotList) {
-      context.beginPath();
-      this.setStrokeStyle(dot.color, context);
-      this.applyFunc(arc, [['X', dot.x], ['Y', dot.y], r, 0, 2 * Math.PI, false], context);
-      fill();
-    }
+  addPoint(point: Point) {
+    this.workData.points.push(point);
+    this.drawPoint(this.context, point);
   }
-  drawConnections (context: CanvasRenderingContext2D, pointerX: number, pointerY: number) {
-    const commandStacks = this.commandStacks;
-    const w = this.w;
-    const h = this.h;
-    const emptyArray: undefined[] = [];
-    const addAndApply = this.addAndApply.bind(this);
-    const beginPath = context.beginPath;
-    const stroke = context.stroke;
-    const dotList = this.dotList;
-    for (const dot of dotList) {
-      const x = dot.x;
-      const y = dot.y;
-
-      addAndApply(commandStacks, beginPath, emptyArray, context);
-      // addAndApply(commandStacks, this.setStrokeStyle, [dot.color, context], context);
-      addAndApply(commandStacks, context.moveTo, [['X', pointerX], ['Y', pointerY]], context, w, h);
-      addAndApply(commandStacks, context.lineTo, [['X', x], ['Y', y]], context, w, h);
-      addAndApply(commandStacks, stroke, emptyArray, context);
-      addAndApply(commandStacks, beginPath, emptyArray, context);
-      addAndApply(commandStacks, context.arc, [
-        ['X', x], ['Y', y],
-        ['XY', pointerX - x, pointerY - y],
-        0, 2 * Math.PI, false
-      ], context, w, h);
-      addAndApply(commandStacks, stroke, emptyArray, context);
-    }
-    addAndApply(commandStacks, context.closePath, emptyArray, context);
-    this.drawDotList();
+  clearWorkData(): void {
+    this.workData = {centerPoints: [], points: []};
+  }
+  clearUndoData(): void {
+    this.undoData = {centerPoints: [], points: []};
   }
 }

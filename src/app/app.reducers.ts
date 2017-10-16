@@ -1,6 +1,8 @@
 import { ActionReducerMap, Action, ActionReducer, MetaReducer } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import { AppState, CommandStacks, ViewState, IterableStringMap, IterableStringInstance } from './app.datatypes';
+import { WorkData } from './content/_works/work-data.datatype';
+import { WorkStates } from './content/_works/work-states.datatype';
+import { AppState, ViewState, IterableStringMap, IterableStringInstance } from './app.datatypes';
 
 /* ACTION TYPES */
 const SET_APP_VIEW = 'SET_APP_VIEW';
@@ -10,9 +12,9 @@ const SET_COLOR = 'SET_COLOR';
 const SET_UNIT_LENGTH = 'SET_UNIT_LENGTH';
 const SET_IS_PORTRAIT = 'SET_IS_PORTRAIT';
 const SET_WORK_ACTIVE = 'SET_WORK_ACTIVE';
-const SET_COMMAND_STACKS_MAP = 'SET_COMMAND_STACKS_MAP';
-const SET_COMMAND_STACKS = 'SET_COMMAND_STACKS';
-const DELETE_COMMAND_STACKS = 'DELETE_COMMAND_STACKS';
+const SET_WORK_STATES = 'SET_WORK_STATES';
+const SET_WORK_DATA = 'SET_WORK_DATA';
+const DELETE_WORK_DATA = 'DELETE_WORK_DATA';
 
 export const VIEW0_ALIVE = 'VIEW0_ALIVE';
 export const VIEW1_ALIVE = 'VIEW1_ALIVE';
@@ -52,17 +54,17 @@ export class SetWorkActiveAction implements Action {
   readonly type = SET_WORK_ACTIVE;
   constructor(public payload: number) {}
 }
-export class SetCommandStacksMapAction implements Action {
-  readonly type = SET_COMMAND_STACKS_MAP;
-  constructor(public payload: {[key: number]: CommandStacks}) {}
+export class SetWorkStatesAction implements Action {
+  readonly type = SET_WORK_STATES;
+  constructor(public payload: WorkStates) {}
 }
-export class SetCommandStacksAction implements Action {
-  readonly type = SET_COMMAND_STACKS;
-  constructor(public payload: CommandStacks) {}
+export class SetWorkDataAction implements Action {
+  readonly type = SET_WORK_DATA;
+  constructor(public payload: WorkData) {}
 }
-export class DeleteCommandStacksAction implements Action {
-  readonly type = DELETE_COMMAND_STACKS;
-  constructor(public payload: number) {}
+export class DeleteWorkDataAction implements Action {
+  readonly type = DELETE_WORK_DATA;
+  constructor(public payload: string) {}
 }
 
 /* REDUCERS */
@@ -167,16 +169,16 @@ export function workActiveReducer(state: number, action: Actions): number {
       return state;
   }
 }
-export function workStatesReducer(state: {[key: number]: CommandStacks}, action: Actions): {[key: number]: CommandStacks} {
+export function workStatesReducer(state: WorkStates, action: Actions): WorkStates {
   const payload = action.payload;
   switch (action.type) {
-    case SET_COMMAND_STACKS_MAP:
+    case SET_WORK_STATES:
       return payload;
-    case SET_COMMAND_STACKS:
-      state[payload.id] = payload;
+    case SET_WORK_DATA:
+      state[payload.key] = payload.workData;
       return state;
-    case DELETE_COMMAND_STACKS:
-      state[payload] = new CommandStacks(payload);
+    case DELETE_WORK_DATA:
+      delete state[payload];
       return state;
     default:
       return state;
@@ -192,8 +194,9 @@ export type Actions
   | SetUnitLengthAction
   | SetIsPortraitAction
   | SetWorkActiveAction
-  | SetCommandStacksAction
-  | DeleteCommandStacksAction;
+  | SetWorkStatesAction
+  | SetWorkDataAction
+  | DeleteWorkDataAction;
 
 export const reducers: ActionReducerMap<AppState> = {
   appView: appViewReducer,

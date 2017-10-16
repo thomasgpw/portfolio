@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, state, animate, transition} from '@angular/animations';
 
+import { WorkData } from './_works/work-data.datatype';
+import { WorkStates } from './_works/work-states.datatype';
 import { WorkManagerService } from '../_services/work-manager.service';
-import { CommandStacks } from '../app.datatypes';
 import { generateSvgTab } from '../../assets/generate-svg-tab';
 import { styleDownArrowContent, styleGridButton } from '../../apply-styles';
 import { workTransitionConfig, gridWorkStyle, activeWorkStyle, rowWorkStyle } from '../_animations/styles';
@@ -30,8 +31,8 @@ import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
 export class ContentComponent implements OnInit, OnDestroy {
   @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() setWorkActiveEvent: EventEmitter<number> = new EventEmitter();
-  @Output() setCommandStacksEvent: EventEmitter<CommandStacks> = new EventEmitter();
-  @Output() deleteComandStacksEvent: EventEmitter<number> = new EventEmitter();
+  @Output() setWorkDataEvent: EventEmitter<WorkData> = new EventEmitter();
+  @Output() deleteWorkDataEvent: EventEmitter<string> = new EventEmitter();
   @Input() shutterView0Alive: boolean;
   @Input() unitLength: number;
   @Input() uLdwx3: string;
@@ -49,10 +50,10 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() bWPdch: string;
   @Input() workActive: number;
   @Input() isPortrait: boolean;
-  @Input() workStates: {[key: number]: CommandStacks};
+  @Input() workStates: WorkStates;
   @Input() colors: {[key: string]: string};
 
-  commandStacksKeys;
+  workTypes: Array<string>;
   gridButton = false;
   tab: SVGElement;
   arrowPath = '../../assets/arrow.svg';
@@ -60,14 +61,16 @@ export class ContentComponent implements OnInit, OnDestroy {
   readonly _workManagerService: WorkManagerService;
   constructor() {
     this._workManagerService = new WorkManagerService();
-    this._workManagerService.setActive(this.workActive);
+    const _workManagerService = this._workManagerService;
+    _workManagerService.setWorkStates(this.workStates);
+    _workManagerService.setActive(this.workActive);
   }
 
   ngOnInit(): void {
     const contentEl = document.getElementById('content');
     (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
     this.createTab(contentEl);
-    this.commandStacksKeys = Object.keys(this.workStates);
+    this.workTypes = Object.keys(this.workStates);
     this.tab.firstElementChild.setAttributeNS(null, 'fill',
       this.shutterView0Alive
       ? this.colors['welcomeColor']
@@ -104,9 +107,9 @@ export class ContentComponent implements OnInit, OnDestroy {
   getWorkWrapper(id: number): WorkWrapperComponent {
     return this._workManagerService.getWorkWrapper(id);
   }
-  getStatus(i: string): string {
+  getStatus(workType: string): string {
     const pattern = /^ww/;
-    const elClassList = document.getElementsByClassName('work-wrapper-view-container')[i].classList;
+    const elClassList = document.getElementsByClassName('work-wrapper-view-container')[this.workTypes.indexOf(workType)].classList;
     const elClassListLength = elClassList.length;
     for (let c = 0; c < elClassListLength; ++c) {
       if (elClassList[c].match(pattern)) {
@@ -128,11 +131,11 @@ export class ContentComponent implements OnInit, OnDestroy {
   setWorkActiveFunc(id: number): void {
     this.setWorkActiveEvent.emit(id);
   }
-  setCommandStacksFunc(commandStacks: CommandStacks): void {
-    this.setCommandStacksEvent.emit(commandStacks);
+  setWorkDataFunc(workData: WorkData): void {
+    this.setWorkDataEvent.emit(workData);
   }
-  deleteCommandStacksFunc(id: number): void {
-    this.deleteComandStacksEvent.emit(id);
+  deleteWorkDataFunc(key: string): void {
+    this.deleteWorkDataEvent.emit(key);
   }
   forceGridClass(): void {
     const elArray = document.getElementsByClassName('work-wrapper-view-container');
@@ -152,7 +155,9 @@ export class ContentComponent implements OnInit, OnDestroy {
     }
   }
   resizeWork(e): void {
-    this.getWorkWrapper(e.element.id.toString()).work.resizeCanvas();
+    const work = this.getWorkWrapper(this.workTypes.indexOf(e.element.id.toString())).work;
+    work.resizeCanvas();
+    work.drawAll(work.context);
   }
   addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
     this._workManagerService.addWorkWrapper(workWrapperComponentInstance);

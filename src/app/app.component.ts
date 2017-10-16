@@ -12,7 +12,9 @@ import { NAMES } from './_text/names';
 import { TIPS } from './_text/tips';
 import { RHYMES } from './_text/rhymes';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle } from './_animations/styles';
-import { AppState, CommandStacks, ViewState, IterableStringMap, IterableStringInstance } from './app.datatypes';
+import { WorkData } from './content/_works/work-data.datatype';
+import { WorkStates } from './content/_works/work-states.datatype';
+import { AppState, ViewState, IterableStringMap, IterableStringInstance } from './app.datatypes';
 import {
   SetAppViewAction,
   SetShutterViewAction,
@@ -21,9 +23,9 @@ import {
   SetUnitLengthAction,
   SetIsPortraitAction,
   SetWorkActiveAction,
-  SetCommandStacksMapAction,
-  SetCommandStacksAction,
-  DeleteCommandStacksAction
+  SetWorkStatesAction,
+  SetWorkDataAction,
+  DeleteWorkDataAction
 } from './app.reducers';
 import { ShutterComponent } from './shutter/shutter.component';
 import { ContentComponent } from './content/content.component';
@@ -76,7 +78,7 @@ export class AppComponent implements OnInit {
   unitLength$: Observable<number>;
   isPortrait$: Observable<boolean>;
   workActive$: Observable<number>;
-  workStates$: Observable<{[key: number]: CommandStacks}>;
+  workStates$: Observable<WorkStates>;
   unitLengthReferences: {
     uLdwx3: string,
     uLdhx2: string,
@@ -182,11 +184,10 @@ export class AppComponent implements OnInit {
       this.setColor('#7486B4');
       this.setViewAspects();
       this.setWorkActive(null);
-      this.setCommandStacksMap({});
-      this.setCommandStacks(new CommandStacks(0));
-      this.setCommandStacks(new CommandStacks(1));
-      this.setCommandStacks(new CommandStacks(2));
-      this.setCommandStacks(new CommandStacks(3));
+      this.setWorkStates({
+        ImmediateEllipse: [],
+        PointsToPoint: {centerPoints: [], points: []}
+      });
     // }
   }
 
@@ -337,13 +338,13 @@ export class AppComponent implements OnInit {
   setWorkActive(id: number): void {
     this.store.dispatch(new SetWorkActiveAction(id));
   }
-  setCommandStacksMap(workStates: {[key: number]: CommandStacks}) {
-    this.store.dispatch(new SetCommandStacksMapAction(workStates));
+  setWorkStates(workStates: WorkStates) {
+    this.store.dispatch(new SetWorkStatesAction(workStates));
   }
-  setCommandStacks(commandStacks: CommandStacks): void {
-    this.store.dispatch(new SetCommandStacksAction(commandStacks));
+  setWorkData(workData: WorkData): void {
+    this.store.dispatch(new SetWorkDataAction(workData));
   }
-  deleteCommandStacks(id: number): void {
-    this.store.dispatch(new DeleteCommandStacksAction(id));
+  deleteWorkData(key: string): void {
+    this.store.dispatch(new DeleteWorkDataAction(key));
   }
 }
