@@ -5,8 +5,8 @@ import { IterableStringInstance } from '../app.datatypes';
 export class StringService {
   private STRINGS: string[];
   private currentIndex: number;
-  constructor() {
-    this.STRINGS = ['unset'];
+  constructor(INSTRINGS: string[]) {
+    this.STRINGS = INSTRINGS;
     this.currentIndex = 0;
   }
   setStrings(STRINGS: string[]) {

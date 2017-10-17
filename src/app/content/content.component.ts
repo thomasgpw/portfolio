@@ -60,10 +60,8 @@ export class ContentComponent implements OnInit, OnDestroy {
   gridButtonPath = '../../assets/gridbutton.svg';
   readonly _workManagerService: WorkManagerService;
   constructor() {
-    this._workManagerService = new WorkManagerService();
+    this._workManagerService = new WorkManagerService(this.workActive);
     const _workManagerService = this._workManagerService;
-    _workManagerService.setWorkStates(this.workStates);
-    _workManagerService.setActive(this.workActive);
   }
 
   ngOnInit(): void {
@@ -155,9 +153,13 @@ export class ContentComponent implements OnInit, OnDestroy {
     }
   }
   resizeWork(e): void {
-    const work = this.getWorkWrapper(this.workTypes.indexOf(e.element.id.toString())).work;
-    work.resizeCanvas();
-    work.drawAll(work.context);
+    const workWrapperInstance = this.getWorkWrapper(this.workTypes.indexOf(e.element.id.toString()));
+    console.log(e);
+    if (workWrapperInstance.work) {
+      const work = workWrapperInstance.work;
+      work.resizeCanvas();
+      work.drawAll(work.context);
+    }
   }
   addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
     this._workManagerService.addWorkWrapper(workWrapperComponentInstance);

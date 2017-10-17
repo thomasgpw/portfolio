@@ -5,16 +5,13 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Rx';
 
 import { environment } from '../environments/environment';
+import { AppState, ViewState, IterableStringInstance } from './app.datatypes';
 import { StringService } from './_services/string.service';
+import { StringManagerService } from './_services/string-manager.service';
 import { ViewControlService } from './_services/view-control.service';
-import { GREETINGS } from './_text/greetings';
-import { NAMES } from './_text/names';
-import { TIPS } from './_text/tips';
-import { RHYMES } from './_text/rhymes';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle } from './_animations/styles';
 import { WorkData } from './content/_works/work-data.datatype';
 import { WorkStates } from './content/_works/work-states.datatype';
-import { AppState, ViewState, IterableStringMap, IterableStringInstance } from './app.datatypes';
 import {
   SetAppViewAction,
   SetShutterViewAction,
@@ -35,7 +32,8 @@ import { ContentComponent } from './content/content.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   providers: [
-    StringService
+    StringService,
+    StringManagerService
   ],
   animations: [
     trigger('shutterView', [
@@ -61,9 +59,7 @@ import { ContentComponent } from './content/content.component';
 export class AppComponent implements OnInit {
   @ViewChild(ShutterComponent) shutterInstance: ShutterComponent;
   @ViewChild(ContentComponent) contentInstance: ContentComponent;
-  _stringServiceMap: {
-    [key: string]: StringService
-  } = {};
+  _stringManagerService: StringManagerService;
   _appViewControlService: ViewControlService;
   _shutterViewControlService: ViewControlService;
   appView0Alive$: Observable<boolean>;
@@ -114,14 +110,8 @@ export class AppComponent implements OnInit {
 
   /* LIFECYCLE HOOK FUNCTIONS */
   constructor(private store: Store<AppState>) {
-    this._stringServiceMap.greeting = new StringService();
-    this._stringServiceMap.greeting.setStrings(GREETINGS);
-    this._stringServiceMap.name = new StringService();
-    this._stringServiceMap.name.setStrings(NAMES);
-    this._stringServiceMap.tip = new StringService();
-    this._stringServiceMap.tip.setStrings(TIPS);
-    this._stringServiceMap.rhyme = new StringService();
-    this._stringServiceMap.rhyme.setStrings(RHYMES);
+    this._stringManagerService = new StringManagerService();
+    this.getRandomTexts();
     this._appViewControlService = new ViewControlService();
     this._appViewControlService.setTransitionTime(viewTransitionTime);
     this._shutterViewControlService = new ViewControlService();
@@ -167,7 +157,6 @@ export class AppComponent implements OnInit {
       store.select(state => state.texts.greeting.payload),
       store.select(state => state.texts.name.payload)
     ).subscribe(state => this.concatGreeting(state));
-    this.getRandomString('rhyme');
     this.rhyme$.subscribe(state => this.concatRhyme(state));
     this.color$.subscribe(state => this.getColors(state));
     this.unitLength$.subscribe(state => this.setUnitLengthReferences(state));
@@ -178,9 +167,6 @@ export class AppComponent implements OnInit {
     // if (!environment.production) {
       this.goAppView(true);
       this.goShutterView(true);
-      this.getRandomString('greeting');
-      this.getRandomString('name');
-      this.getRandomString('tip');
       this.setColor('#7486B4');
       this.setViewAspects();
       this.setWorkActive(null);
@@ -219,17 +205,38 @@ export class AppComponent implements OnInit {
   goShutterView(view0: boolean): void {
     this._shutterViewControlService.goView(view0);
   }
-  getNextString(type: string) {
-    this.setString({
-      payload: this._stringServiceMap[type].getNextString(),
-      type: type
-    });
+  getRandomTexts(): void {
+    this.getRandomGreeting();
+    this.getRandomName();
+    this.getRandomTip();
+    this.getRandomRhyme();
   }
-  getRandomString(type: string): void {
-    this.setString({
-      payload: this._stringServiceMap[type].getRandomString(),
-      type: type
-    });
+  getNextGreeting(): void {
+    this.setString(this._stringManagerService.getNextString('greeting'));
+  }
+  getNextName(): void {
+    this.setString(this._stringManagerService.getNextString('name'));
+  }
+  getNextTip(): void {
+    this.setString(this._stringManagerService.getNextString('tip'));
+  }
+  getNextRhyme(): void {
+    this.setString(this._stringManagerService.getNextString('rhyme'));
+  }
+  getRandomGreeting(): void {
+    this.setString(this._stringManagerService.getRandomString('greeting'));
+  }
+  getRandomName(): void {
+    this.setString(this._stringManagerService.getRandomString('name'));
+  }
+  getRandomTip(): void {
+    this.setString(this._stringManagerService.getRandomString('tip'));
+  }
+  getRandomRhyme(): void {
+    this.setString(this._stringManagerService.getRandomString('rhyme'));
+  }
+  setName(value: string) {
+    this.setString(this._stringManagerService.setString(value, 'name'));
   }
   concatGreeting([greeting, name]: string[]): void {
     if (greeting && name) {

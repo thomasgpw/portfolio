@@ -16,14 +16,15 @@ export class WorkManagerService {
   private active: number;
   private readonly WORKS;
   private workStates: WorkStates;
-  constructor() {
+  constructor(workActive: number) {
     this.WORK_WRAPPERS = {};
     this.active = null;
     this.WORKS = [ImmediateEllipse, PointsToPoint];
+    this.setActive(workActive);
     this.setWorkStates({
-      ImmediateEllipse: [],
-      PointsToPoint: {centerPoints: [], points: []}
-    });
+        ImmediateEllipse: [],
+        PointsToPoint: {centerPoints: [], points: []}
+      });
   }
   setWorkStates(workStates: WorkStates) {
     this.workStates = workStates;
@@ -47,8 +48,11 @@ export class WorkManagerService {
     this.WORK_WRAPPERS[i] = workWrapper;
     let work = workWrapper.work;
     work = this.assignWork(i, document.getElementsByClassName('canvasWrapper')[i]);
-    this.checkWorkStates().then(() => work.setWorkData(this.workStates[work.type]));
-    work.init();
+    // this.checkWorkStates().then(() => 
+    work.setWorkData(this.workStates[work.type])
+    // );
+    work.resizeCanvas();
+    work.drawAll(work.context);
   }
   getWorkWrapper(id: number): WorkWrapperComponent {
     return this.WORK_WRAPPERS[id];

@@ -21,11 +21,11 @@
     [colors]='colors'
     (setAppViewEvent)='goAppView(false)'
     (setShutterViewEvent)='goShutterView($event)'
-    (getNextGreetingEvent)='getNextString("greeting")'
-    (getRandomNameEvent)='getRandomString("name")'
-    (setNameEvent)='setString(IterableStringInstance($event, "name"))'
-    (getNextTipEvent)='getNextString("tip")'
-    (getNextRhymeEvent)='getNextString("rhyme")'
+    (getNextGreetingEvent)='getNextGreeting()'
+    (getRandomNameEvent)='getRandomName()'
+    (setNameEvent)='setName($event)'
+    (getNextTipEvent)='getNextTip()'
+    (getNextRhymeEvent)='getNextRhyme()'
     >
       app-shutter error
     </app-shutter>
