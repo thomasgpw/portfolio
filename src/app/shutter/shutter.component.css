@@ -1,0 +1,6 @@
+.about {
+  z-index: -1;
+}
+.welcome {
+  z-index: 1;
+}

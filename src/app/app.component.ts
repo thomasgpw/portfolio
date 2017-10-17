@@ -11,6 +11,7 @@ import { StringManagerService } from './_services/string-manager.service';
 import { ViewControlService } from './_services/view-control.service';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle } from './_animations/styles';
 import { WorkData } from './content/_works/work-data.datatype';
+import { WorkState } from './content/_works/work-state.datatype';
 import { WorkStates } from './content/_works/work-states.datatype';
 import {
   SetAppViewAction,
@@ -129,8 +130,8 @@ export class AppComponent implements OnInit {
     this.isPortrait$ = store.select(state => state.isPortrait);
     this.workActive$ = store.select(state => state.workActive);
     this.workStates$ = store.select(state => state.workStates);
-    this.appAnimationState$.subscribe(state => console.log(state));
-    this.shutterAnimationState$.subscribe(state => console.log(state));
+    // this.appAnimationState$.subscribe(state => console.log(state));
+    // this.shutterAnimationState$.subscribe(state => console.log(state));
     Observable.combineLatest(
       this.appView0Alive$,
       this.appView1Alive$,
@@ -165,15 +166,15 @@ export class AppComponent implements OnInit {
   }
   ngOnInit(): void {
     // if (!environment.production) {
-      this.goAppView(true);
+      this.goAppView(false);
       this.goShutterView(true);
       this.setColor('#7486B4');
       this.setViewAspects();
       this.setWorkActive(null);
-      this.setWorkStates({
-        ImmediateEllipse: [],
-        PointsToPoint: {centerPoints: [], points: []}
-      });
+      this.setWorkStates([
+        new WorkState([], 'ImmediateEllipse'),
+        new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
+      ]);
     // }
   }
 

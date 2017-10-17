@@ -54,7 +54,7 @@ export abstract class Work {
   abstract redo(): void;
   abstract clearWorkData(): void;
   abstract clearUndoData(): void;
-  abstract onPointerDown(Event): void;
-  abstract onPointerMove(Event): void;
+  abstract onPointerDown(e: PointerEvent): void;
+  abstract onPointerMove(e: PointerEvent): void;
   abstract onPointerUp(): void;
 }

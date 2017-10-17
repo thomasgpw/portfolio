@@ -102,9 +102,20 @@ export class PointsToPoint extends Work {
       drawPoint(points[i]);
     }
   }
+  addPoint(point: Point) {
+    this.workData.points.push(point);
+    this.drawPoint(this.context, point);
+  }
+  clearWorkData(): void {
+    this.workData = {centerPoints: [], points: []};
+  }
+  clearUndoData(): void {
+    this.undoData = {centerPoints: [], points: []};
+  }
   onPointerDown (e: PointerEvent): void {
     if (!e.srcElement.closest('svg')) {
       this.pointerDown = true;
+      console.log('P2PpointerDown');
       this.addPoint(new Point(e.offsetX / this.w, e.offsetY / this.h));
     }
   }
@@ -115,15 +126,5 @@ export class PointsToPoint extends Work {
   }
   onPointerUp (): void {
     this.pointerDown = false;
-  }
-  addPoint(point: Point) {
-    this.workData.points.push(point);
-    this.drawPoint(this.context, point);
-  }
-  clearWorkData(): void {
-    this.workData = {centerPoints: [], points: []};
-  }
-  clearUndoData(): void {
-    this.undoData = {centerPoints: [], points: []};
   }
 }

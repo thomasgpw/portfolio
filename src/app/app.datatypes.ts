@@ -1,4 +1,4 @@
-import { WorkData } from './content/_works/work-data.datatype';
+import { WorkStates } from './content/_works/work-states.datatype';
 export interface AppState {
   appView: ViewState;
   shutterView: ViewState;
@@ -7,7 +7,7 @@ export interface AppState {
   unitLength: number;
   isPortrait: boolean;
   workActive: number;
-  workStates: {[key: string]: WorkData};
+  workStates: WorkStates;
 }
 // export class CommandStacks {
 //   id: number;

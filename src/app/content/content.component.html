@@ -13,9 +13,10 @@
   (onSVGInserted)='styleDownArrowContentFunc($event)'
   (click)=setAppViewFunc()>
   </div>
-  <div *ngFor='let workType of workTypes;'
-  [id]='workType' class='work-wrapper-view-container wwGrid'
-  [@workAnimations]='getStatus(workType)'
+  <div id="svgTab"> </div>
+  <div *ngFor='let workState of workStates; let i = index'
+  [id]='i' class='work-wrapper-view-container wwGrid'
+  [@workAnimations]='getStatus(i)'
   (@workAnimations.done)='resizeWork($event)'
   (click)='workClickFunc($event)'
   >
@@ -29,8 +30,11 @@
     [bWPdcwx3]='bWPdcwx3'
     [bWPdch]='bWPdch'
     [isPortrait]='isPortrait'
-    [workData]='workStates[workType]'
+    [workData]='workState.workData'
+    [type]='workState.type'
     (workWrapperInitEvent)='addWorkWrapperFunc($event)'
+    (setActiveEvent)='setWorkActiveFunc(i)'
+    (unsetActiveEvent)='setWorkActiveFunc(null)'
     >
       loading
     </app-work-wrapper>

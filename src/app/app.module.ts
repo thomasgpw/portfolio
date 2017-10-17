@@ -10,8 +10,9 @@ import { ContentComponent } from './content/content.component';
 import { WelcomeComponent } from './shutter/welcome/welcome.component';
 import { AboutComponent } from './shutter/about/about.component';
 import { WorkWrapperComponent } from './content/work-wrapper/work-wrapper.component';
-import { reducers, metaReducers } from './app.reducers';
+import { WorkState } from './content/_works/work-state.datatype';
 import { AppState, ViewState } from './app.datatypes';
+import { reducers, metaReducers } from './app.reducers';
 
 // Later can grab data and overwrite initial state
 const stateFromMemory: AppState = undefined;
@@ -38,10 +39,10 @@ export const initialState: AppState = {
   unitLength: null,
   isPortrait: null,
   workActive: null,
-  workStates: {
-    ImmediateEllipse: [],
-    PointsToPoint: {centerPoints: [], points: []}
-  }
+  workStates: [
+    new WorkState([], 'ImmediateEllipse'),
+    new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
+  ]
 };
 export function getInitialState() {
   return {...initialState, ...stateFromMemory};

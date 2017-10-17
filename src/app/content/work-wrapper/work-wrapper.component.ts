@@ -16,6 +16,8 @@ import {
 export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Output() workWrapperInitEvent: EventEmitter<WorkWrapperComponent> = new EventEmitter();
   @Output() setWorkDataEvent: EventEmitter<WorkData> = new EventEmitter();
+  @Output() setActiveEvent: EventEmitter<null> = new EventEmitter();
+  @Output() unsetActiveEvent: EventEmitter<null> = new EventEmitter();
   @Input() uLdcwx2: string;
   @Input() uLdchx2: string;
   @Input() uLd2cw: string;
@@ -26,6 +28,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Input() bWPdch: string;
   @Input() isPortrait: boolean;
   @Input() workData: WorkData;
+  @Input() type: string;
   work: Work;
   undoPath = '../../../assets/iconmonstr-undo-2.svg';
   settingsPath = '../../../assets/iconmonstr-gear-1.svg';
@@ -40,14 +43,20 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // this.setWorkDataEvent.emit(this.work.getWorkData());
   }
-  getWorkActive(): boolean {
-    if (!this.work) {
-      return false;
-    } else {
-      return this.work.active;
-    }
-  }
+  // getWorkActive(): boolean {
+  //   if (!this.work) {
+  //     return false;
+  //   } else {
+  //     return this.work.active;
+  //   }
+  // }
   /* ON CHANGE SPECIFIC FUNCTIONS */
+  activate(): void {
+    this.work.activate().then(resolve => this.setActiveEvent.emit(null));
+  }
+  deactivate(): void {
+    this.work.deactivate().then(resolve => this.unsetActiveEvent.emit(null));
+  }
   download(instance: WorkWrapperComponent) {
     const work = this.work;
     const link = document.getElementById('downloadLink') as HTMLAnchorElement;
@@ -95,12 +104,12 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   /* EVENT FUNCTIONS */
   @HostListener('pointerdown', ['$event']) onPointerDown() {
     if (this.work.active) {
-      this.work.onPointerDown(event);
+      this.work.onPointerDown(event as PointerEvent);
     }
   }
   @HostListener('window: pointermove', ['$event']) onPointerMove() {
     if (this.work.active) {
-      this.work.onPointerMove(event);
+      this.work.onPointerMove(event as PointerEvent);
     }
   }
   @HostListener('window: pointerup') onPointerUp() {

@@ -28,6 +28,7 @@ export class ImmediateEllipse extends Work {
       fromSetNum = 0;
       console.log('nothing to change');
     } else {
+      console.log(fromData, fromSetNum);
       const ellipseSet = fromData[fromSetNum];
       const undoCenter = ellipseSet.center;
       const undoPoint = ellipseSet.points.pop();
@@ -80,18 +81,6 @@ export class ImmediateEllipse extends Work {
       drawEllipseSet(workData[i]);
     }
   }
-  onPointerDown (e: PointerEvent): void {
-    this.pointerDown = true;
-    this.setNum = this.addEllipseSet(new Point(e.offsetX / this.w, e.offsetY / this.h), this.workData);
-  }
-  onPointerMove (e: PointerEvent): void {
-    if (this.pointerDown) {
-      this.addEllipse(new Point(e.offsetX / this.w, e.offsetY / this.h), this.workData, this.setNum);
-    }
-  }
-  onPointerUp (): void {
-    this.pointerDown = false;
-  }
   addEllipseSet(center: Point, data: ImmediateEllipseData): number {
     const setNum = data.length + 1;
     data[setNum] = new EllipseSet(center);
@@ -107,5 +96,18 @@ export class ImmediateEllipse extends Work {
   }
   clearUndoData(): void {
     this.undoData = [];
+  }
+  onPointerDown (e: PointerEvent): void {
+    this.pointerDown = true;
+    this.setNum = this.addEllipseSet(new Point(e.offsetX / this.w, e.offsetY / this.h), this.workData);
+    this.addEllipse(new Point(e.offsetX / this.w, e.offsetY / this.h), this.workData, this.setNum);
+  }
+  onPointerMove (e: PointerEvent): void {
+    if (this.pointerDown) {
+      this.addEllipse(new Point(e.offsetX / this.w, e.offsetY / this.h), this.workData, this.setNum);
+    }
+  }
+  onPointerUp (): void {
+    this.pointerDown = false;
   }
 }

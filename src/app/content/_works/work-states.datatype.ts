@@ -1,3 +1,3 @@
-import { WorkData } from './work-data.datatype';
+import { WorkState } from './work-state.datatype';
 
-export interface WorkStates {[key: string]: WorkData; }
+export type WorkStates = Array<WorkState>;

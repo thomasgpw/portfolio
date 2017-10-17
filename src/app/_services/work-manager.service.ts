@@ -1,73 +1,79 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { WorkData } from '../content/_works/work-data.datatype';
+import { WorkState } from '../content/_works/work-state.datatype';
 import { WorkStates } from '../content/_works/work-states.datatype';
 import { WorkWrapperComponent } from '../content/work-wrapper/work-wrapper.component';
 import { Work } from '../content/_works/work';
+import { ImmediateEllipse } from '../content/_works/immediate-ellipse';
 import { PointsToPoint } from '../content/_works/points-to-point';
-import { ImmediateEllipse } from '../content/_works/immediateellipse';
 
-type AllWorks
-  = ImmediateEllipse
-  | PointsToPoint;
 @Injectable()
 export class WorkManagerService {
-  private readonly WORK_WRAPPERS: {[key: number]: WorkWrapperComponent};
-  private active: number;
-  private readonly WORKS;
-  private workStates: WorkStates;
-  constructor(workActive: number) {
-    this.WORK_WRAPPERS = {};
-    this.active = null;
-    this.WORKS = [ImmediateEllipse, PointsToPoint];
-    this.setActive(workActive);
-    this.setWorkStates({
-        ImmediateEllipse: [],
-        PointsToPoint: {centerPoints: [], points: []}
-      });
-  }
-  setWorkStates(workStates: WorkStates) {
-    this.workStates = workStates;
-  }
-  checkWorkStates(): Promise<null> {
-    if (!this.workStates) {
-      this.setWorkStates({
-        ImmediateEllipse: [],
-        PointsToPoint: {centerPoints: [], points: []}
-      });
-      return Promise.resolve(null);
-    } else {
-      return Promise.resolve(null);
-    }
+  private readonly WORK_WRAPPERS: Array<WorkWrapperComponent>;
+  // private workStates: WorkStates;
+  constructor(
+    // workStates: WorkStates
+  ) {
+    // this.setWorkStates(workStates);
+    this.WORK_WRAPPERS = [];
   }
   addWorkWrapper(workWrapper: WorkWrapperComponent) {
     console.log('addworkwrapper');
-    const existingKeys = Object.keys(this.WORK_WRAPPERS);
-    let i = 0;
-    while (existingKeys.includes(i.toString())) {i++; }
-    this.WORK_WRAPPERS[i] = workWrapper;
-    let work = workWrapper.work;
-    work = this.assignWork(i, document.getElementsByClassName('canvasWrapper')[i]);
-    // this.checkWorkStates().then(() => 
-    work.setWorkData(this.workStates[work.type])
-    // );
+    const WORK_WRAPPERS = this.WORK_WRAPPERS;
+    const i = WORK_WRAPPERS.length;
+    WORK_WRAPPERS[i] = workWrapper;
+    workWrapper.work = this.assignWork(workWrapper.type, document.getElementsByClassName('canvasWrapper')[i]);
+    const work = workWrapper.work;
     work.resizeCanvas();
     work.drawAll(work.context);
   }
-  getWorkWrapper(id: number): WorkWrapperComponent {
-    return this.WORK_WRAPPERS[id];
+  getWorkWrappers(): Array<WorkWrapperComponent> {
+    return this.WORK_WRAPPERS;
   }
-  assignWork(id: number, parentElement: Element): Work {
-    const WORKS = this.WORKS;
-    const work = WORKS[id % WORKS.length];
-    return new work(parentElement);
+  assignWork(type: string, parentElement: Element): Work {
+    switch (type) {
+      case 'ImmediateEllipse':
+        return new ImmediateEllipse(parentElement);
+      case 'PointsToPoint':
+        return new PointsToPoint(parentElement);
+      default:
+        return null;
+    }
   }
-  setActive(newActive: number = null) {
-    this.active = newActive;
+  activate(id: number): Promise<null> {
+    this.WORK_WRAPPERS[id].activate();
+    return Promise.resolve(null);
   }
-  getActive(): number {
-    return this.active;
+  deactivate(id: number): Promise<null> {
+    this.WORK_WRAPPERS[id].deactivate();
+    return Promise.resolve(null);
   }
+  resizeWork(id: number): void {
+    const work = this.WORK_WRAPPERS[id].work;
+    work.resizeCanvas();
+    work.drawAll(work.context);
+  }
+  // getWorkData(id: number): WorkData {
+  //   return this.workStates[id].workData;
+  // }
+  // getWorkType(id: number): string {
+  //   return this.workStates[id].type;
+  // }
+  // setWorkStates(workStates: WorkStates) {
+  //   this.workStates = workStates;
+  // }
+  // checkWorkStates(): Promise<null> {
+  //   if (!this.workStates) {
+  //     this.setWorkStates([
+  //       new WorkState([], 'ImmediateEllipse'),
+  //       new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
+  //     ]);
+  //     return Promise.resolve(null);
+  //   } else {
+  //     return Promise.resolve(null);
+  //   }
+  // }
   // getPosition(type: string, id?: number, w?: number, h?: number): number[] {
 
   // }
