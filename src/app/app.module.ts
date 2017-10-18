@@ -18,16 +18,16 @@ import { reducers, metaReducers } from './app.reducers';
 const stateFromMemory: AppState = undefined;
 export const initialState: AppState = {
   appView: {
-    view0Alive: null,
-    view1Alive: null,
-    animationState: null,
-    transitionActive: null,
+    view0Alive: true,
+    view1Alive: false,
+    animationState: true,
+    transitionActive: false,
   },
   shutterView: {
-    view0Alive: null,
-    view1Alive: null,
-    animationState: null,
-    transitionActive: null,
+    view0Alive: true,
+    view1Alive: false,
+    animationState: true,
+    transitionActive: false,
   },
   texts: {
     greeting: null,

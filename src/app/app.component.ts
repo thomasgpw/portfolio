@@ -165,8 +165,8 @@ export class AppComponent implements OnInit {
     this._shutterViewControlService.payloadStream.subscribe(state => this.setShutterView(state));
   }
   ngOnInit(): void {
-    // if (!environment.production) {
-      this.goAppView(false);
+    if (!environment.production) {
+      this.goAppView(true);
       this.goShutterView(true);
       this.setColor('#7486B4');
       this.setViewAspects();
@@ -175,7 +175,7 @@ export class AppComponent implements OnInit {
         new WorkState([], 'ImmediateEllipse'),
         new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
       ]);
-    // }
+    }
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
