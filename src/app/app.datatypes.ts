@@ -9,6 +9,14 @@ export interface AppState {
   workActive: number;
   workStates: WorkStates;
 }
+export interface AppStateCondensed {
+  appView: ViewState;
+  shutterView: ViewState;
+  texts: IterableStringMap;
+  color: string;
+  workActive: number;
+  workStates: WorkStates;
+}
 // export class CommandStacks {
 //   id: number;
 //   functionStack: Function[];

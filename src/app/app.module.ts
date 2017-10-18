@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, InjectionToken } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
+import { CookieModule } from 'ngx-cookie';
 import { InlineSVGModule } from 'ng-inline-svg';
 
 import { AppComponent } from './app.component';
@@ -11,23 +12,23 @@ import { WelcomeComponent } from './shutter/welcome/welcome.component';
 import { AboutComponent } from './shutter/about/about.component';
 import { WorkWrapperComponent } from './content/work-wrapper/work-wrapper.component';
 import { WorkState } from './content/_works/work-state.datatype';
-import { AppState, ViewState } from './app.datatypes';
+import { AppState, ViewState, IterableStringInstance } from './app.datatypes';
 import { reducers, metaReducers } from './app.reducers';
 
 // Later can grab data and overwrite initial state
-const stateFromMemory: AppState = undefined;
+// const stateFromMemory: AppState = new CookieService({null}).getObject('appState') as AppState;
 export const initialState: AppState = {
   appView: {
-    view0Alive: null,
-    view1Alive: null,
-    animationState: null,
-    transitionActive: null,
+    view0Alive: true,
+    view1Alive: false,
+    animationState: true,
+    transitionActive: false,
   },
   shutterView: {
-    view0Alive: null,
-    view1Alive: null,
-    animationState: null,
-    transitionActive: null,
+    view0Alive: true,
+    view1Alive: false,
+    animationState: true,
+    transitionActive: false,
   },
   texts: {
     greeting: null,
@@ -44,9 +45,9 @@ export const initialState: AppState = {
     new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
   ]
 };
-export function getInitialState() {
-  return {...initialState, ...stateFromMemory};
-}
+// export function getInitialState() {
+//   return {...initialState, ...stateFromMemory};
+// }
 
 @NgModule({
   declarations: [
@@ -62,9 +63,10 @@ export function getInitialState() {
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers,
     {
-      initialState: getInitialState,
+      initialState: initialState,
       // metaReducers: metaReducers
     }),
+    CookieModule.forRoot(),
     InlineSVGModule
   ],
   providers: [],

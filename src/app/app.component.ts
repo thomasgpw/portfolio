@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
-import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Rx';
+import { Store } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie';
 
 import { environment } from '../environments/environment';
-import { AppState, ViewState, IterableStringInstance } from './app.datatypes';
-import { StringService } from './_services/string.service';
+import { AppState, AppStateCondensed, ViewState, IterableStringInstance, IterableStringMap } from './app.datatypes';
 import { StringManagerService } from './_services/string-manager.service';
 import { ViewControlService } from './_services/view-control.service';
 import { viewTransitionTime, viewTransitionConfig, onScreenYStyle, aboveScreenStyle } from './_animations/styles';
@@ -32,10 +32,7 @@ import { ContentComponent } from './content/content.component';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [
-    StringService,
-    StringManagerService
-  ],
+  providers: [],
   animations: [
     trigger('shutterView', [
       state('truestate', onScreenYStyle),
@@ -57,7 +54,7 @@ import { ContentComponent } from './content/content.component';
     ])
   ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   @ViewChild(ShutterComponent) shutterInstance: ShutterComponent;
   @ViewChild(ContentComponent) contentInstance: ContentComponent;
   _stringManagerService: StringManagerService;
@@ -110,7 +107,7 @@ export class AppComponent implements OnInit {
   colors: {[key: string]: string} = {};
 
   /* LIFECYCLE HOOK FUNCTIONS */
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private _cookieService: CookieService) {
     this._stringManagerService = new StringManagerService();
     this.getRandomTexts();
     this._appViewControlService = new ViewControlService();
@@ -137,12 +134,12 @@ export class AppComponent implements OnInit {
       this.appView1Alive$,
       this.appAnimationState$,
       store.select(state => state.appView.transitionActive)
-    ).subscribe(state => this._appViewControlService.assertLogic({
+    ).subscribe(state => {this._appViewControlService.assertLogic({
       view0Alive: state[0],
       view1Alive: state[1],
       animationState: state[2],
       transitionActive: state[3]
-    }));
+    }); this.setAppStateCookie(); });
     Observable.combineLatest(
       this.shutterView0Alive$,
       this.shutterView1Alive$,
@@ -166,16 +163,27 @@ export class AppComponent implements OnInit {
   }
   ngOnInit(): void {
     // if (!environment.production) {
-      this.goAppView(false);
+      const cachedState = this.getAppStateCookie();
+      console.log(cachedState);
+      if (cachedState) {
+        this.setAppState(cachedState);
+      } else {
+      this.goAppView(true);
       this.goShutterView(true);
       this.setColor('#7486B4');
       this.setViewAspects();
       this.setWorkActive(null);
-      this.setWorkStates([
-        new WorkState([], 'ImmediateEllipse'),
-        new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
-      ]);
+        this.setWorkStates([
+          new WorkState([], 'ImmediateEllipse'),
+          new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
+        ]);
+      }
+      this.setAppStateCookie();
     // }
+  }
+  ngOnDestroy(): void {
+    console.log('destroy');
+    this.setAppStateCookie();
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
@@ -199,7 +207,41 @@ export class AppComponent implements OnInit {
   //   }
   //   return Promise.resolve(null);
   // }
-
+  getAppStateCookie(): AppState {
+    const cookieIn = this._cookieService.getObject('appState') as AppStateCondensed;
+    if (cookieIn) {
+      return {
+        appView: cookieIn.appView,
+        shutterView: cookieIn.shutterView,
+        texts: cookieIn.texts,
+        color: cookieIn.color,
+        unitLength: null,
+        isPortrait: null,
+        workActive: cookieIn.workActive,
+        workStates: cookieIn.workStates
+      };
+    } else {
+      return null;
+    }
+  }
+  setAppStateCookie() {
+    const appState = this.getAppState();
+    this._cookieService.putObject(
+      'appState',
+      {
+        appView: appState.appView,
+        shutterView: appState.shutterView,
+        texts: appState.texts,
+        color: appState.color,
+        workActive: appState.workActive,
+        workStates: appState.workStates
+      },
+      {
+        path: '/',
+        domain: 'localhost'
+      }
+    );
+  }
   goAppView(view0: boolean): void {
     this._appViewControlService.goView(view0);
   }
@@ -324,6 +366,39 @@ export class AppComponent implements OnInit {
   //       this.setShutterView(true);
   //     }
   //   }
+  }
+  getAppState(): AppState {
+    let appState: AppState;
+    this.store.take(1).subscribe(state => appState = state);
+    return appState;
+  }
+  setAppState(appState: AppState) {
+    this.setAppViewAll(appState.appView);
+    this.setShutterViewAll(appState.shutterView);
+    this.setTexts(appState.texts);
+    this.setColor(appState.color);
+    this.setWorkActive(appState.workActive);
+    this.setWorkStates(appState.workStates);
+  }
+  setAppViewAll(viewState: ViewState): void {
+    this.setAppView(['view0Alive', viewState.view0Alive]);
+    this.setAppView(['view1Alive', viewState.view1Alive]);
+    this.setAppView(['animationState', viewState.animationState]);
+    this.setAppView(['transitionActive', viewState.transitionActive]);
+  }
+  setShutterViewAll(viewState: ViewState): void {
+    this.setShutterView(['view0Alive', viewState.view0Alive]);
+    this.setShutterView(['view1Alive', viewState.view1Alive]);
+    this.setShutterView(['animationState', viewState.animationState]);
+    this.setShutterView(['transitionActive', viewState.transitionActive]);
+  }
+  setTexts(texts: IterableStringMap): void {
+    const setString = this.setString.bind(this);
+    for (const key in texts) {
+      if (texts[key]) {
+        setString(texts[key]);
+      }
+    }
   }
   setAppView(payload: [string, boolean]) {
     this.store.dispatch(new SetAppViewAction(payload));
