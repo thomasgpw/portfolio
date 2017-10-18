@@ -31,7 +31,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Input() type: string;
   work: Work;
   undoPath = '../../../assets/iconmonstr-undo-2.svg';
-  settingsPath = '../../../assets/iconmonstr-gear-1.svg';
+  settingsPath = '../../../assets/iconmonstr-volume-control-9.svg';
   deletePath = '../../../assets/iconmonstr-trash-can-2.svg';
   uploadPath = '../../../assets/iconmonstr-upload-17.svg';
   downloadPath = '../../../assets/iconmonstr-download-7-edited.svg';
