@@ -40,7 +40,7 @@ export class SetStringAction implements Action {
 }
 export class SetColorAction implements Action {
   readonly type = SET_COLOR;
-  constructor(public payload: string) {}
+  constructor(public payload: number) {}
 }
 export class SetUnitLengthAction implements Action {
   readonly type = SET_UNIT_LENGTH;
@@ -137,7 +137,7 @@ export function textsReducer(
       return state;
   }
 }
-export function colorReducer(state: string, action: Actions): string {
+export function colorReducer(state: number, action: Actions): number {
   switch (action.type) {
     case SET_COLOR:
       return action.payload;

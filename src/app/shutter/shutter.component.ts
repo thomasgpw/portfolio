@@ -30,13 +30,13 @@ import { AboutComponent } from './about/about.component';
   ]
 })
 export class ShutterComponent implements OnInit {
-  @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() setShutterViewEvent: EventEmitter<boolean> = new EventEmitter();
   @Output() getNextGreetingEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getRandomNameEvent: EventEmitter<null>  = new EventEmitter();
   @Output() setNameEvent: EventEmitter<string>  = new EventEmitter();
   @Output() getNextTipEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getNextRhymeEvent: EventEmitter<null> = new EventEmitter();
+  @Output() setColorEvent: EventEmitter<number> = new EventEmitter();
   @Input() shutterView0Alive: boolean;
   @Input() shutterAnimationState: boolean;
   @Input() shutterView1Alive: boolean;
@@ -48,6 +48,7 @@ export class ShutterComponent implements OnInit {
   @Input() uLdhx2: string;
   @Input() uLdwOffset: string;
   @Input() uLdhOffset: string;
+  @Input() color: number;
   @Input() colors: {[key: string]: string};
   @ViewChild(WelcomeComponent) welcomeInstance: WelcomeComponent;
   @ViewChild(AboutComponent) aboutInstance: AboutComponent;
@@ -67,9 +68,6 @@ export class ShutterComponent implements OnInit {
   }
 
   /* EVENT FUNCTIONS */
-  setAppViewFunc(): void {
-    this.setAppViewEvent.emit(null);
-  }
   setShutterViewFunc(view0Alive: boolean): void {
     this.setShutterViewEvent.emit(view0Alive);
   }
@@ -88,7 +86,16 @@ export class ShutterComponent implements OnInit {
   getNextRhymeFunc(): void {
     this.getNextRhymeEvent.emit(null);
   }
+  setColorFunc(color: number): void {
+    this.setColorEvent.emit(color);
+  }
   updateView(): void {
     this.bar = generateSvgHighlightBar(document.getElementById('svgHighlightBarContainer'), window.innerWidth, this.unitLength);
+    if (this.welcomeInstance) {
+      this.welcomeInstance.updateView();
+    }
+    if (this.aboutInstance) {
+      this.aboutInstance.updateView();
+    }
   }
 }

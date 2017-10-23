@@ -1,5 +1,28 @@
-/* WRITE FOR UNIT LENGTH AS PERENTAGE OF WIDTH N HIGHT aka uLdw & uLdh */
-
+export function styleDownArrow(elStyle: CSSStyleDeclaration, parentStyle: CSSStyleDeclaration, appView: boolean,
+  uLdwx3: string, uLdhx2: string, uLdwOffset: string): void {
+  if (appView) {
+    styleDownArrowShutter(elStyle, parentStyle, uLdwx3, uLdhx2, uLdwOffset);
+  } else {
+    styleDownArrowContent(elStyle, parentStyle, uLdwx3, uLdhx2, uLdwOffset);
+  }
+}
+function styleDownArrowShutter(elStyle: CSSStyleDeclaration, parentStyle: CSSStyleDeclaration,
+  uLdwx3: string, uLdhx2: string, uLdwOffset: string): void {
+  elStyle.position = 'fixed';
+  elStyle.width = uLdwx3;
+  elStyle.height = uLdhx2;
+  // elStyle.bottom = '0';
+  parentStyle.left = uLdwOffset;
+}
+function styleDownArrowContent(elStyle: CSSStyleDeclaration, parentStyle: CSSStyleDeclaration,
+  uLdwx3: string, uLdhx2: string, uLdwOffset: string): void {
+  elStyle.position = 'fixed';
+  elStyle.width = uLdwx3;
+  elStyle.height = uLdhx2;
+  // elStyle.top = uLdhx2;
+  parentStyle.left = uLdwOffset;
+  elStyle.zIndex = '2';
+}
 export function styleLeftArrow(elStyle: CSSStyleDeclaration,
   uLdwx3: string, uLdhx2: string, uLdhOffset: string): void {
   elStyle.position = 'fixed';
@@ -8,14 +31,6 @@ export function styleLeftArrow(elStyle: CSSStyleDeclaration,
   elStyle.left = '0';
   elStyle.top = uLdhOffset;
 }
-export function styleDownArrowShutter(elStyle: CSSStyleDeclaration,
-  uLdwx3: string, uLdhx2: string, uLdwOffset: string): void {
-  elStyle.position = 'fixed';
-  elStyle.width = uLdwx3;
-  elStyle.height = uLdhx2;
-  elStyle.bottom = '0';
-  elStyle.left = uLdwOffset;
-}
 export function styleRightArrow(elStyle: CSSStyleDeclaration,
   uLdwx3: string, uLdhx2: string, uLdhOffset: string): void {
   elStyle.position = 'fixed';
@@ -23,15 +38,6 @@ export function styleRightArrow(elStyle: CSSStyleDeclaration,
   elStyle.height = uLdhx2;
   elStyle.right = '0';
   elStyle.top = uLdhOffset;
-}
-export function styleDownArrowContent(elStyle: CSSStyleDeclaration,
-  uLdwx3: string, uLdhx2: string, uLdhx3: string, uLdwOffset: string): void {
-  elStyle.position = 'fixed';
-  elStyle.width = uLdwx3;
-  elStyle.height = uLdhx2;
-  elStyle.top = uLdhx2;
-  elStyle.left = uLdwOffset;
-  elStyle.zIndex = '2';
 }
 export function styleGridButton(elStyle: CSSStyleDeclaration,
   uLdwx3: string, uLdhx3: string, uLdhOffset: string): void {

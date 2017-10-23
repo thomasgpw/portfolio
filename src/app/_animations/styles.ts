@@ -37,3 +37,12 @@ export const gridWorkStyle = style({ height: '25%', width: '25%' });
 export const activeWorkStyle = style({ height: '80%', width: '80%' });
 // Animation style defining the size of work wrapper elements when in the row state.
 export const rowWorkStyle = style({ height: '10%', width: '10%' });
+
+export const downArrowContentStyle = style({
+  transform: 'translateY(' + (100 * Math.sqrt(2 / 3) * Math.pow(window.innerWidth * window.innerHeight, 1 / 4) / window.innerHeight) + '%)'
+});
+export const downArrowShutterStyle = style({
+  transform: 'translateY'
+  + (100 - (100 * Math.sqrt(2 / 3) * Math.pow(window.innerWidth * window.innerHeight, 1 / 4) / window.innerHeight))
+  + '%'
+});

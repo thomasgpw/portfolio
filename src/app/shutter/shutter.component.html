@@ -14,7 +14,6 @@
     [uLdwOffset]='uLdwOffset'
     [uLdhOffset]='uLdhOffset'
     [welcomeColor]='colors.welcomeColor'
-    (setAppViewEvent)='setAppViewFunc()'
     (setShutterViewEvent)='setShutterViewFunc(false)'
     (getNextGreetingEvent)='getNextGreetingFunc()'
     (getRandomNameEvent)='getRandomNameFunc()'
@@ -37,10 +36,11 @@
     [uLdhx2]='uLdhx2'
     [uLdwOffset]='uLdwOffset'
     [uLdhOffset]='uLdhOffset'
+    [color]='color'
     [aboutColor]='colors.aboutColor'
-    (setAppViewEvent)='setAppViewFunc()'
     (setShutterViewEvent)='setShutterViewFunc(true)'
     (getNextRhymeEvent)='getNextRhymeFunc()'
+    (setColorEvent)='setColorFunc($event)'
     >
       app-about error
     </app-about>

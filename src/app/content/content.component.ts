@@ -5,7 +5,7 @@ import { WorkData } from './_works/work-data.datatype';
 import { WorkStates } from './_works/work-states.datatype';
 import { WorkManagerService } from '../_services/work-manager.service';
 import { generateSvgTab } from '../../assets/generate-svg-tab';
-import { styleDownArrowContent, styleGridButton } from '../../apply-styles';
+import { styleGridButton } from '../../apply-styles';
 import { workTransitionConfig, gridWorkStyle, activeWorkStyle, rowWorkStyle } from '../_animations/styles';
 import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
 
@@ -55,7 +55,6 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   gridButton = false;
   tab: SVGElement;
-  arrowPath = '../../assets/arrow.svg';
   gridButtonPath = '../../assets/gridbutton.svg';
   readonly _workManagerService: WorkManagerService;
   constructor() {
@@ -76,7 +75,6 @@ export class ContentComponent implements OnInit, OnDestroy {
   /* ON CHANGE SPECIFIC FUNCTIONS */
   updateView(): void {
     this.createTab();
-    this.styleDownArrowContentFunc(document.getElementById('downArrow').children[0] as SVGElement);
     if (this.gridButton) {
       this.styleGridButtonFunc(document.getElementById('gridButton').children[0] as SVGElement);
     }
@@ -88,9 +86,6 @@ export class ContentComponent implements OnInit, OnDestroy {
       ? this.colors['welcomeColor']
       : this.colors['aboutColor']
     );
-  }
-  styleDownArrowContentFunc(el: SVGElement): void {
-    styleDownArrowContent(el.style, this.uLdwx3, this.uLdhx2, this.uLdhx3, this.uLdwOffset);
   }
   styleGridButtonFunc(el: SVGElement): void {
     styleGridButton(el.style, this.uLdwx3, this.uLdhx3, this. uLdhOffset);

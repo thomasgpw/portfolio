@@ -7,12 +7,6 @@
   (click)=viewGridFunc()
   >
   </div>
-  <div
-  id='downArrow' class='button button-shutter'
-  [inlineSVG]=arrowPath
-  (onSVGInserted)='styleDownArrowContentFunc($event)'
-  (click)=setAppViewFunc()>
-  </div>
   <div id="svgTab"> </div>
   <div *ngFor='let workState of workStates; let i = index'
   [id]='i' class='work-wrapper-view-container wwGrid'

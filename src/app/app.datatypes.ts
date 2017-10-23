@@ -3,19 +3,12 @@ export interface AppState {
   appView: ViewState;
   shutterView: ViewState;
   texts: IterableStringMap;
-  color: string;
+  color: number;
   unitLength: number;
   isPortrait: boolean;
   workActive: number;
   workStates: WorkStates;
-}
-export interface AppStateCondensed {
-  appView: ViewState;
-  shutterView: ViewState;
-  texts: IterableStringMap;
-  color: string;
-  workActive: number;
-  workStates: WorkStates;
+  // settings: Settings;
 }
 // export class CommandStacks {
 //   id: number;
@@ -46,3 +39,7 @@ export interface ViewState {
   animationState: boolean;
   transitionActive: boolean;
 }
+// export interface Settings {
+//   name: string;
+//   color: string;
+// }

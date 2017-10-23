@@ -2,6 +2,7 @@
 (wheel)='scrollFunc($event)'
 (window:resize)='setViewAspects()'
 >
+  <button id="clearCookie" class="button" (click)='clearAppStateCookie()'> Clear cookies </button>
   <div class='page shutter'
   *ngIf='(appView0Alive$ | async)'
   [@shutterView]='((appAnimationState$ | async) + "state").toString()'
@@ -18,17 +19,25 @@
     [uLdhx2]='unitLengthReferences.uLdhx2'
     [uLdwOffset]='unitLengthReferences.uLdwOffset'
     [uLdhOffset]='unitLengthReferences.uLdhOffset'
+    [color]='color$ | async'
     [colors]='colors'
-    (setAppViewEvent)='goAppView(false)'
     (setShutterViewEvent)='goShutterView($event)'
     (getNextGreetingEvent)='getNextGreeting()'
     (getRandomNameEvent)='getRandomName()'
     (setNameEvent)='setName($event)'
     (getNextTipEvent)='getNextTip()'
     (getNextRhymeEvent)='getNextRhyme()'
+    (setColorEvent)='setColor($event)'
     >
       app-shutter error
     </app-shutter>
+  </div>
+  <div
+  id='downArrow' class='button'
+  [@downArrow]='((appAnimationState$ | async) + "state").toString()'
+  [inlineSVG]=arrowPath
+  (onSVGInserted)='styleDownArrowFunc($event)'
+  (click)=setAppViewFunc()>
   </div>
   <div class='page content'
   *ngIf='appView1Alive$ | async'
@@ -54,7 +63,6 @@
     [workActive]='(workActive$ | async)'
     [workStates]='(workStates$ | async)'
     [colors]='colors'
-    (setAppViewEvent)='goAppView(true)'
     (setWorkActiveEvent)='setWorkActive($event)'
     >
       app-content error

@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { styleDownArrowShutter, styleRightArrow } from '../../../apply-styles';
+import { styleRightArrow } from '../../../apply-styles';
 
 @Component({
   selector: 'app-about',
@@ -8,39 +8,45 @@ import { styleDownArrowShutter, styleRightArrow } from '../../../apply-styles';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutComponent implements OnInit {
-  @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() setShutterViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() getNextRhymeEvent: EventEmitter<null> = new EventEmitter();
+  @Output() setColorEvent: EventEmitter<number> = new EventEmitter();
   @Input() rhyme: string;
   @Input() uLdwx3: string;
   @Input() uLdhx2: string;
   @Input() uLdwOffset: string;
   @Input() uLdhOffset: string;
+  @Input() color: number;
   @Input() aboutColor: string;
-
   arrowPath = '../../../assets/arrow.svg';
 
   constructor() { }
 
   ngOnInit(): void {
-    (document.getElementById('about') as HTMLElement).style.backgroundColor = this.aboutColor;
+    this.updateView();
+    console.log(this.color);
+    (document.getElementById('hueRange') as HTMLInputElement).defaultValue = this.color.toString();
   }
-  styleRightArrowFunc(el: SVGAElement) {
+  updateView(): void {
+    (document.getElementById('about') as HTMLElement).style.backgroundColor = this.aboutColor;
+    const rightArrow = document.getElementById('rightArrow').children[0];
+    if (rightArrow) {
+      this.styleRightArrowFunc(rightArrow as SVGElement);
+    }
+  }
+  styleRightArrowFunc(el: SVGElement) {
     styleRightArrow(el.style, this.uLdwx3, this.uLdhx2, this.uLdhOffset);
     el.setAttribute('transform', 'rotate(270)');
   }
-  styleDownArrowShutterFunc(el: SVGAElement) {
-    styleDownArrowShutter(el.style, this.uLdwx3, this.uLdhx2, this. uLdwOffset);
-  }
 
   /* EVENT FUNCTIONS */
-  getNextRhymeFunc(): void {
-    this.getNextRhymeEvent.emit(null);
-  }
   shutterToggleFunc() {
     this.setShutterViewEvent.emit(null);
   }
-  goContentFunc() {
-    this.setAppViewEvent.emit(null);
+  getNextRhymeFunc(): void {
+    this.getNextRhymeEvent.emit(null);
+  }
+  setColorFunc(color: number): void {
+    this.setColorEvent.emit(color);
   }
 }

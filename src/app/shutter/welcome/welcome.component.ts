@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { styleDownArrowShutter, styleLeftArrow } from '../../../apply-styles';
+import { styleLeftArrow } from '../../../apply-styles';
 
 @Component({
   selector: 'app-welcome',
@@ -8,7 +8,6 @@ import { styleDownArrowShutter, styleLeftArrow } from '../../../apply-styles';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WelcomeComponent implements OnInit {
-  @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() setShutterViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() getNextGreetingEvent: EventEmitter<null>  = new EventEmitter();
   @Output() getNextTipEvent: EventEmitter<null>  = new EventEmitter();
@@ -22,24 +21,25 @@ export class WelcomeComponent implements OnInit {
   @Input() uLdwOffset: string;
   @Input() uLdhOffset: string;
   @Input() welcomeColor: string;
-
   arrowPath = '../../../assets/arrow.svg';
 
   constructor() { }
-
   ngOnInit() {
-    console.log(document.getElementsByClassName('welcome')[0]);
-    (document.getElementById('welcome') as HTMLElement).style.backgroundColor = this.welcomeColor;
+    this.updateView();
   }
-  styleLeftArrowFunc(el: SVGAElement) {
+  styleLeftArrowFunc(el: SVGElement) {
     styleLeftArrow(el.style, this.uLdwx3, this.uLdhx2, this.uLdhOffset);
     el.setAttribute('transform', 'rotate(90)');
   }
-  styleDownArrowShutterFunc(el: SVGAElement) {
-    styleDownArrowShutter(el.style, this.uLdwx3, this.uLdhx2, this.uLdwOffset);
-  }
 
   /* EVENT FUNCTIONS */
+  updateView(): void {
+    (document.getElementById('welcome') as HTMLElement).style.backgroundColor = this.welcomeColor;
+    const leftArrow = document.getElementById('leftArrow').children[0];
+    if (leftArrow) {
+      this.styleLeftArrowFunc(leftArrow as SVGElement);
+    }
+  }
   greetingClickFunc (e: Event) {
     const elId = e.srcElement.id;
     if (elId === 'prename' || elId === 'postname') {
@@ -47,9 +47,6 @@ export class WelcomeComponent implements OnInit {
     } else if (elId === 'name') {
       this.getRandomNameFunc();
     }
-  }
-  setAppViewFunc(): void {
-    this.setAppViewEvent.emit(null);
   }
   setShutterViewFunc(): void {
     this.setShutterViewEvent.emit(null);

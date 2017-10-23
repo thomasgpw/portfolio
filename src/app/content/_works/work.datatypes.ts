@@ -1,9 +1,13 @@
 export class Point {
   x: number;
   y: number;
+  fromString;
   constructor (x, y) {
     this.x = x;
     this.y = y;
+  }
+  toString(): string {
+    return this.x.toString() + '|' + this.y.toString();
   }
 }
 export class ColorPoint extends Point {
@@ -11,6 +15,9 @@ export class ColorPoint extends Point {
   constructor (x, y, color) {
     super(x, y);
     this.color = color;
+  }
+  toString(): string {
+    return super.toString() + '|' + this.color.toString();
   }
 }
 export class EllipseSet {

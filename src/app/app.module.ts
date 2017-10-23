@@ -36,7 +36,7 @@ export const initialState: AppState = {
     tip: null,
     rhyme: null
   },
-  color: '#7486B4',
+  color: 223,
   unitLength: null,
   isPortrait: null,
   workActive: null,
@@ -63,7 +63,7 @@ export const initialState: AppState = {
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers,
     {
-      initialState: initialState,
+      // initialState: initialState,
       // metaReducers: metaReducers
     }),
     CookieModule.forRoot(),
