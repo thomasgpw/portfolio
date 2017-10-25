@@ -17,7 +17,7 @@ export class AboutComponent implements OnInit {
   @Input() uLdwOffset: string;
   @Input() uLdhOffset: string;
   @Input() color: number;
-  @Input() aboutColor: string;
+  @Input() colors: {[key: string]: string};
   arrowPath = '../../../assets/arrow.svg';
 
   constructor() { }
@@ -28,11 +28,20 @@ export class AboutComponent implements OnInit {
     (document.getElementById('hueRange') as HTMLInputElement).defaultValue = this.color.toString();
   }
   updateView(): void {
-    (document.getElementById('about') as HTMLElement).style.backgroundColor = this.aboutColor;
+    this.updateColors();
     const rightArrow = document.getElementById('rightArrow').children[0];
     if (rightArrow) {
       this.styleRightArrowFunc(rightArrow as SVGElement);
     }
+  }
+  updateColors(): void {
+    document.getElementById('about').style.backgroundColor = this.colors.aboutColor;
+    document.getElementById('welcomeColor').style.backgroundColor = this.colors.welcomeColor;
+    document.getElementById('contentColor').style.backgroundColor = this.colors.contentColor;
+    document.getElementById('pColor0').style.backgroundColor = this.colors.pColor0;
+    document.getElementById('pColor1').style.backgroundColor = this.colors.pColor1;
+    document.getElementById('pColor2').style.backgroundColor = this.colors.pColor2;
+    document.getElementById('pColor3').style.backgroundColor = this.colors.pColor3;
   }
   styleRightArrowFunc(el: SVGElement) {
     styleRightArrow(el.style, this.uLdwx3, this.uLdhx2, this.uLdhOffset);

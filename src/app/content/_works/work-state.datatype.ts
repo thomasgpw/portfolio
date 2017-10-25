@@ -1,5 +1,4 @@
 import { WorkData } from './work-data.datatype';
-
 export class WorkState {
   workData: WorkData;
   readonly type: string;

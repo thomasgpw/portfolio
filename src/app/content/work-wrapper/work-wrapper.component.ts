@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { WorkData } from '../_works/work-data.datatype';
+import { WorkState } from '../_works/work-state.datatype';
 import { Work } from '../_works/work';
 import {
   styleWorkWrapperButton,
@@ -15,9 +16,9 @@ import {
 })
 export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Output() workWrapperInitEvent: EventEmitter<WorkWrapperComponent> = new EventEmitter();
-  @Output() setWorkDataEvent: EventEmitter<WorkData> = new EventEmitter();
   @Output() setActiveEvent: EventEmitter<null> = new EventEmitter();
   @Output() unsetActiveEvent: EventEmitter<null> = new EventEmitter();
+  @Output() setWorkStateEvent: EventEmitter<[number, WorkState]> = new EventEmitter();
   @Input() uLdcwx2: string;
   @Input() uLdchx2: string;
   @Input() uLd2cw: string;
@@ -51,6 +52,9 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   //   }
   // }
   /* ON CHANGE SPECIFIC FUNCTIONS */
+  setWorkStateFunc(id: number, workData: WorkData): void {
+    this.setWorkStateEvent.emit([id, {type: this.type, workData: workData}]);
+  }
   activate(): void {
     this.work.activate().then(resolve => this.setActiveEvent.emit(null));
   }
@@ -103,18 +107,21 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
 
   /* EVENT FUNCTIONS */
   @HostListener('pointerdown', ['$event']) onPointerDown() {
-    if (this.work.active) {
-      this.work.onPointerDown(event as PointerEvent);
+    const work = this.work;
+    if (work.active) {
+      work.onPointerDown(event as PointerEvent);
     }
   }
   @HostListener('window: pointermove', ['$event']) onPointerMove() {
-    if (this.work.active) {
-      this.work.onPointerMove(event as PointerEvent);
+    const work = this.work;
+    if (work.active) {
+      work.onPointerMove(event as PointerEvent);
     }
   }
   @HostListener('window: pointerup') onPointerUp() {
-    if (this.work.active) {
-      this.work.onPointerUp();
+    const work = this.work;
+    if (work.active) {
+      work.onPointerUp();
     }
   }
 }

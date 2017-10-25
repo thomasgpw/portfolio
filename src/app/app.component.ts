@@ -31,8 +31,8 @@ import {
   SetIsPortraitAction,
   SetWorkActiveAction,
   SetWorkStatesAction,
-  SetWorkDataAction,
-  DeleteWorkDataAction
+  SetWorkStateAction,
+  DeleteWorkStateAction
 } from './app.reducers';
 import { ShutterComponent } from './shutter/shutter.component';
 import { ContentComponent } from './content/content.component';
@@ -66,8 +66,8 @@ import { ContentComponent } from './content/content.component';
       ])
     ]),
     trigger('downArrow', [
-      state('truestate', downArrowContentStyle),
-      state('falsestate', downArrowContentStyle),
+      state('truestate', downArrowShutterStyle()),
+      state('falsestate', downArrowContentStyle()),
       transition('truestate<=>falsestate', [
         animate(viewTransitionConfig)
       ])
@@ -151,8 +151,6 @@ export class AppComponent implements OnInit {
     this.isPortrait$ = store.select(state => state.isPortrait);
     this.workActive$ = store.select(state => state.workActive);
     this.workStates$ = store.select(state => state.workStates);
-    // this.appAnimationState$.subscribe(state => console.log(state));
-    // this.shutterAnimationState$.subscribe(state => console.log(state));
   }
   ngOnInit(): void {
     Observable.combineLatest(
@@ -185,11 +183,17 @@ export class AppComponent implements OnInit {
     this.rhyme$.subscribe(state => this.concatRhyme(state));
     this.color$.subscribe(state => this.getColors(state));
     this.unitLength$.subscribe(state => this.setUnitLengthReferences(state));
+    // Observable.combineLatest(this.createWorkStatesObservableArray()).subscribe(state => )
     this._appViewControlService.payloadStream.subscribe(state => this.setAppView(state));
     this._shutterViewControlService.payloadStream.subscribe(state => this.setShutterView(state));
+    Observable.combineLatest(
+      this.appView0Alive$,
+      this.shutterView0Alive$,
+      this.color$,
+      this.workActive$
+    ).subscribe(state => this.setAppStateCookie());
     // if (!environment.production) {
       const cachedState = this.getAppStateCookie();
-      console.log(cachedState);
       if (cachedState) {
         this.setAppState(cachedState);
       } else {
@@ -220,16 +224,37 @@ export class AppComponent implements OnInit {
   //   }
   //   return Promise.resolve(null);
   // }
+  getworkStatesObservable(workStates: WorkStates): void {
+    const ObservableArray: Array<Observable<WorkState>> = [];
+    for (const workState of workStates) {
+      switch (workState.type) {
+        case 'ImmediateEllipse':
+          const imOb = Observable.create();
+          break;
+        default:
+          // code...
+          break;
+      }
+    }
+  }
+  logAnim(e) {
+    console.log(downArrowShutterStyle(), downArrowContentStyle());
+  }
   clearAppStateCookie(): void {
-    this._customCookieService.remove('appState');
+    this._customCookieService.remove('thomasgdotpwAppState');
   }
   getAppStateCookie(): AppState {
     return this._customCookieService.getAppStateCookie();
   }
   setAppStateCookie(): void {
     const appState = this.getAppState();
-    console.log(appState.appView.view0Alive, appState.appView.view1Alive, appState.shutterView.view0Alive, appState.shutterView.view1Alive);
-    this._customCookieService.setAppStateCookie(this.getAppState());
+    if (
+      appState.appView.view0Alive !== null
+      && appState.shutterView.view0Alive !== null
+      && appState.workStates !== undefined
+    ) {
+      this._customCookieService.setAppStateCookie(appState);
+    }
   }
   setAppViewFunc(): void {
     this.goAppView(this.shutterInstance ? false : true);
@@ -299,9 +324,13 @@ export class AppComponent implements OnInit {
   getColors(hue: number): void {
     const _cS = this._colorService;
     _cS.setHue(hue);
-    this.colors.welcomeColor = _cS.getColor(0);
+    this.colors.welcomeColor = _cS.getColor(1);
     this.colors.contentColor = _cS.getColor(-1);
-    this.colors.aboutColor = _cS.getColor(1);
+    this.colors.aboutColor = _cS.getColor(0);
+    this.colors.pColor0 = _cS.getColor(-3);
+    this.colors.pColor1 = _cS.getColor(-2);
+    this.colors.pColor2 = _cS.getColor(2);
+    this.colors.pColor3 = _cS.getColor(3);
     this.updateView();
   }
   setViewAspects(): void {
@@ -373,7 +402,6 @@ export class AppComponent implements OnInit {
     styleDownArrow(
       el.style,
       el.parentElement.style,
-      this.shutterInstance ? true : false,
       unitLengthReferences.uLdwx3,
       unitLengthReferences.uLdhx2,
       unitLengthReferences.uLdwOffset
@@ -422,19 +450,6 @@ export class AppComponent implements OnInit {
     this.setWorkActive(appState.workActive);
     this.setWorkStates(appState.workStates);
   }
-  setAppViewAll(viewState: ViewState): void {
-    console.log(viewState);
-    this.setAppView(['view0Alive', viewState.view0Alive]);
-    this.setAppView(['view1Alive', viewState.view1Alive]);
-    this.setAppView(['animationState', viewState.animationState]);
-    this.setAppView(['transitionActive', viewState.transitionActive]);
-  }
-  setShutterViewAll(viewState: ViewState): void {
-    this.setShutterView(['view0Alive', viewState.view0Alive]);
-    this.setShutterView(['view1Alive', viewState.view1Alive]);
-    this.setShutterView(['animationState', viewState.animationState]);
-    this.setShutterView(['transitionActive', viewState.transitionActive]);
-  }
   setTexts(texts: IterableStringMap): void {
     const setString = this.setString.bind(this);
     for (const key in texts) {
@@ -467,10 +482,10 @@ export class AppComponent implements OnInit {
   setWorkStates(workStates: WorkStates) {
     this.store.dispatch(new SetWorkStatesAction(workStates));
   }
-  setWorkData(workData: WorkData): void {
-    this.store.dispatch(new SetWorkDataAction(workData));
+  setWorkState(payload: [number, WorkState]): void {
+    this.store.dispatch(new SetWorkStateAction(payload));
   }
-  deleteWorkData(key: string): void {
-    this.store.dispatch(new DeleteWorkDataAction(key));
+  deleteWorkState(key: string): void {
+    this.store.dispatch(new DeleteWorkStateAction(key));
   }
 }

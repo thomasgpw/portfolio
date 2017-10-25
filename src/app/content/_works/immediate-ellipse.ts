@@ -11,8 +11,6 @@ export class ImmediateEllipse extends Work {
   readonly type: string;
   constructor (parentElement: Element) {
     super(parentElement);
-    // this.setNum = 0;
-    // this.undoSetNum = 0;
     this.type = 'ImmediateEllipse';
     this.clearWorkData();
     this.clearUndoData();
@@ -57,6 +55,7 @@ export class ImmediateEllipse extends Work {
       const ellipseSet = workData[workData.length - 1];
       const points = ellipseSet.points;
       this.draw(this.context, ellipseSet.center, points[points.length - 1]);
+      this.workDataSubject.next(workData);
     } else {
       console.log('nothing to redo');
     }});
@@ -66,7 +65,6 @@ export class ImmediateEllipse extends Work {
     const centerY = center.y;
     const w = this.w;
     const h = this.h;
-    console.log('draw ' + centerX + ' ' + centerY);
     context.beginPath();
     context.ellipse(
       centerX * w, centerY * h,
@@ -102,21 +100,30 @@ export class ImmediateEllipse extends Work {
   }
   clearWorkData(): void {
     this.workData = [];
+    this.workDataSubject.next([]);
   }
   clearUndoData(): void {
     this.undoData = [];
   }
   onPointerDown (e: PointerEvent): void {
     if (e.srcElement.closest('.button') === null) {
+      const w = this.w;
+      const h = this.h;
+      const offsetX = e.offsetX;
+      const offsetY = e.offsetY;
+      const workData = this.workData;
       this.pointerDown = true;
       this.clearUndoData();
-      this.addEllipseSet(new Point(e.offsetX / this.w, e.offsetY / this.h), this.workData);
-      this.addEllipse(new Point(e.offsetX / this.w, e.offsetY / this.h), this.workData);
+      this.addEllipseSet(new Point(offsetX / w, offsetY / h), workData);
+      this.addEllipse(new Point(offsetX / w, offsetY / h), workData);
+      this.workDataSubject.next(workData);
     }
   }
   onPointerMove (e: PointerEvent): void {
     if (this.pointerDown) {
-      this.addEllipse(new Point(e.offsetX / this.w, e.offsetY / this.h), this.workData);
+      const workData = this.workData;
+      this.addEllipse(new Point(e.offsetX / this.w, e.offsetY / this.h), workData);
+      this.workDataSubject.next(workData);
     }
   }
   onPointerUp (): void {

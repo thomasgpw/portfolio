@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
 import { WorkData } from '../content/_works/work-data.datatype';
 import { WorkState } from '../content/_works/work-state.datatype';
 import { WorkStates } from '../content/_works/work-states.datatype';
@@ -11,22 +10,24 @@ import { PointsToPoint } from '../content/_works/points-to-point';
 @Injectable()
 export class WorkManagerService {
   private readonly WORK_WRAPPERS: Array<WorkWrapperComponent>;
-  // private workStates: WorkStates;
-  constructor(
-    // workStates: WorkStates
-  ) {
-    // this.setWorkStates(workStates);
+  constructor() {
     this.WORK_WRAPPERS = [];
   }
-  addWorkWrapper(workWrapper: WorkWrapperComponent) {
-    console.log('addworkwrapper');
+  addWorkWrapper(workWrapper: WorkWrapperComponent): number {
     const WORK_WRAPPERS = this.WORK_WRAPPERS;
     const i = WORK_WRAPPERS.length;
     WORK_WRAPPERS[i] = workWrapper;
+    console.log(WORK_WRAPPERS);
     workWrapper.work = this.assignWork(workWrapper.type, document.getElementsByClassName('canvasWrapper')[i]);
     const work = workWrapper.work;
+    work.setWorkData(workWrapper.workData);
+    this.attachSubscription(i, workWrapper, work);
     work.resizeCanvas();
     work.drawAll(work.context);
+    return WORK_WRAPPERS.length;
+  }
+  attachSubscription(id: number, workWrapper: WorkWrapperComponent, work: Work): void {
+    work.workDataSubject.subscribe(state => workWrapper.setWorkStateFunc(id, state));
   }
   getWorkWrappers(): Array<WorkWrapperComponent> {
     return this.WORK_WRAPPERS;
@@ -42,7 +43,10 @@ export class WorkManagerService {
     }
   }
   activate(id: number): Promise<null> {
-    this.WORK_WRAPPERS[id].activate();
+    const WORK_WRAPPERS = this.WORK_WRAPPERS;
+    if (WORK_WRAPPERS[id]) {
+      WORK_WRAPPERS[id].activate();
+    }
     return Promise.resolve(null);
   }
   deactivate(id: number): Promise<null> {
@@ -54,32 +58,4 @@ export class WorkManagerService {
     work.resizeCanvas();
     work.drawAll(work.context);
   }
-  // getWorkData(id: number): WorkData {
-  //   return this.workStates[id].workData;
-  // }
-  // getWorkType(id: number): string {
-  //   return this.workStates[id].type;
-  // }
-  // setWorkStates(workStates: WorkStates) {
-  //   this.workStates = workStates;
-  // }
-  // checkWorkStates(): Promise<null> {
-  //   if (!this.workStates) {
-  //     this.setWorkStates([
-  //       new WorkState([], 'ImmediateEllipse'),
-  //       new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
-  //     ]);
-  //     return Promise.resolve(null);
-  //   } else {
-  //     return Promise.resolve(null);
-  //   }
-  // }
-  // getPosition(type: string, id?: number, w?: number, h?: number): number[] {
-
-  // }
-  // getActivePosition(w: number = window.innerWidth, h: number = window.innerHeight): number[] {
-
-  // }
-  // getGridPosition(id: number, w: number, h: number) {
-  // }
 }

@@ -8,23 +8,20 @@ export class PointsToPoint extends Work {
   undoData: PointsToPointData;
   r: number;
   readonly type: string;
-  constructor (parentElement: Element, workData?: PointsToPointData) {
+  constructor (parentElement: Element) {
     super(parentElement);
     this.r = 10;
     this.type = 'PointsToPoint';
-    if (workData) {
-      this.setWorkData(workData);
-    } else {
-      this.init();
-    }
+    this.init();
   }
   init(): void {
     super.init();
-    this.generatePoints();
+    this.generateCenterPoints();
   }
-  generatePoints(): void {
+  generateCenterPoints(): void {
     this.workData.centerPoints = [];
-    const centerPoints = this.workData.centerPoints;
+    const workData = this.workData;
+    const centerPoints = workData.centerPoints;
     this.r = 10;
     const dotNum = Math.floor(Math.sqrt(window.innerWidth * window.innerHeight * 0.64 /* 80% squared is 64% */) / 200);
     console.log(dotNum);
@@ -38,6 +35,7 @@ export class PointsToPoint extends Work {
         + (Math.floor(Math.random() * 256)).toString(16)
       ));
     }
+    this.workDataSubject.next(workData);
   }
   moveLastPoint(fromPoints: Array<Point>, toPoints: Array<Point>): Promise<boolean> {
     console.log(fromPoints, toPoints);
@@ -60,6 +58,7 @@ export class PointsToPoint extends Work {
     const points = this.workData.points;
     this.moveLastPoint(this.undoData.points, points).then(result => {if (result) {
       this.drawPoint(this.context, points[points.length - 1]);
+      this.workDataSubject.next(this.workData);
     } else {
       console.log('nothing to redo');
     }});
@@ -96,6 +95,12 @@ export class PointsToPoint extends Work {
     context.fill();
     context.closePath();
   }
+  setWorkData(workData: PointsToPointData) {
+    super.setWorkData(workData);
+    if (workData.centerPoints.length === 0) {
+      this.generateCenterPoints()
+    }
+  }
   drawPoint(context: CanvasRenderingContext2D, point: Point) {
     const pointX = point.x;
     const pointY = point.y;
@@ -118,11 +123,12 @@ export class PointsToPoint extends Work {
   }
   addPoint(point: Point) {
     this.workData.points.push(point);
-    console.log(this.workData);
     this.drawPoint(this.context, point);
   }
   clearWorkData(): void {
-    this.workData = {centerPoints: [], points: []};
+    const emptyWorkData: PointsToPointData = {centerPoints: [], points: []};
+    this.workData = emptyWorkData;
+    this.workDataSubject.next(emptyWorkData);
   }
   clearUndoData(): void {
     this.undoData = {centerPoints: [], points: []};
@@ -133,11 +139,13 @@ export class PointsToPoint extends Work {
       this.clearUndoData();
       console.log('P2PpointerDown');
       this.addPoint(new Point(e.offsetX / this.w, e.offsetY / this.h));
+      this.workDataSubject.next(this.workData);
     }
   }
   onPointerMove (e: PointerEvent): void {
     if (this.pointerDown) {
       this.addPoint(new Point(e.offsetX / this.w, e.offsetY / this.h));
+      this.workDataSubject.next(this.workData);
     }
   }
   onPointerUp (): void {

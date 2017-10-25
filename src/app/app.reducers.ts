@@ -1,6 +1,6 @@
 import { ActionReducerMap, Action, ActionReducer, MetaReducer } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import { WorkData } from './content/_works/work-data.datatype';
+import { WorkState } from './content/_works/work-state.datatype';
 import { WorkStates } from './content/_works/work-states.datatype';
 import { AppState, ViewState, IterableStringMap, IterableStringInstance } from './app.datatypes';
 
@@ -13,8 +13,8 @@ const SET_UNIT_LENGTH = 'SET_UNIT_LENGTH';
 const SET_IS_PORTRAIT = 'SET_IS_PORTRAIT';
 const SET_WORK_ACTIVE = 'SET_WORK_ACTIVE';
 const SET_WORK_STATES = 'SET_WORK_STATES';
-const SET_WORK_DATA = 'SET_WORK_DATA';
-const DELETE_WORK_DATA = 'DELETE_WORK_DATA';
+const SET_WORK_STATE = 'SET_WORK_STATE';
+const DELETE_WORK_STATE = 'DELETE_WORK_STATE';
 
 export const VIEW0_ALIVE = 'VIEW0_ALIVE';
 export const VIEW1_ALIVE = 'VIEW1_ALIVE';
@@ -58,12 +58,12 @@ export class SetWorkStatesAction implements Action {
   readonly type = SET_WORK_STATES;
   constructor(public payload: WorkStates) {}
 }
-export class SetWorkDataAction implements Action {
-  readonly type = SET_WORK_DATA;
-  constructor(public payload: WorkData) {}
+export class SetWorkStateAction implements Action {
+  readonly type = SET_WORK_STATE;
+  constructor(public payload: [number, WorkState]) {}
 }
-export class DeleteWorkDataAction implements Action {
-  readonly type = DELETE_WORK_DATA;
+export class DeleteWorkStateAction implements Action {
+  readonly type = DELETE_WORK_STATE;
   constructor(public payload: string) {}
 }
 
@@ -174,10 +174,10 @@ export function workStatesReducer(state: WorkStates, action: Actions): WorkState
   switch (action.type) {
     case SET_WORK_STATES:
       return payload;
-    case SET_WORK_DATA:
-      state[payload.key] = payload.workData;
+    case SET_WORK_STATE:
+      state[payload[0]].workData = payload[1].workData;
       return state;
-    case DELETE_WORK_DATA:
+    case DELETE_WORK_STATE:
       delete state[payload];
       return state;
     default:
@@ -195,8 +195,8 @@ export type Actions
   | SetIsPortraitAction
   | SetWorkActiveAction
   | SetWorkStatesAction
-  | SetWorkDataAction
-  | DeleteWorkDataAction;
+  | SetWorkStateAction
+  | DeleteWorkStateAction;
 
 export const reducers: ActionReducerMap<AppState> = {
   appView: appViewReducer,

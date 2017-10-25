@@ -1,27 +1,10 @@
-export function styleDownArrow(elStyle: CSSStyleDeclaration, parentStyle: CSSStyleDeclaration, appView: boolean,
+export function styleDownArrow(elStyle: CSSStyleDeclaration, parentStyle: CSSStyleDeclaration,
   uLdwx3: string, uLdhx2: string, uLdwOffset: string): void {
-  if (appView) {
-    styleDownArrowShutter(elStyle, parentStyle, uLdwx3, uLdhx2, uLdwOffset);
-  } else {
-    styleDownArrowContent(elStyle, parentStyle, uLdwx3, uLdhx2, uLdwOffset);
-  }
-}
-function styleDownArrowShutter(elStyle: CSSStyleDeclaration, parentStyle: CSSStyleDeclaration,
-  uLdwx3: string, uLdhx2: string, uLdwOffset: string): void {
-  elStyle.position = 'fixed';
-  elStyle.width = uLdwx3;
-  elStyle.height = uLdhx2;
-  // elStyle.bottom = '0';
+  elStyle.width = '100%';
+  elStyle.height = '100%';
   parentStyle.left = uLdwOffset;
-}
-function styleDownArrowContent(elStyle: CSSStyleDeclaration, parentStyle: CSSStyleDeclaration,
-  uLdwx3: string, uLdhx2: string, uLdwOffset: string): void {
-  elStyle.position = 'fixed';
-  elStyle.width = uLdwx3;
-  elStyle.height = uLdhx2;
-  // elStyle.top = uLdhx2;
-  parentStyle.left = uLdwOffset;
-  elStyle.zIndex = '2';
+  parentStyle.width = uLdwx3;
+  parentStyle.height = uLdhx2;
 }
 export function styleLeftArrow(elStyle: CSSStyleDeclaration,
   uLdwx3: string, uLdhx2: string, uLdhOffset: string): void {

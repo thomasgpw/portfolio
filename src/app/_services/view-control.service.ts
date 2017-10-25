@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Action } from '@ngrx/store';
+import { Subject } from 'rxjs/Subject';
 import { ViewState } from '../app.datatypes';
 import {
   VIEW0_ALIVE,
@@ -6,8 +8,6 @@ import {
   ANIMATION_STATE,
   TRANSITION_ACTIVE
 } from '../app.reducers';
-import { Action } from '@ngrx/store';
-import { Subject, Subscription } from 'rxjs/Rx';
 
 @Injectable()
 export class ViewControlService {

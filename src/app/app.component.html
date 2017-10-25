@@ -2,7 +2,11 @@
 (wheel)='scrollFunc($event)'
 (window:resize)='setViewAspects()'
 >
-  <button id="clearCookie" class="button" (click)='clearAppStateCookie()'> Clear cookies </button>
+  <div id="devButtons" 
+  >
+    <button id="clearCookie" class="button" (click)='clearAppStateCookie()'> Clear cookies </button>
+    <button id="readAppState" class="button" (click)='getAppState()'> Read app state </button>
+  </div>
   <div class='page shutter'
   *ngIf='(appView0Alive$ | async)'
   [@shutterView]='((appAnimationState$ | async) + "state").toString()'
@@ -64,6 +68,7 @@
     [workStates]='(workStates$ | async)'
     [colors]='colors'
     (setWorkActiveEvent)='setWorkActive($event)'
+    (setWorkStateEvent)='setWorkState($event)'
     >
       app-content error
     </app-content>

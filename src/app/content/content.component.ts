@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, state, animate, transition} from '@angular/animations';
 
-import { WorkData } from './_works/work-data.datatype';
+import { WorkState } from './_works/work-state.datatype';
 import { WorkStates } from './_works/work-states.datatype';
 import { WorkManagerService } from '../_services/work-manager.service';
 import { generateSvgTab } from '../../assets/generate-svg-tab';
@@ -31,8 +31,8 @@ import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
 export class ContentComponent implements OnInit, OnDestroy {
   @Output() setAppViewEvent: EventEmitter<null> = new EventEmitter();
   @Output() setWorkActiveEvent: EventEmitter<number> = new EventEmitter();
-  @Output() setWorkDataEvent: EventEmitter<WorkData> = new EventEmitter();
-  @Output() deleteWorkDataEvent: EventEmitter<string> = new EventEmitter();
+  @Output() setWorkStateEvent: EventEmitter<[number, WorkState]> = new EventEmitter();
+  @Output() deleteWorkStateEvent: EventEmitter<string> = new EventEmitter();
   @Input() shutterView0Alive: boolean;
   @Input() unitLength: number;
   @Input() uLdwx3: string;
@@ -56,18 +56,14 @@ export class ContentComponent implements OnInit, OnDestroy {
   gridButton = false;
   tab: SVGElement;
   gridButtonPath = '../../assets/gridbutton.svg';
-  readonly _workManagerService: WorkManagerService;
-  constructor() {
-    this._workManagerService = new WorkManagerService();
+  constructor(readonly _workManagerService: WorkManagerService) {
   }
 
   ngOnInit(): void {
     const contentEl = document.getElementById('content');
     (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
     this.createTab();
-    if (this.workActive !== null) {
-      this.workInitFunc();
-    }
+    this.workInitFunc();
   }
   ngOnDestroy(): void {
   }
@@ -107,7 +103,9 @@ export class ContentComponent implements OnInit, OnDestroy {
   /* EVENT FUNCTIONS */
   workInitFunc(): void {
     const workActive = this.workActive;
-    this._workManagerService.activate(workActive).then(resolve => this.activateClass(workActive));
+    if (workActive !== null) {
+      this._workManagerService.activate(workActive).then(resolve => this.activateClass(workActive));
+    }
   }
   setAppViewFunc(): void {
     this.setAppViewEvent.emit(null);
@@ -115,11 +113,11 @@ export class ContentComponent implements OnInit, OnDestroy {
   setWorkActiveFunc(id: number): void {
     this.setWorkActiveEvent.emit(id);
   }
-  setWorkDataFunc(workData: WorkData): void {
-    this.setWorkDataEvent.emit(workData);
+  setWorkStateFunc(payload: [number, WorkState]): void {
+    this.setWorkStateEvent.emit(payload);
   }
-  deleteWorkDataFunc(key: string): void {
-    this.deleteWorkDataEvent.emit(key);
+  deleteWorkStateFunc(key: string): void {
+    this.deleteWorkStateEvent.emit(key);
   }
   forceGridClass(): void {
     const elArray = document.getElementsByClassName('work-wrapper-view-container');
@@ -139,7 +137,11 @@ export class ContentComponent implements OnInit, OnDestroy {
     this._workManagerService.resizeWork(parseInt(e.element.id, 10));
   }
   addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
-    this._workManagerService.addWorkWrapper(workWrapperComponentInstance);
+    console.log(workWrapperComponentInstance);
+    const count = this._workManagerService.addWorkWrapper(workWrapperComponentInstance);
+    if (count === this.workStates.length) {
+      this.workInitFunc();
+    }
   }
   deactivateClass(id: number): void {
     const classes = document.getElementsByClassName('work-wrapper-view-container')[id].classList;

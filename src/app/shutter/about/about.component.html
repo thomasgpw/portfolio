@@ -17,8 +17,18 @@
   </div>
   <div id="rhyme" class="button" (click)='getNextRhymeFunc()'>My name is Thomas and I'm here to say, <br>
     {{rhyme}}!
+  </div><br><br>
+  <input
+  id="hueRange" type="range" min="0" max="360" step="1" value="color"
+  (input)="setColorFunc($event.target.value)"
+  (change)="setColorFunc($event.target.value)"
+  ><br>
+  <div id="colorDisplay" class="color-display-container">
+    <span id="contentColor" class="color-display color-display-box"></span>
+    <span id="welcomeColor" class="color-display color-display-box"></span>
+    <span id="pColor0" class="color-display color-display-point"></span>
+    <span id="pColor1" class="color-display color-display-point"></span>
+    <span id="pColor2" class="color-display color-display-point"></span>
+    <span id="pColor3" class="color-display color-display-point"></span>
   </div>
-  <input id="hueRange" type="range" min="0" max="360" step="1" value="color" 
-   (input)="setColorFunc($event.target.value)"
-   (change)="setColorFunc($event.target.value)">
 </div>

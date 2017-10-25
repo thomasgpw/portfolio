@@ -11,9 +11,6 @@ export class CustomCookieService extends CookieService {
     super(_cookieOptionsProvider);
   }
   getAppStateCookie(): AppState {
-    // const cookieStringLarge = this.pullCookieString();
-    // console.log(cookieStringLarge);
-    // const cookieString = cookieStringLarge.split(':')[0];
     const cookieString = this.pullCookieString();
     if (cookieString)  {
       console.log('getAppStateCookie', cookieString);
@@ -23,7 +20,7 @@ export class CustomCookieService extends CookieService {
     }
   }
   pullCookieString(): string {
-    return this.get('appState');
+    return this.get('thomasgdotpwAppState');
   }
   // changeAppViewValue(value: boolean): void {
   //   this.editCookieString(value.toString(), 0);
@@ -46,15 +43,13 @@ export class CustomCookieService extends CookieService {
     this.putCookieString(this.appStateToCookieString(appState));
   }
   putCookieString(cookieString: string): void {
-    // this.remove('appState');
-    // console.log(this.pullCookieString());
     console.log('putCookieString', cookieString);
     this.put(
-      'appState',
+      'thomasgdotpwAppState',
       cookieString,
       {
         path: '/',
-        domain: 'localhost',
+        // domain: 'localhost',
         expires: new Date(Date.now() + 2.419e+9)
       }
     );
@@ -107,14 +102,14 @@ export class CustomCookieService extends CookieService {
     const appView = appState.appView;
     const shutterView = appState.shutterView;
     const workActive = appState.workActive;
-    const workActiveString = workActive ? workActive.toString() : 'null';
+    const workActiveString = (workActive !== null) ? workActive.toString() : 'null';
     let cookie
     = appView.view0Alive.toString() + '!'
     + shutterView.view0Alive.toString() + '!'
     + appState.color.toString() + '!'
     + workActiveString + '!'
     ;
-    console.log(appState.workStates);
+    // console.log(appState.workStates);
     for (const workState of appState.workStates) {
       cookie += this.workStateToString(workState) + '@';
     }
@@ -147,7 +142,7 @@ export class CustomCookieService extends CookieService {
         const ellipseSet = new EllipseSet(this.stringToPoint(ellipseSetData.shift()));
         const points = ellipseSet.points;
         for (const pointString of ellipseSetData) {
-          console.log(pointString);
+          // console.log(pointString);
           points.push(this.stringToPoint(pointString));
         }
         immediateEllipseData.push(ellipseSet);
@@ -162,13 +157,12 @@ export class CustomCookieService extends CookieService {
     };
     const centerPoints = pointsToPointData.centerPoints;
     const points = pointsToPointData.points;
-    console.log('workDataStrings', workDataStrings);
+    // console.log('workDataStrings', workDataStrings);
     let centerPointsString = workDataStrings[0];
     centerPointsString = centerPointsString.slice(1, centerPointsString.length - 1);
     if (centerPointsString) {
       const centerPointStrings = centerPointsString.split('%');
       for (const centerPointString of centerPointStrings) {
-        console.log(centerPointString);
         centerPoints.push(this.stringToColorPoint(centerPointString));
       }
     }
@@ -177,9 +171,9 @@ export class CustomCookieService extends CookieService {
     if (pointsString) {
       const pointStrings = pointsString.split('%');
       for (const pointString of pointStrings) {
-        console.log('pointsString', pointsString);
-        console.log('pointStrings', pointStrings);
-        console.log('pointString', pointString);
+        // console.log('pointsString', pointsString);
+        // console.log('pointStrings', pointStrings);
+        // console.log('pointString', pointString);
         points.push(this.stringToPoint(pointString));
       }
     }
@@ -187,21 +181,20 @@ export class CustomCookieService extends CookieService {
   }
   stringToPoint(pointString: string): Point {
     const pointData = pointString.split('|');
-    return new Point(parseInt(pointData[0], 10), parseInt(pointData[1], 10));
+    return new Point(parseFloat(pointData[0]), parseFloat(pointData[1]));
   }
   stringToColorPoint(pointString: string): ColorPoint {
     const pointData = pointString.split('|');
-    return new ColorPoint(parseInt(pointData[0], 10), parseInt(pointData[1], 10), pointData[2]);
+    return new ColorPoint(parseFloat(pointData[0]), parseFloat(pointData[1]), pointData[2]);
   }
   cookieStringToAppState(cookieString: string): AppState {
     const appStateData = cookieString.split('!');
-    const appView0Alive = Boolean(appStateData[0]);
-    const shutterView0Alive = Boolean(appStateData[1]);
+    const appView0Alive = (appStateData[0] === 'true');
+    const shutterView0Alive = (appStateData[1] === 'true');
     const workStatesData: Array<WorkState> = [];
     const workActiveString = appStateData[3];
     const workActive = workActiveString === 'null' ? null : parseInt(workActiveString, 10);
     for (const workStateString of appStateData[4].split('@')) {
-      console.log(workStateString);
       workStatesData.push(this.stringToWorkState(workStateString));
     }
     return {

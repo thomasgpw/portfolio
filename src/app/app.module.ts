@@ -16,7 +16,7 @@ import { AppState, ViewState, IterableStringInstance } from './app.datatypes';
 import { reducers, metaReducers } from './app.reducers';
 
 // Later can grab data and overwrite initial state
-// const stateFromMemory: AppState = new CookieService({null}).getObject('appState') as AppState;
+// const stateFromMemory: AppState = new CookieService({null}).getObject('thomasgdotpwAppState') as AppState;
 export const initialState: AppState = {
   appView: {
     view0Alive: true,

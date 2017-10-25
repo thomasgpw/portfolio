@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs/Subject';
 import { WorkData } from './work-data.datatype';
 
 export abstract class Work {
@@ -8,6 +9,7 @@ export abstract class Work {
   context: CanvasRenderingContext2D;
   active: boolean;
   workData: WorkData;
+  workDataSubject: Subject<WorkData>;
   undoData: WorkData;
 
   constructor (parentEl: Element) {
@@ -16,6 +18,7 @@ export abstract class Work {
     parentEl.appendChild(canvas);
     this.active = false;
     this.canvas = canvas;
+    this.workDataSubject = new Subject();
     this.resizeCanvas(canvas, parentEl);
   }
   resizeCanvas(canvas: HTMLCanvasElement = this.canvas, parentEl: Element = canvas.closest('.work-wrapper-view-container')): void {
@@ -48,6 +51,7 @@ export abstract class Work {
   setWorkData(workData: WorkData): void {
     this.workData = workData;
     this.drawAll(this.context);
+    // this.workDataSubject.next(workData);
   }
   abstract drawAll(context: CanvasRenderingContext2D): void;
   abstract undo(): void;
