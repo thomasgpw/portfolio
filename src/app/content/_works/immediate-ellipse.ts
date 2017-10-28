@@ -127,6 +127,8 @@ export class ImmediateEllipse extends Work {
     }
   }
   onPointerUp (): void {
-    this.pointerDown = false;
+    if (this.pointerDown) {
+      this.pointerDown = false;
+    }
   }
 }

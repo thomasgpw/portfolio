@@ -341,7 +341,7 @@ export class AppComponent implements OnInit {
     this.updateView();
   }
   calcUnitLength(w: number, h: number): void {
-    this.setUnitLength(Math.sqrt(Math.sqrt(w * h / 6)));
+    this.setUnitLength(Math.pow(w * h / 6, 1 / 4));
   }
   calcIsPortrait(w: number, h: number): void {
     this.setIsPortrait(w < h);

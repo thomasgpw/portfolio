@@ -154,6 +154,18 @@ export class ContentComponent implements OnInit, OnDestroy {
     classes.remove('wwRow');
     classes.remove('wwGrid');
     classes.add('wwActive');
+    this.setRowClass(id);
+  }
+  setRowClass(exceptionId: number): void {
+    const elList = document.getElementsByClassName('work-wrapper-view-container');
+    const elListLength = elList.length;
+    for (let c = 0; c < elListLength; ++c) {
+      if (c !== exceptionId) {
+        const classes = elList[c].classList;
+        classes.remove('wwGrid');
+        classes.add('wwRow');
+      }
+    }
   }
   workClickFunc(e: Event): void {
     const clickedEl = e.srcElement.closest('.work-wrapper-view-container');

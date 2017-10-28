@@ -40,9 +40,9 @@ export const rowWorkStyle = style({ height: '10%', width: '10%' });
 
 export function downArrowShutterStyle(): AnimationStyleMetadata {
   return style({
-  transform: 'translateY(1000%)'
-  // + (100 - (100 * Math.sqrt(2 / 3) * Math.pow(window.innerWidth * window.innerHeight, 1 / 4) / window.innerHeight))
-  // + '%)'
+  transform: 'translateY('
+  + (100 - (100 * Math.sqrt(5 / 6) * Math.pow(window.innerWidth * window.innerHeight, 1 / 4) / window.innerHeight))
+  + '%)'
 }); }
 export function downArrowContentStyle(): AnimationStyleMetadata {
   return style({

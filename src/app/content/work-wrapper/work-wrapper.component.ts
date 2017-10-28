@@ -30,6 +30,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Input() isPortrait: boolean;
   @Input() workData: WorkData;
   @Input() type: string;
+  id: number;
   work: Work;
   undoPath = '../../../assets/iconmonstr-undo-2.svg';
   settingsPath = '../../../assets/iconmonstr-volume-control-9.svg';

@@ -98,7 +98,7 @@ export class PointsToPoint extends Work {
   setWorkData(workData: PointsToPointData) {
     super.setWorkData(workData);
     if (workData.centerPoints.length === 0) {
-      this.generateCenterPoints()
+      this.generateCenterPoints();
     }
   }
   drawPoint(context: CanvasRenderingContext2D, point: Point) {
@@ -149,6 +149,8 @@ export class PointsToPoint extends Work {
     }
   }
   onPointerUp (): void {
-    this.pointerDown = false;
+    if (this.pointerDown) {
+      this.pointerDown = false;
+    }
   }
 }

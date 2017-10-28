@@ -9,10 +9,11 @@ body { padding:0; margin:0; }
     width:100%;
     position:fixed; 
     text-align:center;
+    overflow-wrap: break-word;
     white-space: nowrap;
     overflow: hidden;
 }
-.textBox {
+.text-box {
   max-width: 100%;
   overflow-wrap: break-word;
 }
@@ -24,24 +25,30 @@ body { padding:0; margin:0; }
 .shutter {
   z-index: 1;
 }
-
+.click-through {
+  pointer-events: none;
+}
+.clickable {
+  pointer-events: auto;
+}
 .button {
   cursor: pointer;
   z-index: 2;
-  position: relative;
 }
-.svgHighlightBar {
+.button-arrow {
+  position: absolute;
+}
+.svg-highlight-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   pointer-events: none;
   z-index: 3;
-  color: black;
 }
-.svgHighlightBar:hover {
-  color: white;
+.svg-highlight-rect {
+  fill: white;
 }
-.svgTab {
+.svg-tab {
   position: fixed;
   top: 0;
   left: 0;
@@ -66,4 +73,7 @@ svg {
   width: 20%;
   position: relative;
   left: 40%;
+}
+.z-index2 {
+  z-index: 2;
 }
