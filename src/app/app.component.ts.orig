@@ -27,7 +27,7 @@ import {
   SetShutterViewAction,
   SetStringAction,
   SetColorAction,
-  SetUnitLengthAction,
+  SetUnitLengthsAction,
   SetIsPortraitAction,
   SetWorkActiveAction,
   SetWorkStatesAction,
@@ -89,12 +89,16 @@ export class AppComponent implements OnInit {
   tip$: Observable<string>;
   rhyme$: Observable<string>;
   color$: Observable<number>;
-  unitLength$: Observable<number>;
+  unitLengths$: Observable<Array<number>>;
   isPortrait$: Observable<boolean>;
   workActive$: Observable<number>;
   workStates$: Observable<WorkStates>;
+<<<<<<< HEAD
+  unitLengthsReferences: {
+=======
   workStatesChangeFlag$: Observable<boolean>;
   unitLengthReferences: {
+>>>>>>> maindev
     uLdwx3: string,
     uLdhx2: string,
     uLdhx3: string,
@@ -149,7 +153,7 @@ export class AppComponent implements OnInit {
     this.tip$ = store.select(state => state.texts.tip.payload);
     this.rhyme$ = store.select(state => state.texts.rhyme.payload);
     this.color$ = store.select(state => state.color);
-    this.unitLength$ = store.select(state => state.unitLength);
+    this.unitLengths$ = store.select(state => state.unitLengths);
     this.isPortrait$ = store.select(state => state.isPortrait);
     this.workActive$ = store.select(state => state.workActive);
     this.workStates$ = store.select(state => state.workStates);
@@ -185,7 +189,7 @@ export class AppComponent implements OnInit {
     ).subscribe(state => this.concatGreeting(state));
     this.rhyme$.subscribe(state => this.concatRhyme(state));
     this.color$.subscribe(state => this.getColors(state));
-    this.unitLength$.subscribe(state => this.setUnitLengthReferences(state));
+    this.unitLengths$.subscribe(state => this.setUnitLengthsReferences(state));
     // Observable.combineLatest(this.createWorkStatesObservableArray()).subscribe(state => )
     this._appViewControlService.payloadStream.subscribe(state => this.setAppView(state));
     this._shutterViewControlService.payloadStream.subscribe(state => this.setShutterView(state));
@@ -344,46 +348,48 @@ export class AppComponent implements OnInit {
   setViewAspects(): void {
     const w: number = window.innerWidth;
     const h: number = window.innerHeight;
-    this.calcUnitLength(w, h);
+    this.calcUnitLengths(w, h);
     this.calcIsPortrait(w, h);
     this.updateView();
   }
-  calcUnitLength(w: number, h: number): void {
-    this.setUnitLength(Math.pow(w * h / 6, 1 / 4));
+  calcUnitLengths(w: number, h: number): void {
+    const uL = Math.sqrt(w * h) * 3;
+    this.setUnitLengths([uL / w, uL / h]);
   }
   calcIsPortrait(w: number, h: number): void {
     this.setIsPortrait(w < h);
   }
-  setUnitLengthReferences(unitLength: number): void {
-    unitLength *= 100;
-    const percent = '%';
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-    const uLdw = unitLength / windowWidth;
-    const uLdh = unitLength / windowHeight;
-    const uLdwx3 = uLdw * 3;
-    const uLdhx3 = uLdh * 3;
-    this.unitLengthReferences.uLdwx3 = uLdwx3 + percent;
-    this.unitLengthReferences.uLdhx2 = (uLdh * 2) + percent;
-    this.unitLengthReferences.uLdhx3 = uLdhx3 + percent;
-    this.unitLengthReferences.uLdwOffset = (50 - (uLdwx3 / 2)) + percent;
-    this.unitLengthReferences.uLdhOffset = (50 - (uLdhx3 / 2)) + percent;
-    const uLdcw = unitLength / (windowWidth * 0.8);
-    const uLdch = unitLength / (windowHeight * 0.8);
-    const uLdcwx2 = uLdcw * 2;
-    const uLdchx2 = uLdch * 2;
-    const uLd2cw = uLdcw / 2;
-    const uLd2ch = uLdch / 2;
-    const bWPcw = uLdcwx2 + uLd2cw;
-    this.unitLengthReferences.uLdcwx2 = uLdcwx2 + percent;
-    this.unitLengthReferences.uLdchx2 = uLdchx2 + percent;
-    this.unitLengthReferences.uLd2cw = uLd2cw + percent;
-    this.unitLengthReferences.uLd2ch = uLd2ch + percent;
-    this.unitLengthReferences.bWPdcw = bWPcw + percent;
-    this.unitLengthReferences.bWPdcwx2 = (bWPcw * 2) + percent;
-    this.unitLengthReferences.bWPdcwx3 = (bWPcw * 3) + percent;
-    this.unitLengthReferences.bWPdch = (uLdchx2 + uLd2ch) + percent;
-    // this.unitLengthReferences.bWP = uLx2 + uLd2;
+  setUnitLengthsReferences(unitLengths: Array<number>): void {
+    if (unitLengths) {
+      const percent = '%';
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const uLdw = unitLengths[0];
+      const uLdh = unitLengths[1];
+      const uLdwx3 = uLdw * 3;
+      const uLdhx3 = uLdh * 3;
+      this.unitLengthsReferences.uLdwx3 = uLdwx3 + percent;
+      this.unitLengthsReferences.uLdhx2 = (uLdh * 2) + percent;
+      this.unitLengthsReferences.uLdhx3 = uLdhx3 + percent;
+      this.unitLengthsReferences.uLdwOffset = (50 - (uLdwx3 / 2)) + percent;
+      this.unitLengthsReferences.uLdhOffset = (50 - (uLdhx3 / 2)) + percent;
+      const uLdcw = unitLengths[0] * 0.8;
+      const uLdch = unitLengths[1] * 0.8;
+      const uLdcwx2 = uLdcw * 2;
+      const uLdchx2 = uLdch * 2;
+      const uLd2cw = uLdcw / 2;
+      const uLd2ch = uLdch / 2;
+      const bWPcw = uLdcwx2 + uLd2cw;
+      this.unitLengthsReferences.uLdcwx2 = uLdcwx2 + percent;
+      this.unitLengthsReferences.uLdchx2 = uLdchx2 + percent;
+      this.unitLengthsReferences.uLd2cw = uLd2cw + percent;
+      this.unitLengthsReferences.uLd2ch = uLd2ch + percent;
+      this.unitLengthsReferences.bWPdcw = bWPcw + percent;
+      this.unitLengthsReferences.bWPdcwx2 = (bWPcw * 2) + percent;
+      this.unitLengthsReferences.bWPdcwx3 = (bWPcw * 3) + percent;
+      this.unitLengthsReferences.bWPdch = (uLdchx2 + uLd2ch) + percent;
+      // this.unitLengthsReferences.bWP = uLx2 + uLd2;
+    }
   }
 
   /* EVENT FUNCTIONS */
@@ -406,13 +412,13 @@ export class AppComponent implements OnInit {
   //   }
   }
   styleDownArrowFunc(el: SVGElement): void {
-    const unitLengthReferences = this.unitLengthReferences;
+    const unitLengthsReferences = this.unitLengthsReferences;
     styleDownArrow(
       el.style,
       el.parentElement.style,
-      unitLengthReferences.uLdwx3,
-      unitLengthReferences.uLdhx2,
-      unitLengthReferences.uLdwOffset
+      unitLengthsReferences.uLdwx3,
+      unitLengthsReferences.uLdhx2,
+      unitLengthsReferences.uLdwOffset
     );
   }
   getAppState(): AppState {
@@ -441,7 +447,7 @@ export class AppComponent implements OnInit {
       rhyme: null
     },
     color: 223,
-    unitLength: null,
+    unitLengths: null,
     isPortrait: null,
     workActive: null,
     workStates: [
@@ -479,8 +485,8 @@ export class AppComponent implements OnInit {
   setColor(color: number): void {
     this.store.dispatch(new SetColorAction(color));
   }
-  setUnitLength(unitLength: number): void {
-    this.store.dispatch(new SetUnitLengthAction(unitLength));
+  setUnitLengths(unitLengths: Array<number>): void {
+    this.store.dispatch(new SetUnitLengthsAction(unitLengths));
   }
   setIsPortrait(isPortrait: boolean): void {
     this.store.dispatch(new SetIsPortraitAction(isPortrait));
