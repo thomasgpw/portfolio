@@ -1,3 +1,7 @@
+// http://www.jacklmoore.com/notes/rounding-in-javascript/
+function round(value: number, decimals: number): number {
+  return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}
 export class Point {
   x: number;
   y: number;
@@ -7,7 +11,7 @@ export class Point {
     this.y = y;
   }
   toString(): string {
-    return this.x.toString() + '|' + this.y.toString();
+    return round(this.x, 3).toString() + '|' + round(this.y, 3).toString();
   }
 }
 export class ColorPoint extends Point {

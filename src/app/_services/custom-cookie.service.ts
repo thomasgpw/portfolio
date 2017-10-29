@@ -220,7 +220,8 @@ export class CustomCookieService extends CookieService {
       unitLength: null,
       isPortrait: null,
       workActive: workActive,
-      workStates: workStatesData
+      workStates: workStatesData,
+      workStatesChangeFlag: true
     };
   }
 }

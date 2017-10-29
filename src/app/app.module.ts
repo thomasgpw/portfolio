@@ -43,7 +43,8 @@ export const initialState: AppState = {
   workStates: [
     new WorkState([], 'ImmediateEllipse'),
     new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
-  ]
+  ],
+  workStatesChangeFlag: true
 };
 // export function getInitialState() {
 //   return {...initialState, ...stateFromMemory};

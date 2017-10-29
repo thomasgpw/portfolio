@@ -8,6 +8,7 @@ export interface AppState {
   isPortrait: boolean;
   workActive: number;
   workStates: WorkStates;
+  workStatesChangeFlag: boolean;
   // settings: Settings;
 }
 // export class CommandStacks {
