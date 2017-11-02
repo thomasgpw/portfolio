@@ -1,10 +1,7 @@
-import { Point } from './work.datatypes';
+import { Point, FractalExplorerData } from './work.datatypes';
 import { Work } from './work';
 
 export class FractalExplorer extends Work {
-  z: number;
-  c: number;
-  escV: number;
   mandelbrotData: Array<Array<number>>;
   juliaData: Array<Array<number>>;
   constructor(parentElement: Element) {
@@ -13,12 +10,7 @@ export class FractalExplorer extends Work {
   }
   init(): void {
     super.init();
-  }
-  undo(): void {}
-  redo(): void {}
-  drawAll(context: CanvasRenderingContext2D): void {}
-  clearWorkData(): void {
-    const res = this.workData.res;
+    const res = (this.workData as FractalExplorerData).res;
     const mData = this.mandelbrotData;
     const jData = this.juliaData;
     for (let i = 0; i < res; i++) {
@@ -29,6 +21,18 @@ export class FractalExplorer extends Work {
         jData[i][i1] = 0;
       }
     }
+  }
+  calcPoint(z: Point, c: Point): Point {
+    const zx = z.x;
+    const zy = z.y;
+    return new Point(Math.pow(zx, 2) - Math.pow(zy, 2) + c.x, (2 * zx * zy) + c.y);
+  }
+  undo(): void {}
+  redo(): void {}
+  drawAll(context: CanvasRenderingContext2D): void {
+    const xStretch = this.context.canvas.width / this.w;
+  }
+  clearWorkData(): void {
   }
   clearUndoData(): void {}
   onPointerDown(e: PointerEvent): void {}
