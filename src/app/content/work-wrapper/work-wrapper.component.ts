@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, HostListener, OnInit, OnDestroy } from '@angular/core';
-import { WorkData } from '../_works/work-data.datatype';
 import { WorkState } from '../_works/work-state.datatype';
 import { Work } from '../_works/work';
 import {
@@ -28,7 +27,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Input() bWPdcwx3: string;
   @Input() bWPdch: string;
   @Input() isPortrait: boolean;
-  @Input() workData: WorkData;
+  @Input() workState: WorkState;
   @Input() type: string;
   id: number;
   work: Work;
@@ -53,8 +52,8 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   //   }
   // }
   /* ON CHANGE SPECIFIC FUNCTIONS */
-  setWorkStateFunc(id: number, workData: WorkData): void {
-    this.setWorkStateEvent.emit([id, {type: this.type, workData: workData}]);
+  setWorkStateFunc(id: number, workState: WorkState): void {
+    this.setWorkStateEvent.emit([id, workState]);
   }
   activate(): void {
     this.work.activate().then(resolve => this.setActiveEvent.emit(null));
@@ -62,12 +61,8 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   deactivate(): void {
     this.work.deactivate().then(resolve => this.unsetActiveEvent.emit(null));
   }
-  download(instance: WorkWrapperComponent) {
-    const work = this.work;
-    const link = document.getElementById('downloadLink') as HTMLAnchorElement;
-    link.href = work.canvas.toDataURL();
-    link.download = 'canvas.png';
-    link.click();
+  download() {
+    this.work.download(document.getElementById('downloadLink') as HTMLAnchorElement);
   }
   drawAll(values: number[]): Promise<null> {
     const work = this.work;

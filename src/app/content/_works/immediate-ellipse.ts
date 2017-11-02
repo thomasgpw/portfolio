@@ -1,4 +1,4 @@
-import { Point, EllipseSet, ImmediateEllipseData } from './work.datatypes';
+import { Point, EllipseSet, ImmediateEllipseData, ImmediateEllipseSettings } from './work.datatypes';
 import { Work } from './work';
 
 export class ImmediateEllipse extends Work {
@@ -8,6 +8,7 @@ export class ImmediateEllipse extends Work {
   // undoSetNum: number;
   workData: ImmediateEllipseData;
   undoData: ImmediateEllipseData;
+  workSettings: ImmediateEllipseSettings;
   readonly type: string;
   constructor (parentElement: Element) {
     super(parentElement);
@@ -17,6 +18,23 @@ export class ImmediateEllipse extends Work {
   }
   init(): void {
     super.init();
+  }
+  download(link: HTMLAnchorElement) {
+    const context = this.context;
+    const w = this.w;
+    const h = this.h;
+    context.fillStyle = this.workSettings.backgroundColor;
+    this.fill(context, w, h);
+    this.drawAll(context);
+    super.download(link);
+    this.clearCanvas(context, w, h);
+    this.drawAll(context);
+  }
+  setWorkSettings(workSettings: ImmediateEllipseSettings) {
+    super.setWorkSettings(workSettings);
+    if (!workSettings.backgroundColor) {
+      this.workSettings.backgroundColor = 'white';
+    }
   }
   moveLastPoint(fromData: ImmediateEllipseData, toData: ImmediateEllipseData): Promise<boolean> {
     const fromSetLastIndex = fromData.length - 1;

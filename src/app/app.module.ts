@@ -41,8 +41,8 @@ export const initialState: AppState = {
   isPortrait: null,
   workActive: null,
   workStates: [
-    new WorkState([], 'ImmediateEllipse'),
-    new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
+    new WorkState('ImmediateEllipse', [], {colors: null, backgroundColor: null}),
+    new WorkState('PointsToPoint', {centerPoints: [], points: []}, {centerPointDensity: null, chosenColorSet: null, backgroundColor: null})
   ],
   workStatesChangeFlag: true
 };

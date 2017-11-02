@@ -21,14 +21,20 @@ export class WorkManagerService {
     WORK_WRAPPERS[i] = workWrapper;
     console.log(WORK_WRAPPERS);
     const work = workWrapper.work;
-    work.setWorkData(workWrapper.workData);
+    work.setWorkState(workWrapper.workState);
     this.attachSubscription(i, workWrapper, work);
     work.resizeCanvas();
     work.drawAll(work.context);
     return WORK_WRAPPERS.length;
   }
   attachSubscription(id: number, workWrapper: WorkWrapperComponent, work: Work): void {
-    work.workDataSubject.subscribe(state => workWrapper.setWorkStateFunc(id, state));
+    work.workDataSubject.subscribe(
+      state => workWrapper.setWorkStateFunc(id, {
+          type: work.type,
+          workData: state,
+          workSettings: work.workSettings
+      })
+    );
   }
   getWorkWrappers(): Array<WorkWrapperComponent> {
     return this.WORK_WRAPPERS;
