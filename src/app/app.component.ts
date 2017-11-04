@@ -19,6 +19,7 @@ import {
   downArrowContentStyle,
   downArrowShutterStyle
 } from './_animations/styles';
+import { Point } from './content/_works/work.datatypes';
 import { WorkData } from './content/_works/work-data.datatype';
 import { WorkState } from './content/_works/work-state.datatype';
 import { WorkStates } from './content/_works/work-states.datatype';
@@ -438,7 +439,15 @@ export class AppComponent implements OnInit {
     workActive: null,
     workStates: [
       new WorkState([], 'ImmediateEllipse'),
-      new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
+      new WorkState({centerPoints: [], points: []}, 'PointsToPoint'),
+      new WorkState({
+        res: null,
+        iMax: null,
+        escV: null,
+        color: 223,
+        zInitial: new Point(null, null),
+        p0: new Point(null, null),
+      }, 'FractalExplorer')
     ]
   }): void {
     console.log('setAppState', appState);

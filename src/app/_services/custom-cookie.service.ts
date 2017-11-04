@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { CookieOptionsProvider } from '../../../node_modules/ngx-cookie/src/cookie-options-provider';
 import { WorkState } from '../content/_works/work-state.datatype';
-import { ImmediateEllipseData, PointsToPointData, EllipseSet, Point, ColorPoint } from '../content/_works/work.datatypes';
+import { ImmediateEllipseData, PointsToPointData, FractalExplorerData, EllipseSet, Point, ColorPoint } from '../content/_works/work.datatypes';
 import { AppState, IterableStringInstance } from '../app.datatypes';
 
 @Injectable()
@@ -61,6 +61,8 @@ export class CustomCookieService extends CookieService {
         return type + '$' + this.immediateEllipseDataToString(workState.workData as ImmediateEllipseData);
       case 'PointsToPoint':
         return type + '$' + this.pointsToPointDataToString(workState.workData as PointsToPointData);
+      case 'FractalExplorer':
+        return type + '$' + this.fractalExplorerDataToString(workState.workData as FractalExplorerData);
       default:
         return null;
     }
@@ -98,6 +100,14 @@ export class CustomCookieService extends CookieService {
     }
     return workString + ']';
   }
+  fractalExplorerDataToString(workData: FractalExplorerData): string {
+    return ((workData.res) ? workData.res.toString() : 'null') + '%'
+    + ((workData.iMax) ? workData.iMax.toString() : 'null') + '%'
+    + ((workData.escV) ? workData.escV.toString() : 'null') + '%'
+    + ((workData.color) ? workData.color.toString() : 'null') + '%'
+    + ((workData.zInitial.x && workData.zInitial.y) ? workData.zInitial.toString() : 'null|null') + '%'
+    + ((workData.p0.x && workData.p0.y) ? workData.p0.toString() : 'null|null');
+  }
   appStateToCookieString(appState: AppState): string {
     const appView = appState.appView;
     const shutterView = appState.shutterView;
@@ -127,6 +137,11 @@ export class CustomCookieService extends CookieService {
       case 'PointsToPoint':
         return {
           workData: this.stringToPointsToPointData(workStateData),
+          type: type
+        };
+      case 'FractalExplorer':
+        return {
+          workData: this.stringToFractalExplorerData(workStateData[0]),
           type: type
         };
       default:
@@ -178,6 +193,17 @@ export class CustomCookieService extends CookieService {
       }
     }
     return pointsToPointData;
+  }
+  stringToFractalExplorerData(workDataString: string): FractalExplorerData {
+    const workDataStrings = workDataString.split('%');
+    return {
+      res: (workDataStrings[0] === 'null') ? null : parseFloat(workDataStrings[0]),
+      iMax: (workDataStrings[1] === 'null') ? null : parseFloat(workDataStrings[1]),
+      escV: (workDataStrings[2] === 'null') ? null : parseFloat(workDataStrings[2]),
+      color: (workDataStrings[3] === 'null') ? null : parseInt(workDataStrings[3], 10),
+      zInitial: this.stringToPoint(workDataStrings[4]),
+      p0: this.stringToPoint(workDataStrings[5]),
+    };
   }
   stringToPoint(pointString: string): Point {
     const pointData = pointString.split('|');

@@ -6,6 +6,7 @@ import { WorkWrapperComponent } from '../content/work-wrapper/work-wrapper.compo
 import { Work } from '../content/_works/work';
 import { ImmediateEllipse } from '../content/_works/immediate-ellipse';
 import { PointsToPoint } from '../content/_works/points-to-point';
+import { FractalExplorer } from '../content/_works/fractal-explorer';
 
 @Injectable()
 export class WorkManagerService {
@@ -23,7 +24,7 @@ export class WorkManagerService {
     work.setWorkData(workWrapper.workData);
     this.attachSubscription(i, workWrapper, work);
     work.resizeCanvas();
-    work.drawAll(work.context);
+    work.setup(work.context);
     return WORK_WRAPPERS.length;
   }
   attachSubscription(id: number, workWrapper: WorkWrapperComponent, work: Work): void {
@@ -38,6 +39,8 @@ export class WorkManagerService {
         return new ImmediateEllipse(parentElement);
       case 'PointsToPoint':
         return new PointsToPoint(parentElement);
+      case 'FractalExplorer':
+        return new FractalExplorer(parentElement);
       default:
         return null;
     }

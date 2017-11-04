@@ -17,34 +17,35 @@ import { reducers, metaReducers } from './app.reducers';
 
 // Later can grab data and overwrite initial state
 // const stateFromMemory: AppState = new CookieService({null}).getObject('thomasgdotpwAppState') as AppState;
-export const initialState: AppState = {
-  appView: {
-    view0Alive: true,
-    view1Alive: false,
-    animationState: true,
-    transitionActive: false,
-  },
-  shutterView: {
-    view0Alive: true,
-    view1Alive: false,
-    animationState: true,
-    transitionActive: false,
-  },
-  texts: {
-    greeting: null,
-    name: null,
-    tip: null,
-    rhyme: null
-  },
-  color: 223,
-  unitLength: null,
-  isPortrait: null,
-  workActive: null,
-  workStates: [
-    new WorkState([], 'ImmediateEllipse'),
-    new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
-  ]
-};
+// export const initialState: AppState = {
+//   appView: {
+//     view0Alive: true,
+//     view1Alive: false,
+//     animationState: true,
+//     transitionActive: false,
+//   },
+//   shutterView: {
+//     view0Alive: true,
+//     view1Alive: false,
+//     animationState: true,
+//     transitionActive: false,
+//   },
+//   texts: {
+//     greeting: null,
+//     name: null,
+//     tip: null,
+//     rhyme: null
+//   },
+//   color: 223,
+//   unitLength: null,
+//   isPortrait: null,
+//   workActive: null,
+//   workStates: [
+//     new WorkState([], 'ImmediateEllipse'),
+//     new WorkState({centerPoints: [], points: []}, 'PointsToPoint'),
+//     new WorkState({a: null, b: null, c: null, z: null, escV: null, res: null, p0: new Point(null, null), p1: new Point(null, null)}, 'FractalExplorer')
+//   ]
+// };
 // export function getInitialState() {
 //   return {...initialState, ...stateFromMemory};
 // }

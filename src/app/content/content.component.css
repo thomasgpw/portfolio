@@ -4,6 +4,8 @@
   border: 3px solid #777;
   border-radius: 5%;
   background: white;
+  position: relative;
+  overflow: hidden;
 }
 .work-wrapper-view-container:hover {
   box-shadow: 0 0 3px 5px #555

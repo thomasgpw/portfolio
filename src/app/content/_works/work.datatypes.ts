@@ -30,4 +30,11 @@ export class EllipseSet {
 }
 export interface PointsToPointData {centerPoints: Array<ColorPoint>; points: Array<Point>; }
 export type ImmediateEllipseData = Array<EllipseSet>;
-export interface FractalExplorerData {a: number; b: number; c: number; z: number; escV: number; res: number; p0: Point; p1: Point; }
+export interface FractalExplorerData {
+  res: number;
+  iMax: number;
+  escV: number;
+  color: number;
+  zInitial: Point;
+  p0: Point;
+}

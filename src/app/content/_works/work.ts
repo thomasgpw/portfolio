@@ -40,6 +40,9 @@ export abstract class Work {
     this.active = false;
     return Promise.resolve(null);
   }
+  setup(context: CanvasRenderingContext2D): void {
+    this.drawAll(context);
+  }
   init(): void {
     this.clearCanvas();
     this.clearWorkData();
