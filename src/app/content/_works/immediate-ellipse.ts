@@ -19,6 +19,16 @@ export class ImmediateEllipse extends Work {
   init(): void {
     super.init();
   }
+  setupSettings(settingsEl: Element): void {
+    if (settingsEl) {
+      const workSettings = this.workSettings;
+      const bgColorInput = document.createElement('input');
+      bgColorInput.type = 'color';
+      bgColorInput.value = workSettings.backgroundColor;
+      bgColorInput.onchange = (event  => workSettings.backgroundColor = (event.srcElement as HTMLInputElement).value);
+      settingsEl.appendChild(bgColorInput);
+    }
+  }
   download(link: HTMLAnchorElement) {
     const context = this.context;
     const w = this.w;

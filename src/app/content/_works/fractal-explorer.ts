@@ -37,6 +37,9 @@ export class FractalExplorer extends Work {
     this.juliaData = jData;
     super.setup(context, settingsEl);
   }
+  setupSettings(settingsEl: Element): void {
+    const workSettings = this.workSettings;
+  }
   calcAll(numberArrayArray: Array<Array<number>>): Array<Array<number>> {
     if (numberArrayArray) {
       const workSettings = this.workSettings;

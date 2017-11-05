@@ -45,6 +45,7 @@ export abstract class Work {
   }
   setup(context: CanvasRenderingContext2D, settingsEl: Element): void {
     this.drawAll(context);
+    this.setupSettings(settingsEl);
   }
   init(): void {
     this.clearCanvas();
@@ -75,6 +76,7 @@ export abstract class Work {
   setWorkSettings(workSettings: WorkSettings): void {
     this.workSettings = workSettings;
   }
+  abstract setupSettings(settingsEl: Element): void;
   abstract drawAll(context: CanvasRenderingContext2D): void;
   abstract undo(): void;
   abstract redo(): void;

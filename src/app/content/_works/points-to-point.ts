@@ -19,6 +19,9 @@ export class PointsToPoint extends Work {
     super.init();
     this.generateCenterPoints();
   }
+  setupSettings(settingsEl: Element): void {
+    const workSettings = this.workSettings;
+  }
   download(link: HTMLAnchorElement) {
     const context = this.context;
     const w = this.w;

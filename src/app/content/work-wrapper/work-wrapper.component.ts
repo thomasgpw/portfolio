@@ -67,8 +67,10 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     this.work.download(document.getElementById('downloadLink') as HTMLAnchorElement);
   }
   openSettings(): void {
-    if (this.work.active) {
+    const work = this.work;
+    if (work.active) {
       this.settingsOpen = true;
+      work.setupSettings(document.getElementById('settingsWrapper'));
     }
   }
   closeSettings(): void {
