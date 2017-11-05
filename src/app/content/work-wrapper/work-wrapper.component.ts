@@ -129,10 +129,10 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
       work.onPointerMove(event as PointerEvent);
     }
   }
-  @HostListener('window: pointerup') onPointerUp() {
+  @HostListener('window: pointerup', ['$event']) onPointerUp() {
     const work = this.work;
     if (work.active) {
-      work.onPointerUp();
+      work.onPointerUp(event as PointerEvent);
     }
   }
 }

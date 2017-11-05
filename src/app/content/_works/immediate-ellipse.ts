@@ -144,7 +144,7 @@ export class ImmediateEllipse extends Work {
       this.workDataSubject.next(workData);
     }
   }
-  onPointerUp (): void {
+  onPointerUp (e: PointerEvent): void {
     this.pointerDown = false;
   }
 }

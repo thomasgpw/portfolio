@@ -453,9 +453,9 @@ export class AppComponent implements OnInit {
         {centerPointDensity: 1, chosenColorSet: false, backgroundColor: 'white'}),
       new WorkState(
         'FractalExplorer',
-        { p0: new Point(null, null), zoom: 1 },
+        { p0: new Point(0, 0), zoom: 1 },
         {
-          res: 200,
+          res: 0.3,
           iMax: 1000,
           escV: 2,
           color: 223,
