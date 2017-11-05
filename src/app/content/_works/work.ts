@@ -43,7 +43,7 @@ export abstract class Work {
     this.active = false;
     return Promise.resolve(null);
   }
-  setup(context: CanvasRenderingContext2D): void {
+  setup(context: CanvasRenderingContext2D, settingsEl: Element): void {
     this.drawAll(context);
   }
   init(): void {
@@ -62,6 +62,7 @@ export abstract class Work {
   clearCanvas(context: CanvasRenderingContext2D = this.context, w: number = this.w, h: number = this.h): void {
     context.clearRect(0, 0, w, h);
   }
+  saveSettings(): void {}
   setWorkState(workState: WorkState): void {
     this.setWorkData(workState.workData);
     this.setWorkSettings(workState.workSettings);

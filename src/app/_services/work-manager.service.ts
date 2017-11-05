@@ -25,7 +25,7 @@ export class WorkManagerService {
     work.setWorkState(workWrapper.workState);
     this.attachSubscription(i, workWrapper, work);
     work.resizeCanvas();
-    work.setup(work.context);
+    work.setup(work.context, document.getElementsByClassName('settings-wrapper')[i]);
     return WORK_WRAPPERS.length;
   }
   attachSubscription(id: number, workWrapper: WorkWrapperComponent, work: Work): void {

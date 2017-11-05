@@ -31,8 +31,10 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Input() type: string;
   id: number;
   work: Work;
+  settingsOpen = false;
   undoPath = '../../../assets/iconmonstr-undo-2.svg';
   settingsPath = '../../../assets/iconmonstr-volume-control-9.svg';
+  closePath = '../../../assets/iconmonstr-x-mark-1.svg';
   deletePath = '../../../assets/iconmonstr-trash-can-2.svg';
   uploadPath = '../../../assets/iconmonstr-upload-17.svg';
   downloadPath = '../../../assets/iconmonstr-download-7-edited.svg';
@@ -61,8 +63,17 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   deactivate(): void {
     this.work.deactivate().then(resolve => this.unsetActiveEvent.emit(null));
   }
-  download() {
+  download(): void {
     this.work.download(document.getElementById('downloadLink') as HTMLAnchorElement);
+  }
+  openSettings(): void {
+    if (this.work.active) {
+      this.settingsOpen = true;
+    }
+  }
+  closeSettings(): void {
+    this.work.saveSettings();
+    this.settingsOpen = false;
   }
   drawAll(values: number[]): Promise<null> {
     const work = this.work;
@@ -81,6 +92,10 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     styleRedoOffset(el.style, this.uLd2cw, redoOffset);
   }
   styleSettingsFunc(el: SVGElement) {
+    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleRightOffset(el.style, this.uLd2cw, '0');
+  }
+  styleCloseFunc(el: SVGElement) {
     styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     styleRightOffset(el.style, this.uLd2cw, '0');
   }

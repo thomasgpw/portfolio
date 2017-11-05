@@ -446,21 +446,22 @@ export class AppComponent implements OnInit {
     isPortrait: null,
     workActive: null,
     workStates: [
-      new WorkState('ImmediateEllipse', [], {colors: null, backgroundColor: null}),
+      new WorkState('ImmediateEllipse', [], {colors: 'black', backgroundColor: 'white'}),
       new WorkState(
         'PointsToPoint',
         {centerPoints: [], points: []},
-        {centerPointDensity: null, chosenColorSet: null, backgroundColor: null}),
+        {centerPointDensity: 1, chosenColorSet: false, backgroundColor: 'white'}),
       new WorkState(
         'FractalExplorer',
-        { p0: new Point(null, null), zoom: null },
+        { p0: new Point(null, null), zoom: 1 },
         {
-          res: null,
-          iMax: null,
-          escV: null,
+          res: 200,
+          iMax: 1000,
+          escV: 2,
           color: 223,
-          zInitial: new Point(null, null),
-        } )
+          zInitial: new Point(0, 0),
+        }
+      )
     ],
     workStatesChangeFlag: true
   }): void {

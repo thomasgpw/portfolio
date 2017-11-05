@@ -13,12 +13,12 @@ export class FractalExplorer extends Work {
   }
   resizeCanvas(canvas: HTMLCanvasElement = this.canvas, parentEl: Element = canvas.closest('.work-wrapper-view-container')): void {
     super.resizeCanvas(canvas, parentEl);
-    this.setup(this.context);
+    // this.setup(this.context);
   }
   init(): void {
     super.init();
   }
-  setup(context: CanvasRenderingContext2D): void {
+  setup(context: CanvasRenderingContext2D, settingsEl: Element): void {
     const res = this.workSettings ? (this.workSettings.res ? this.workSettings.res : 0.3) : 0.3;
     const w = this.w;
     const h = this.h;
@@ -35,7 +35,7 @@ export class FractalExplorer extends Work {
     console.log(mData);
     this.mandelbrotData = this.calcAll(mData);
     this.juliaData = jData;
-    super.setup(context);
+    super.setup(context, settingsEl);
   }
   calcAll(numberArrayArray: Array<Array<number>>): Array<Array<number>> {
     if (numberArrayArray) {
