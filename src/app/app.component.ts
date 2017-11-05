@@ -450,18 +450,17 @@ export class AppComponent implements OnInit {
       new WorkState(
         'PointsToPoint',
         {centerPoints: [], points: []},
-        {centerPointDensity: null, chosenColorSet: null, backgroundColor: null})
+        {centerPointDensity: null, chosenColorSet: null, backgroundColor: null}),
       new WorkState(
         'FractalExplorer',
+        { p0: new Point(null, null), zoom: null },
         {
           res: null,
           iMax: null,
           escV: null,
           color: 223,
           zInitial: new Point(null, null),
-          p0: new Point(null, null),
-        },
-        {} )
+        } )
     ],
     workStatesChangeFlag: true
   }): void {

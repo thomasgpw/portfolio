@@ -1,4 +1,9 @@
-import { PointsToPointSettings, ImmediateEllipseSettings } from './work.datatypes';
+import {
+  ImmediateEllipseSettings,
+  PointsToPointSettings,
+  FractalExplorerSettings
+} from './work.datatypes';
 export type WorkSettings
-= PointsToPointSettings
-| ImmediateEllipseSettings;
+= ImmediateEllipseSettings
+| PointsToPointSettings
+| FractalExplorerSettings;

@@ -15,6 +15,9 @@ import {
 } from '../content/_works/work.datatypes';
 import { AppState, IterableStringInstance } from '../app.datatypes';
 
+/*
+* Constructs and Deconstructs a cookie string of necesary appState data using heirarchical delimeters.
+*/
 @Injectable()
 export class CustomCookieService extends CookieService {
   constructor(private _cookieOptionsProvider: CookieOptionsProvider) {
@@ -42,7 +45,7 @@ export class CustomCookieService extends CookieService {
   //   this.editCookieString(value, 2);
   // }
   // changeWorkActiveValue(value: number): void {
-  //   this.editCookieString(value ? value.toString() : 'null', 3);
+  //   this.editCookieString(value ? value.toString() : '', 3);
   // }
   // editCookieString(value: string, position: number): void {
   //   const cookieArray = this.cookieString.split('!');
@@ -76,7 +79,9 @@ export class CustomCookieService extends CookieService {
         + this.pointsToPointDataToString(workState.workData as PointsToPointData) + '$'
         + this.pointsToPointSettingsToString(workState.workSettings as PointsToPointSettings);
       case 'FractalExplorer':
-        return type + '$' + this.fractalExplorerDataToString(workState.workData as FractalExplorerData);
+        return type + '$'
+        + this.fractalExplorerDataToString(workState.workData as FractalExplorerData) + '$'
+        + this.fractalExplorerSettingsToString(workState.workSettings as FractalExplorerSettings);
       default:
         return null;
     }
@@ -98,9 +103,9 @@ export class CustomCookieService extends CookieService {
   immediateEllipseSettingsToString(workSettings: ImmediateEllipseSettings): string {
     // let workString = '';
     const colors = workSettings.colors;
-    const colorsString = (colors !== null) ? colors : 'null';
+    const colorsString = (colors !== null) ? colors : '';
     const backgroundColor = workSettings.backgroundColor;
-    const backgroundColorString = (backgroundColor !== null) ? backgroundColor : 'null';
+    const backgroundColorString = (backgroundColor !== null) ? backgroundColor : '';
     return colorsString + '%' + backgroundColorString;
     // return workString;
   }
@@ -126,27 +131,30 @@ export class CustomCookieService extends CookieService {
   pointsToPointSettingsToString(workSettings: PointsToPointSettings): string {
     // let workString = '';
     const centerPointDensity = workSettings.centerPointDensity;
-    const centerPointDensityString = (centerPointDensity !== null) ? centerPointDensity.toString() : 'null';
+    const centerPointDensityString = (centerPointDensity !== null) ? centerPointDensity.toString() : '';
     const chosenColorSet = workSettings.chosenColorSet;
-    const chosenColorSetString = (chosenColorSet !== null) ? centerPointDensity.toString() : 'null';
+    const chosenColorSetString = (chosenColorSet !== null) ? centerPointDensity.toString() : '';
     const backgroundColor = workSettings.backgroundColor;
-    const backgroundColorString = (backgroundColor !== null) ? backgroundColor : 'null';
+    const backgroundColorString = (backgroundColor !== null) ? backgroundColor : '';
     return centerPointDensityString + '%' + chosenColorSetString + '%' + backgroundColorString;
     // return workString;
   }
   fractalExplorerDataToString(workData: FractalExplorerData): string {
-    return ((workData.res) ? workData.res.toString() : 'null') + '%'
-    + ((workData.iMax) ? workData.iMax.toString() : 'null') + '%'
-    + ((workData.escV) ? workData.escV.toString() : 'null') + '%'
-    + ((workData.color) ? workData.color.toString() : 'null') + '%'
-    + ((workData.zInitial.x && workData.zInitial.y) ? workData.zInitial.toString() : 'null|null') + '%'
-    + ((workData.p0.x && workData.p0.y) ? workData.p0.toString() : 'null|null');
+    return ((workData.p0.x && workData.p0.y) ? workData.p0.toString() : 'null|null')
+    + ((workData.zoom) ? workData.zoom.toString() : '') + '%';
+  }
+  fractalExplorerSettingsToString(workSettings: FractalExplorerSettings): string {
+    return ((workSettings.res) ? workSettings.res.toString() : '') + '%'
+    + ((workSettings.iMax) ? workSettings.iMax.toString() : '') + '%'
+    + ((workSettings.escV) ? workSettings.escV.toString() : '') + '%'
+    + ((workSettings.color) ? workSettings.color.toString() : '') + '%'
+    + ((workSettings.zInitial.x && workSettings.zInitial.y) ? workSettings.zInitial.toString() : 'null|null') + '%';
   }
   appStateToCookieString(appState: AppState): string {
     const appView = appState.appView;
     const shutterView = appState.shutterView;
     const workActive = appState.workActive;
-    const workActiveString = (workActive !== null) ? workActive.toString() : 'null';
+    const workActiveString = (workActive !== null) ? workActive.toString() : '';
     let cookie
     = appView.view0Alive.toString() + '!'
     + shutterView.view0Alive.toString() + '!'
@@ -251,12 +259,18 @@ export class CustomCookieService extends CookieService {
   stringToFractalExplorerData(workDataString: string): FractalExplorerData {
     const workDataStrings = workDataString.split('%');
     return {
-      res: (workDataStrings[0] === 'null') ? null : parseFloat(workDataStrings[0]),
-      iMax: (workDataStrings[1] === 'null') ? null : parseFloat(workDataStrings[1]),
-      escV: (workDataStrings[2] === 'null') ? null : parseFloat(workDataStrings[2]),
-      color: (workDataStrings[3] === 'null') ? null : parseInt(workDataStrings[3], 10),
-      zInitial: this.stringToPoint(workDataStrings[4]),
-      p0: this.stringToPoint(workDataStrings[5]),
+      p0: this.stringToPoint(workDataStrings[0]),
+      zoom: (workDataStrings[1] === '') ? null : parseFloat(workDataStrings[1])
+    };
+  }
+  stringToFractalExplorerSettings(workSettingsString: string) {
+    const workSettingsStrings = workSettingsString.split('%');
+    return {
+      res: (workSettingsStrings[0] === '') ? null : parseFloat(workSettingsStrings[0]),
+      iMax: (workSettingsStrings[1] === '') ? null : parseFloat(workSettingsStrings[1]),
+      escV: (workSettingsStrings[2] === '') ? null : parseFloat(workSettingsStrings[2]),
+      color: (workSettingsStrings[3] === '') ? null : parseInt(workSettingsStrings[3], 10),
+      zInitial: this.stringToPoint(workSettingsStrings[4]),
     };
   }
   stringToPoint(pointString: string): Point {
@@ -273,7 +287,7 @@ export class CustomCookieService extends CookieService {
     const shutterView0Alive = (appStateData[1] === 'true');
     const workStatesData: Array<WorkState> = [];
     const workActiveString = appStateData[3];
-    const workActive = workActiveString === 'null' ? null : parseInt(workActiveString, 10);
+    const workActive = workActiveString === '' ? null : parseInt(workActiveString, 10);
     for (const workStateString of appStateData[4].split('@')) {
       workStatesData.push(this.stringToWorkState(workStateString));
     }

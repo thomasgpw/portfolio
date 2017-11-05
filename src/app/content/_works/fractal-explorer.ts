@@ -1,10 +1,11 @@
-import { Point, FractalExplorerData } from './work.datatypes';
+import { Point, FractalExplorerData, FractalExplorerSettings } from './work.datatypes';
 import { Work } from './work';
 
 export class FractalExplorer extends Work {
   mandelbrotData: Array<Array<number>>;
   juliaData: Array<Array<number>>;
   workData: FractalExplorerData;
+  workSettings: FractalExplorerSettings;
   constructor(parentElement: Element) {
     super(parentElement);
     this.type = 'FractalExplorer';
@@ -18,7 +19,7 @@ export class FractalExplorer extends Work {
     super.init();
   }
   setup(context: CanvasRenderingContext2D): void {
-    const res = this.workData ? (this.workData.res ? this.workData.res : 0.3) : 0.3;
+    const res = this.workSettings ? (this.workSettings.res ? this.workSettings.res : 0.3) : 0.3;
     const w = this.w;
     const h = this.h;
     const mData = [];
@@ -38,17 +39,17 @@ export class FractalExplorer extends Work {
   }
   calcAll(numberArrayArray: Array<Array<number>>): Array<Array<number>> {
     if (numberArrayArray) {
-      const workData = this.workData;
+      const workSettings = this.workSettings;
       let z: Point;
       let zX: number;
       let zY: number;
       let zInitial: Point;
       let escVsq: number;
       let iMax: number;
-      if (workData) {
-        zInitial = (workData.zInitial && workData.zInitial.x && workData.zInitial.y) ? workData.zInitial : new Point(0, 0);
-        escVsq = Math.pow(workData.escV ? workData.escV : 2, 2);
-        iMax = workData.iMax ? workData.iMax : 1000;
+      if (workSettings) {
+        zInitial = (workSettings.zInitial && workSettings.zInitial.x && workSettings.zInitial.y) ? workSettings.zInitial : new Point(0, 0);
+        escVsq = Math.pow(workSettings.escV ? workSettings.escV : 2, 2);
+        iMax = workSettings.iMax ? workSettings.iMax : 1000;
       } else {
         zInitial = new Point(0, 0);
         escVsq = 4;
@@ -89,10 +90,10 @@ export class FractalExplorer extends Work {
   undo(): void {}
   redo(): void {}
   drawAll(context: CanvasRenderingContext2D): void {
-    // this.mandelbrotData = this.calcAll(this.mandelbrotData);
-    const res = this.workData ? this.workData.res : null;
+    // this.mandelbrotSettings = this.calcAll(this.mandelbrotData);
+    const res = this.workSettings ? this.workSettings.res : null;
     const stretch = 1 / (res ? res : 0.3);
-    this.drawMandelbrot(context, stretch, this.workData ? this.workData.color : 223);
+    this.drawMandelbrot(context, stretch, this.workSettings ? this.workSettings.color : 223);
   }
   drawMandelbrot(context: CanvasRenderingContext2D, stretch: number, hue: number) {
     const mData = this.mandelbrotData;

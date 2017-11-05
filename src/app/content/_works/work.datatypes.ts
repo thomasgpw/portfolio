@@ -37,11 +37,13 @@ export interface ImmediateEllipseSettings {colors: string; backgroundColor: stri
 export interface PointsToPointData {centerPoints: Array<ColorPoint>; points: Array<Point>; }
 export interface PointsToPointSettings {centerPointDensity: number; chosenColorSet: boolean; backgroundColor: string; }
 export interface FractalExplorerData {
+  p0: Point;
+  zoom: number;
+}
+export interface FractalExplorerSettings {
   res: number;
   iMax: number;
   escV: number;
   color: number;
   zInitial: Point;
-  p0: Point;
 }
-export interface FractalExplorerSettings {}
