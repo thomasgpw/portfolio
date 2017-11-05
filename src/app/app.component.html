@@ -36,12 +36,15 @@
       app-shutter error
     </app-shutter>
   </div>
-  <div
-  id='downArrow' class='button'
+  <div id='downArrowWrapper' class='page click-through z-index2' 
   [@downArrow]='((appAnimationState$ | async) + "state").toString()'
-  [inlineSVG]=arrowPath
-  (onSVGInserted)='styleDownArrowFunc($event)'
-  (click)=setAppViewFunc()>
+  >
+    <div
+    id='downArrow' class='button button-arrow clickable'
+    [inlineSVG]=arrowPath
+    (onSVGInserted)='styleDownArrowFunc($event)'
+    (click)=setAppViewFunc()>
+    </div>
   </div>
   <div class='page content'
   *ngIf='appView1Alive$ | async'

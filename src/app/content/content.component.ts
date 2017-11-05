@@ -154,18 +154,32 @@ export class ContentComponent implements OnInit, OnDestroy {
     classes.remove('wwRow');
     classes.remove('wwGrid');
     classes.add('wwActive');
+    this.setRowClass(id);
+  }
+  setRowClass(exceptionId: number): void {
+    const elList = document.getElementsByClassName('work-wrapper-view-container');
+    const elListLength = elList.length;
+    for (let c = 0; c < elListLength; ++c) {
+      if (c !== exceptionId) {
+        const classes = elList[c].classList;
+        classes.remove('wwGrid');
+        classes.add('wwRow');
+      }
+    }
   }
   workClickFunc(e: Event): void {
     const clickedEl = e.srcElement.closest('.work-wrapper-view-container');
-    const id = parseInt(clickedEl.id, 10);
-    const workActive = this.workActive;
-    if (id === workActive) {
-      // this._workManagerService.handleClick(workActive, e);
-    } else {
-      if (workActive) {
-        this._workManagerService.deactivate(workActive).then(resolve => this.deactivateClass(workActive));
+    if (clickedEl) {
+      const id = parseInt(clickedEl.id, 10);
+      const workActive = this.workActive;
+      if (id === workActive) {
+        // this._workManagerService.handleClick(workActive, e);
+      } else {
+        if (workActive) {
+          this._workManagerService.deactivate(workActive).then(resolve => this.deactivateClass(workActive));
+        }
+        this._workManagerService.activate(id).then(resolve => this.activateClass(id));
       }
-      this._workManagerService.activate(id).then(resolve => this.activateClass(id));
     }
   }
     // const workWrapperInstance = this.getWorkWrapper(this.workTypes.indexOf(e.element.id.toString()));

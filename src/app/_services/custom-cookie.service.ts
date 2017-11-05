@@ -2,7 +2,17 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { CookieOptionsProvider } from '../../../node_modules/ngx-cookie/src/cookie-options-provider';
 import { WorkState } from '../content/_works/work-state.datatype';
-import { ImmediateEllipseData, PointsToPointData, FractalExplorerData, EllipseSet, Point, ColorPoint } from '../content/_works/work.datatypes';
+import {
+  Point,
+  ColorPoint,
+  EllipseSet,
+  ImmediateEllipseData,
+  ImmediateEllipseSettings,
+  PointsToPointData,
+  PointsToPointSettings,
+  FractalExplorerData,
+  FractalExplorerSettings
+} from '../content/_works/work.datatypes';
 import { AppState, IterableStringInstance } from '../app.datatypes';
 
 @Injectable()
@@ -58,9 +68,13 @@ export class CustomCookieService extends CookieService {
     const type = workState.type;
     switch (type) {
       case 'ImmediateEllipse':
-        return type + '$' + this.immediateEllipseDataToString(workState.workData as ImmediateEllipseData);
+        return type + '$'
+        + this.immediateEllipseDataToString(workState.workData as ImmediateEllipseData) + '$'
+        + this.immediateEllipseSettingsToString(workState.workSettings as ImmediateEllipseSettings);
       case 'PointsToPoint':
-        return type + '$' + this.pointsToPointDataToString(workState.workData as PointsToPointData);
+        return type + '$'
+        + this.pointsToPointDataToString(workState.workData as PointsToPointData) + '$'
+        + this.pointsToPointSettingsToString(workState.workSettings as PointsToPointSettings);
       case 'FractalExplorer':
         return type + '$' + this.fractalExplorerDataToString(workState.workData as FractalExplorerData);
       default:
@@ -71,15 +85,24 @@ export class CustomCookieService extends CookieService {
     let workString = '[';
     if (workData.length > 0) {
       for (const ellipseSet of workData) {
-        workString += ellipseSet.center.toString() + '%';
+        workString += ellipseSet.center.toString() + '^';
         for (const point of ellipseSet.points) {
-          workString += point.toString() + '%';
+          workString += point.toString() + '^';
         }
-        workString = workString.slice(0, workString.length - 1) + ']$[';
+        workString = workString.slice(0, workString.length - 1) + ']%[';
       }
       workString = workString.slice(0, workString.length - 2);
     }
     return workString + ']';
+  }
+  immediateEllipseSettingsToString(workSettings: ImmediateEllipseSettings): string {
+    // let workString = '';
+    const colors = workSettings.colors;
+    const colorsString = (colors !== null) ? colors : 'null';
+    const backgroundColor = workSettings.backgroundColor;
+    const backgroundColorString = (backgroundColor !== null) ? backgroundColor : 'null';
+    return colorsString + '%' + backgroundColorString;
+    // return workString;
   }
   pointsToPointDataToString(workData: PointsToPointData): string {
     let workString = '[';
@@ -87,18 +110,29 @@ export class CustomCookieService extends CookieService {
     const points = workData.points;
     if (centerPoints.length > 0) {
       for (const centerPoint of centerPoints) {
-        workString += centerPoint.toString() + '%';
+        workString += centerPoint.toString() + '^';
       }
       workString = workString.slice(0, workString.length - 1);
     }
-    workString += ']$[';
+    workString += ']%[';
     if (points.length > 0) {
       for (const point of points) {
-        workString += point.toString() + '%';
+        workString += point.toString() + '^';
       }
       workString = workString.slice(0, workString.length - 1);
     }
     return workString + ']';
+  }
+  pointsToPointSettingsToString(workSettings: PointsToPointSettings): string {
+    // let workString = '';
+    const centerPointDensity = workSettings.centerPointDensity;
+    const centerPointDensityString = (centerPointDensity !== null) ? centerPointDensity.toString() : 'null';
+    const chosenColorSet = workSettings.chosenColorSet;
+    const chosenColorSetString = (chosenColorSet !== null) ? centerPointDensity.toString() : 'null';
+    const backgroundColor = workSettings.backgroundColor;
+    const backgroundColorString = (backgroundColor !== null) ? backgroundColor : 'null';
+    return centerPointDensityString + '%' + chosenColorSetString + '%' + backgroundColorString;
+    // return workString;
   }
   fractalExplorerDataToString(workData: FractalExplorerData): string {
     return ((workData.res) ? workData.res.toString() : 'null') + '%'
@@ -131,29 +165,33 @@ export class CustomCookieService extends CookieService {
     switch (type) {
       case 'ImmediateEllipse':
         return {
-          workData: this.stringToImmediateEllipseData(workStateData),
-          type: type
+          type: type,
+          workData: this.stringToImmediateEllipseData(workStateData[0]),
+          workSettings: this.stringToImmediateEllipseSettings(workStateData[1])
         };
       case 'PointsToPoint':
         return {
-          workData: this.stringToPointsToPointData(workStateData),
-          type: type
+          type: type,
+          workData: this.stringToPointsToPointData(workStateData[0]),
+          workSettings: this.stringToPointsToPointSettings(workStateData[1])
         };
       case 'FractalExplorer':
         return {
+          type: type,
           workData: this.stringToFractalExplorerData(workStateData[0]),
-          type: type
+          workSettings: this.stringToFractalExplorerSettings(workStateData[1])
         };
       default:
         return null;
     }
   }
-  stringToImmediateEllipseData(workDataStrings: string[]): ImmediateEllipseData {
+  stringToImmediateEllipseData(workDataString: string): ImmediateEllipseData {
     const immediateEllipseData: ImmediateEllipseData = [];
+    const workDataStrings = workDataString.split('%');
     for (let ellipseSetString of workDataStrings) {
       ellipseSetString = ellipseSetString.slice(1, ellipseSetString.length - 1);
       if (ellipseSetString) {
-        const ellipseSetData = ellipseSetString.split('%');
+        const ellipseSetData = ellipseSetString.split('^');
         const ellipseSet = new EllipseSet(this.stringToPoint(ellipseSetData.shift()));
         const points = ellipseSet.points;
         for (const pointString of ellipseSetData) {
@@ -165,18 +203,26 @@ export class CustomCookieService extends CookieService {
     }
     return immediateEllipseData;
   }
-  stringToPointsToPointData(workDataStrings: string[]): PointsToPointData {
+  stringToImmediateEllipseSettings(workSettingsString: string): ImmediateEllipseSettings {
+    const workSettingsStrings = workSettingsString.split('%');
+    return {
+      colors: workSettingsStrings[0],
+      backgroundColor: workSettingsStrings[1]
+    };
+  }
+  stringToPointsToPointData(workDataString: string): PointsToPointData {
     const pointsToPointData: PointsToPointData = {
       centerPoints: [],
       points: []
     };
     const centerPoints = pointsToPointData.centerPoints;
     const points = pointsToPointData.points;
+    const workDataStrings = workDataString.split('%');
     // console.log('workDataStrings', workDataStrings);
     let centerPointsString = workDataStrings[0];
     centerPointsString = centerPointsString.slice(1, centerPointsString.length - 1);
     if (centerPointsString) {
-      const centerPointStrings = centerPointsString.split('%');
+      const centerPointStrings = centerPointsString.split('^');
       for (const centerPointString of centerPointStrings) {
         centerPoints.push(this.stringToColorPoint(centerPointString));
       }
@@ -184,7 +230,7 @@ export class CustomCookieService extends CookieService {
     let pointsString = workDataStrings[1];
     pointsString = pointsString.slice(1, pointsString.length - 1);
     if (pointsString) {
-      const pointStrings = pointsString.split('%');
+      const pointStrings = pointsString.split('^');
       for (const pointString of pointStrings) {
         // console.log('pointsString', pointsString);
         // console.log('pointStrings', pointStrings);
@@ -193,6 +239,14 @@ export class CustomCookieService extends CookieService {
       }
     }
     return pointsToPointData;
+  }
+  stringToPointsToPointSettings(workSettingsString: string): PointsToPointSettings {
+    const workSettingsStrings = workSettingsString.split('%');
+    return {
+      centerPointDensity: parseFloat(workSettingsStrings[0]),
+      chosenColorSet: (workSettingsStrings[1] === 'true'),
+      backgroundColor: workSettingsStrings[2]
+    };
   }
   stringToFractalExplorerData(workDataString: string): FractalExplorerData {
     const workDataStrings = workDataString.split('%');
@@ -246,7 +300,8 @@ export class CustomCookieService extends CookieService {
       unitLength: null,
       isPortrait: null,
       workActive: workActive,
-      workStates: workStatesData
+      workStates: workStatesData,
+      workStatesChangeFlag: true
     };
   }
 }

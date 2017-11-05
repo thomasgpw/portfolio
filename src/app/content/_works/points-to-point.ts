@@ -1,4 +1,4 @@
-import { Point, ColorPoint, PointsToPointData } from './work.datatypes';
+import { Point, ColorPoint, PointsToPointData, PointsToPointSettings } from './work.datatypes';
 import { Work } from './work';
 
 export class PointsToPoint extends Work {
@@ -6,6 +6,7 @@ export class PointsToPoint extends Work {
   pointerDown = false;
   workData: PointsToPointData;
   undoData: PointsToPointData;
+  workSettings: PointsToPointSettings;
   r: number;
   readonly type: string;
   constructor (parentElement: Element) {
@@ -17,6 +18,29 @@ export class PointsToPoint extends Work {
   init(): void {
     super.init();
     this.generateCenterPoints();
+  }
+  download(link: HTMLAnchorElement) {
+    const context = this.context;
+    const w = this.w;
+    const h = this.h;
+    context.fillStyle = this.workSettings.backgroundColor;
+    this.fill(context, w, h);
+    this.drawAll(context);
+    super.download(link);
+    this.clearCanvas(context, w, h);
+    this.drawAll(context);
+  }
+  setWorkData(workData: PointsToPointData) {
+    super.setWorkData(workData);
+    if (workData.centerPoints.length === 0) {
+      this.generateCenterPoints();
+    }
+  }
+  setWorkSettings(workSettings: PointsToPointSettings) {
+    super.setWorkSettings(workSettings);
+    if (!workSettings.backgroundColor) {
+      this.workSettings.backgroundColor = 'white';
+    }
   }
   generateCenterPoints(): void {
     this.workData.centerPoints = [];
@@ -94,12 +118,6 @@ export class PointsToPoint extends Work {
     );
     context.fill();
     context.closePath();
-  }
-  setWorkData(workData: PointsToPointData) {
-    super.setWorkData(workData);
-    if (workData.centerPoints.length === 0) {
-      this.generateCenterPoints()
-    }
   }
   drawPoint(context: CanvasRenderingContext2D, point: Point) {
     const pointX = point.x;

@@ -17,18 +17,25 @@ export class WorkManagerService {
   addWorkWrapper(workWrapper: WorkWrapperComponent): number {
     const WORK_WRAPPERS = this.WORK_WRAPPERS;
     const i = WORK_WRAPPERS.length;
+    workWrapper.id = i;
+    workWrapper.work = this.assignWork(workWrapper.type, document.getElementsByClassName('canvas-wrapper')[i]);
     WORK_WRAPPERS[i] = workWrapper;
     console.log(WORK_WRAPPERS);
-    workWrapper.work = this.assignWork(workWrapper.type, document.getElementsByClassName('canvasWrapper')[i]);
     const work = workWrapper.work;
-    work.setWorkData(workWrapper.workData);
+    work.setWorkState(workWrapper.workState);
     this.attachSubscription(i, workWrapper, work);
     work.resizeCanvas();
     work.setup(work.context);
     return WORK_WRAPPERS.length;
   }
   attachSubscription(id: number, workWrapper: WorkWrapperComponent, work: Work): void {
-    work.workDataSubject.subscribe(state => workWrapper.setWorkStateFunc(id, state));
+    work.workDataSubject.subscribe(
+      state => workWrapper.setWorkStateFunc(id, {
+          type: work.type,
+          workData: state,
+          workSettings: work.workSettings
+      })
+    );
   }
   getWorkWrappers(): Array<WorkWrapperComponent> {
     return this.WORK_WRAPPERS;

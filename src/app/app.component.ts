@@ -33,7 +33,8 @@ import {
   SetWorkActiveAction,
   SetWorkStatesAction,
   SetWorkStateAction,
-  DeleteWorkStateAction
+  DeleteWorkStateAction,
+  ToggleWorkStatesChangeFlagAction
 } from './app.reducers';
 import { ShutterComponent } from './shutter/shutter.component';
 import { ContentComponent } from './content/content.component';
@@ -93,6 +94,7 @@ export class AppComponent implements OnInit {
   isPortrait$: Observable<boolean>;
   workActive$: Observable<number>;
   workStates$: Observable<WorkStates>;
+  workStatesChangeFlag$: Observable<boolean>;
   unitLengthReferences: {
     uLdwx3: string,
     uLdhx2: string,
@@ -152,6 +154,7 @@ export class AppComponent implements OnInit {
     this.isPortrait$ = store.select(state => state.isPortrait);
     this.workActive$ = store.select(state => state.workActive);
     this.workStates$ = store.select(state => state.workStates);
+    this.workStatesChangeFlag$ = store.select(state => state.workStatesChangeFlag);
   }
   ngOnInit(): void {
     Observable.combineLatest(
@@ -187,11 +190,16 @@ export class AppComponent implements OnInit {
     // Observable.combineLatest(this.createWorkStatesObservableArray()).subscribe(state => )
     this._appViewControlService.payloadStream.subscribe(state => this.setAppView(state));
     this._shutterViewControlService.payloadStream.subscribe(state => this.setShutterView(state));
+    // const observableArray: Array<Observable<WorkData>> = [];
+    // let workStates: WorkStates;
+    // this.workStates$.take(1).subscribe(state => workStates = state);
+    // for (const workData of workStates) {}
     Observable.combineLatest(
       this.appView0Alive$,
       this.shutterView0Alive$,
       this.color$,
-      this.workActive$
+      this.workActive$,
+      this.workStatesChangeFlag$
     ).subscribe(state => this.setAppStateCookie());
     // if (!environment.production) {
       const cachedState = this.getAppStateCookie();
@@ -342,7 +350,7 @@ export class AppComponent implements OnInit {
     this.updateView();
   }
   calcUnitLength(w: number, h: number): void {
-    this.setUnitLength(Math.sqrt(Math.sqrt(w * h / 6)));
+    this.setUnitLength(Math.pow(w * h / 6, 1 / 4));
   }
   calcIsPortrait(w: number, h: number): void {
     this.setIsPortrait(w < h);
@@ -438,17 +446,24 @@ export class AppComponent implements OnInit {
     isPortrait: null,
     workActive: null,
     workStates: [
-      new WorkState([], 'ImmediateEllipse'),
-      new WorkState({centerPoints: [], points: []}, 'PointsToPoint'),
-      new WorkState({
-        res: null,
-        iMax: null,
-        escV: null,
-        color: 223,
-        zInitial: new Point(null, null),
-        p0: new Point(null, null),
-      }, 'FractalExplorer')
-    ]
+      new WorkState('ImmediateEllipse', [], {colors: null, backgroundColor: null}),
+      new WorkState(
+        'PointsToPoint',
+        {centerPoints: [], points: []},
+        {centerPointDensity: null, chosenColorSet: null, backgroundColor: null})
+      new WorkState(
+        'FractalExplorer',
+        {
+          res: null,
+          iMax: null,
+          escV: null,
+          color: 223,
+          zInitial: new Point(null, null),
+          p0: new Point(null, null),
+        },
+        {} )
+    ],
+    workStatesChangeFlag: true
   }): void {
     console.log('setAppState', appState);
     this.goAppView(appState.appView.view0Alive);
@@ -493,8 +508,13 @@ export class AppComponent implements OnInit {
   }
   setWorkState(payload: [number, WorkState]): void {
     this.store.dispatch(new SetWorkStateAction(payload));
+    this.toggleWorkStatesChangeFlag();
   }
   deleteWorkState(key: string): void {
     this.store.dispatch(new DeleteWorkStateAction(key));
+    this.toggleWorkStatesChangeFlag();
+  }
+  toggleWorkStatesChangeFlag(): void {
+    this.store.dispatch(new ToggleWorkStatesChangeFlagAction());
   }
 }

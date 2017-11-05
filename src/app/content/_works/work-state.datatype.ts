@@ -1,9 +1,12 @@
 import { WorkData } from './work-data.datatype';
+import { WorkSettings } from './work-settings.datatype';
 export class WorkState {
-  workData: WorkData;
   readonly type: string;
-  constructor(workData: WorkData, type: string) {
-    this.workData = workData;
+  workData: WorkData;
+  workSettings: WorkSettings;
+  constructor(type: string, workData: WorkData, workSettings: WorkSettings) {
     this.type = type;
+    this.workData = workData;
+    this.workSettings = workSettings;
   }
 }

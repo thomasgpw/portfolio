@@ -1,5 +1,7 @@
 import { Subject } from 'rxjs/Subject';
+import { WorkState } from './work-state.datatype';
 import { WorkData } from './work-data.datatype';
+import { WorkSettings } from './work-settings.datatype';
 
 export abstract class Work {
   type: string;
@@ -11,6 +13,7 @@ export abstract class Work {
   workData: WorkData;
   workDataSubject: Subject<WorkData>;
   undoData: WorkData;
+  workSettings: WorkSettings;
 
   constructor (parentEl: Element) {
     const canvas = document.createElement('canvas');
@@ -48,13 +51,28 @@ export abstract class Work {
     this.clearWorkData();
     this.clearUndoData();
   }
+  download(link: HTMLAnchorElement) {
+    link.href = this.canvas.toDataURL();
+    link.download = 'thomasgdotpw' + this.type + '.png';
+    link.click();
+  }
+  fill(context: CanvasRenderingContext2D = this.context, w: number = this.w, h: number = this.h): void {
+    context.fillRect(0, 0, w, h);
+  }
   clearCanvas(context: CanvasRenderingContext2D = this.context, w: number = this.w, h: number = this.h): void {
     context.clearRect(0, 0, w, h);
+  }
+  setWorkState(workState: WorkState): void {
+    this.setWorkData(workState.workData);
+    this.setWorkSettings(workState.workSettings);
   }
   setWorkData(workData: WorkData): void {
     this.workData = workData;
     this.drawAll(this.context);
     // this.workDataSubject.next(workData);
+  }
+  setWorkSettings(workSettings: WorkSettings): void {
+    this.workSettings = workSettings;
   }
   abstract drawAll(context: CanvasRenderingContext2D): void;
   abstract undo(): void;
