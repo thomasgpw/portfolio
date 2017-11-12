@@ -34,21 +34,21 @@ export function styleWorkWrapperButton(elStyle: CSSStyleDeclaration,
   uLdwx2: string, uLdhx2: string, uLd2h: string, topOffset: string): void {
   elStyle.width = uLdwx2;
   elStyle.height = uLdhx2;
-  elStyle.paddingTop = uLd2h;
+  elStyle.marginTop = uLd2h;
   elStyle.position = 'absolute';
   elStyle.top = topOffset;
 }
 export function styleRightOffset(elStyle: CSSStyleDeclaration,
   uLd2w: string, rightOffset: string) {
   elStyle.right = rightOffset;
-  elStyle.paddingRight = uLd2w;
+  elStyle.marginRight = uLd2w;
 }export function styleLeftOffset(elStyle: CSSStyleDeclaration,
   uLd2w: string, leftOffset: string) {
   elStyle.left = leftOffset;
-  elStyle.paddingLeft = uLd2w;
+  elStyle.marginLeft = uLd2w;
 }
 export function styleRedoOffset(elStyle: CSSStyleDeclaration,
   uLd2w: string, rightOffset: string) {
   elStyle.right = rightOffset;
-  elStyle.paddingLeft = uLd2w;
+  elStyle.marginLeft = uLd2w;
 }

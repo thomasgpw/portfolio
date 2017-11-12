@@ -34,7 +34,8 @@ export abstract class Work {
     this.h = h;
   }
   activate(): Promise<null> {
-    this.drawAll(this.context);
+    const context = this.context;
+    this.drawAll(this.applySettings(context));
     this.active = true;
     return Promise.resolve(null);
   }
@@ -43,14 +44,15 @@ export abstract class Work {
     this.active = false;
     return Promise.resolve(null);
   }
-  setup(context: CanvasRenderingContext2D, settingsEl: Element): void {
+  setup(context: CanvasRenderingContext2D): void {
     this.drawAll(context);
-    this.setupSettings(settingsEl);
   }
   init(): void {
-    this.clearCanvas();
+    const context = this.context;
+    this.clearCanvas(context);
     this.clearWorkData();
     this.clearUndoData();
+    this.applySettings(context);
   }
   download(link: HTMLAnchorElement) {
     link.href = this.canvas.toDataURL();
@@ -63,20 +65,22 @@ export abstract class Work {
   clearCanvas(context: CanvasRenderingContext2D = this.context, w: number = this.w, h: number = this.h): void {
     context.clearRect(0, 0, w, h);
   }
-  saveSettings(): void {}
   setWorkState(workState: WorkState): void {
-    this.setWorkData(workState.workData);
-    this.setWorkSettings(workState.workSettings);
+    const context = this.context;
+    this.setWorkSettings(workState.workSettings, context);
+    this.setWorkData(workState.workData, context);
   }
-  setWorkData(workData: WorkData): void {
+  setWorkData(workData: WorkData, context: CanvasRenderingContext2D): void {
     this.workData = workData;
     this.drawAll(this.context);
     // this.workDataSubject.next(workData);
   }
-  setWorkSettings(workSettings: WorkSettings): void {
+  setWorkSettings(workSettings: WorkSettings, context: CanvasRenderingContext2D): void {
     this.workSettings = workSettings;
+    this.applySettings(context);
   }
-  abstract setupSettings(settingsEl: Element): void;
+  abstract setupSettings(): HTMLElement;
+  abstract applySettings(context: CanvasRenderingContext2D): CanvasRenderingContext2D;
   abstract drawAll(context: CanvasRenderingContext2D): void;
   abstract undo(): void;
   abstract redo(): void;

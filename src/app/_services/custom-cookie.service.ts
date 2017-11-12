@@ -82,6 +82,8 @@ export class CustomCookieService extends CookieService {
         return type + '$'
         + this.fractalExplorerDataToString(workState.workData as FractalExplorerData) + '$'
         + this.fractalExplorerSettingsToString(workState.workSettings as FractalExplorerSettings);
+      // case 'NNCreator':
+      //   return type;
       default:
         return null;
     }
@@ -189,6 +191,12 @@ export class CustomCookieService extends CookieService {
           workData: this.stringToFractalExplorerData(workStateData[0]),
           workSettings: this.stringToFractalExplorerSettings(workStateData[1])
         };
+      // case 'NNCreator':
+      //   return {
+      //     type: type,
+      //     workData: {},
+      //     workSettings: {}
+      //   };
       default:
         return null;
     }

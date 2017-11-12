@@ -1,5 +1,11 @@
-import { PointsToPointData, ImmediateEllipseData, FractalExplorerData } from './work.datatypes';
+import {
+  ImmediateEllipseData,
+  PointsToPointData,
+  FractalExplorerData,
+  NNCreatorData
+} from './work.datatypes';
 export type WorkData
-= PointsToPointData
-| ImmediateEllipseData
-| FractalExplorerData;
+= ImmediateEllipseData
+| PointsToPointData
+| FractalExplorerData
+| NNCreatorData;

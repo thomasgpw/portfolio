@@ -69,12 +69,26 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   openSettings(): void {
     const work = this.work;
     if (work.active) {
-      this.settingsOpen = true;
-      work.setupSettings(document.getElementById('settingsWrapper'));
+      this.activateSettings().then(resolve => setTimeout(() => this.attachSettings(work)));
     }
   }
+  activateSettings(): Promise<null> {
+    this.settingsOpen = true;
+    return Promise.resolve(null);
+  }
+  attachSettings(work: Work): void {
+    const settingsEl = work.setupSettings();
+    document.getElementById('settingsWrapper').appendChild(settingsEl);
+  }
   closeSettings(): void {
-    this.work.saveSettings();
+    const work = this.work;
+    const context = work.context;
+    this.setWorkStateFunc(this.id, {
+      type: work.type,
+      workData: work.workData,
+      workSettings: work.workSettings
+    });
+    work.drawAll(work.applySettings(context));
     this.settingsOpen = false;
   }
   drawAll(values: number[]): Promise<null> {

@@ -7,6 +7,7 @@ import { Work } from '../content/_works/work';
 import { ImmediateEllipse } from '../content/_works/immediate-ellipse';
 import { PointsToPoint } from '../content/_works/points-to-point';
 import { FractalExplorer } from '../content/_works/fractal-explorer';
+// import { NNCreator } from '../content/_works/nn-creator';
 
 @Injectable()
 export class WorkManagerService {
@@ -25,7 +26,7 @@ export class WorkManagerService {
     work.setWorkState(workWrapper.workState);
     this.attachSubscription(i, workWrapper, work);
     work.resizeCanvas();
-    work.setup(work.context, document.getElementById('settingsWrapper'));
+    work.setup(work.context);
     return WORK_WRAPPERS.length;
   }
   attachSubscription(id: number, workWrapper: WorkWrapperComponent, work: Work): void {
@@ -48,6 +49,8 @@ export class WorkManagerService {
         return new PointsToPoint(parentElement);
       case 'FractalExplorer':
         return new FractalExplorer(parentElement);
+      // case 'NNCreator':
+      //   return new NNCreator(parentElement);
       default:
         return null;
     }
@@ -66,6 +69,6 @@ export class WorkManagerService {
   resizeWork(id: number): void {
     const work = this.WORK_WRAPPERS[id].work;
     work.resizeCanvas();
-    work.drawAll(work.context);
+    work.drawAll(work.applySettings(work.context));
   }
 }

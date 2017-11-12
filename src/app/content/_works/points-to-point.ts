@@ -19,8 +19,13 @@ export class PointsToPoint extends Work {
     super.init();
     this.generateCenterPoints();
   }
-  setupSettings(settingsEl: Element): void {
+  setupSettings(): HTMLElement {
     const workSettings = this.workSettings;
+    return null;
+  }
+  applySettings(context: CanvasRenderingContext2D = this.context): CanvasRenderingContext2D {
+    const workSettings = this.workSettings;
+    return context;
   }
   download(link: HTMLAnchorElement) {
     const context = this.context;
@@ -33,36 +38,46 @@ export class PointsToPoint extends Work {
     this.clearCanvas(context, w, h);
     this.drawAll(context);
   }
-  setWorkData(workData: PointsToPointData) {
-    super.setWorkData(workData);
+  setWorkData(workData: PointsToPointData, context: CanvasRenderingContext2D) {
+    super.setWorkData(workData, context);
     if (workData.centerPoints.length === 0) {
       this.generateCenterPoints();
     }
   }
-  setWorkSettings(workSettings: PointsToPointSettings) {
-    super.setWorkSettings(workSettings);
+  setWorkSettings(workSettings: PointsToPointSettings, context: CanvasRenderingContext2D) {
     if (!workSettings.backgroundColor) {
-      this.workSettings.backgroundColor = 'white';
+      workSettings.backgroundColor = 'white';
     }
+    if (!workSettings.chosenColorSet) {
+      workSettings.chosenColorSet = true;
+    }
+    if (!workSettings.centerPointDensity) {
+      workSettings.centerPointDensity = 1;
+    }
+    super.setWorkSettings(workSettings, context);
   }
   generateCenterPoints(): void {
-    this.workData.centerPoints = [];
     const workData = this.workData;
+    workData.centerPoints = [];
     const centerPoints = workData.centerPoints;
     this.r = 10;
     const dotNum = Math.floor(Math.sqrt(window.innerWidth * window.innerHeight * 0.64 /* 80% squared is 64% */) / 200);
     console.log(dotNum);
+    const getRandomColor = this.getRandomColor.bind(this);
     for (let i = 0; i < dotNum ; i++) {
       centerPoints.push(new ColorPoint(
         Math.random(),
         Math.random(),
-        '#'
-        + (Math.floor(Math.random() * 256)).toString(16)
-        + (Math.floor(Math.random() * 256)).toString(16)
-        + (Math.floor(Math.random() * 256)).toString(16)
+        getRandomColor()
       ));
     }
     this.workDataSubject.next(workData);
+  }
+  getRandomColor(): string {
+    return '#'
+      + (Math.floor(Math.random() * 256)).toString(16)
+      + (Math.floor(Math.random() * 256)).toString(16)
+      + (Math.floor(Math.random() * 256)).toString(16);
   }
   moveLastPoint(fromPoints: Array<Point>, toPoints: Array<Point>): Promise<boolean> {
     console.log(fromPoints, toPoints);
