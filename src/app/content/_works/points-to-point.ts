@@ -21,7 +21,36 @@ export class PointsToPoint extends Work {
   }
   setupSettings(): HTMLElement {
     const workSettings = this.workSettings;
-    return null;
+    const settingsEl = document.createElement('div');
+    const centerPointDensityLabel = settingsEl.appendChild(document.createElement('label'));
+    centerPointDensityLabel.setAttribute('for', 'centerPointDensityInput');
+    centerPointDensityLabel.innerHTML = 'Center Point Density';
+    const centerPointDensityInput = settingsEl.appendChild(document.createElement('input'));
+    centerPointDensityInput.id = 'centerPointDensityInput';
+    centerPointDensityInput.type = 'number';
+    centerPointDensityInput.defaultValue = workSettings.centerPointDensity.toString();
+    centerPointDensityInput.min = '0';
+    centerPointDensityInput.max = '5';
+    centerPointDensityInput.step = '0.5';
+    centerPointDensityInput.onchange = (
+      event => workSettings.centerPointDensity = parseFloat((event.srcElement as HTMLInputElement).value)
+    );
+    settingsEl.appendChild(document.createElement('br'));
+    const colorSetInput = settingsEl.appendChild(document.createElement('input'));
+    colorSetInput.type = 'checkbox';
+    const colorSetLabel = settingsEl.appendChild(document.createElement('label'));
+    colorSetLabel.setAttribute('for', 'colorSetInput');
+    colorSetLabel.innerHTML = 'Use App Colors?';
+    settingsEl.appendChild(document.createElement('br'));
+    const bgColorLabel = settingsEl.appendChild(document.createElement('label'));
+    bgColorLabel.setAttribute('for', 'bgColorInput');
+    bgColorLabel.innerHTML = 'Background color:';
+    const bgColorInput = settingsEl.appendChild(document.createElement('input'));
+    bgColorInput.id = 'bgColorInput';
+    bgColorInput.type = 'color';
+    bgColorInput.value = workSettings.backgroundColor;
+    bgColorInput.onchange = (event  => workSettings.backgroundColor = (event.srcElement as HTMLInputElement).value);
+    return settingsEl;
   }
   applySettings(context: CanvasRenderingContext2D = this.context): CanvasRenderingContext2D {
     const workSettings = this.workSettings;
@@ -60,8 +89,12 @@ export class PointsToPoint extends Work {
     const workData = this.workData;
     workData.centerPoints = [];
     const centerPoints = workData.centerPoints;
+    const workSettings = this.workSettings;
+    const centerPointDensity = workSettings ? workSettings.centerPointDensity ? workSettings.centerPointDensity : 1 : 1;
     this.r = 10;
-    const dotNum = Math.floor(Math.sqrt(window.innerWidth * window.innerHeight * 0.64 /* 80% squared is 64% */) / 200);
+    const dotNum = Math.floor(
+      Math.sqrt(window.innerWidth * window.innerHeight * 0.64 /* 80% squared is 64% */) / 200
+    );
     console.log(dotNum);
     const getRandomColor = this.getRandomColor.bind(this);
     for (let i = 0; i < dotNum ; i++) {

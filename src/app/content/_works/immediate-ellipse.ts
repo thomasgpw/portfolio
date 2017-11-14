@@ -27,7 +27,7 @@ export class ImmediateEllipse extends Work {
     colorLabel.setAttribute('for', 'colorInput');
     colorLabel.innerHTML = 'Line color:';
     const colorInput = settingsEl.appendChild(document.createElement('input'));
-    colorInput.name = 'colorInput';
+    colorInput.id = 'colorInput';
     colorInput.type = 'color';
     colorInput.value = workSettings.colors;
     colorInput.onchange = (event  => workSettings.colors = (event.srcElement as HTMLInputElement).value);
@@ -36,7 +36,7 @@ export class ImmediateEllipse extends Work {
     bgColorLabel.setAttribute('for', 'bgColorInput');
     bgColorLabel.innerHTML = 'Background color:';
     const bgColorInput = settingsEl.appendChild(document.createElement('input'));
-    bgColorInput.name = 'bgColorInput';
+    bgColorInput.id = 'bgColorInput';
     bgColorInput.type = 'color';
     bgColorInput.value = workSettings.backgroundColor;
     bgColorInput.onchange = (event  => workSettings.backgroundColor = (event.srcElement as HTMLInputElement).value);

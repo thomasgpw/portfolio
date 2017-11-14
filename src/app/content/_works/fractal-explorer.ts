@@ -20,11 +20,94 @@ export class FractalExplorer extends Work {
   }
   init(): void {
     super.init();
-    this.calcAll();
+    this.mandelbrotData = this.calcAll();
+    this.drawAll(this.context);
   }
   // setup(context: CanvasRenderingContext2D, settingsEl: Element): void {
   //   super.setup(context, settingsEl);
   // }
+  setupSettings(): HTMLElement {
+    const workSettings = this.workSettings;
+    const settingsEl = document.createElement('div');
+    const resLabel = settingsEl.appendChild(document.createElement('label'));
+    resLabel.setAttribute('for', 'resInput');
+    resLabel.innerHTML = 'View Resolution';
+    const resInput = settingsEl.appendChild(document.createElement('input'));
+    resInput.id = 'resInput';
+    resInput.type = 'number';
+    resInput.defaultValue = workSettings.res.toString();
+    resInput.min = '0';
+    resInput.max = '1';
+    resInput.step = '0.05';
+    resInput.onchange = (event => workSettings.res = parseFloat((event.srcElement as HTMLInputElement).value));
+    settingsEl.appendChild(document.createElement('br'));
+    const iMaxLabel = settingsEl.appendChild(document.createElement('label'));
+    iMaxLabel.setAttribute('for', 'iMaxInput');
+    iMaxLabel.innerHTML = 'Maximum Iterations (Edge Detail)';
+    const iMaxInput = settingsEl.appendChild(document.createElement('input'));
+    iMaxInput.id = 'iMaxInput';
+    iMaxInput.type = 'number';
+    iMaxInput.defaultValue = (Math.sqrt(workSettings.iMax)).toString();
+    iMaxInput.min = '0';
+    iMaxInput.max = '300';
+    iMaxInput.step = '1';
+    iMaxInput.onchange = (event => workSettings.iMax = Math.pow(parseFloat((event.srcElement as HTMLInputElement).value), 2));
+    settingsEl.appendChild(document.createElement('br'));
+    const escVLabel = settingsEl.appendChild(document.createElement('label'));
+    escVLabel.setAttribute('for', 'escVInput');
+    escVLabel.innerHTML = 'Escape Velocity (Size of Blob)';
+    const escVInput = settingsEl.appendChild(document.createElement('input'));
+    escVInput.id = 'escVInput';
+    escVInput.type = 'number';
+    escVInput.defaultValue = workSettings.escV.toString();
+    escVInput.min = '0';
+    escVInput.max = '10';
+    escVInput.step = '0.1';
+    escVInput.onchange = (event => workSettings.escV = parseFloat((event.srcElement as HTMLInputElement).value));
+    settingsEl.appendChild(document.createElement('br'));
+    const hueLabel = settingsEl.appendChild(document.createElement('label'));
+    hueLabel.setAttribute('for', 'hueInput');
+    hueLabel.innerHTML = 'Coloration Hue';
+    const hueInput = settingsEl.appendChild(document.createElement('input'));
+    hueInput.id = 'hueInput';
+    hueInput.type = 'range';
+    hueInput.defaultValue = workSettings.color.toString();
+    hueInput.min = '0';
+    hueInput.max = '360';
+    hueInput.step = '1';
+    hueInput.onchange = (event => workSettings.color = parseInt((event.srcElement as HTMLInputElement).value, 10));
+    settingsEl.appendChild(document.createElement('br'));
+    const zInitialLabel = settingsEl.appendChild(document.createElement('label'));
+    zInitialLabel.setAttribute('for', 'zInitialInput');
+    zInitialLabel.innerHTML = 'Initial Z Point';
+    const zInitialInput = settingsEl.appendChild(document.createElement('form'));
+    zInitialInput.id = 'zInitialInput';
+    const zInitialX = zInitialInput.appendChild(document.createElement('input'));
+    zInitialX.id = 'zInitialX';
+    zInitialX.type = 'number';
+    zInitialX.defaultValue = workSettings.escV.toString();
+    zInitialX.min = '-2';
+    zInitialX.max = '2';
+    zInitialX.step = '0.05';
+    zInitialX.onchange = (
+      event => workSettings.zInitial = new Point(parseFloat((event.srcElement as HTMLInputElement).value), workSettings.zInitial.y)
+    );
+    const zInitialY = zInitialInput.appendChild(document.createElement('input'));
+    zInitialY.id = 'zInitialY';
+    zInitialY.type = 'number';
+    zInitialY.defaultValue = workSettings.escV.toString();
+    zInitialY.min = '-2';
+    zInitialY.max = '2';
+    zInitialY.step = '0.05';
+    zInitialY.onchange = (
+      event => workSettings.zInitial = new Point(workSettings.zInitial.x, parseFloat((event.srcElement as HTMLInputElement).value))
+    );
+    return settingsEl;
+  }
+  applySettings(context: CanvasRenderingContext2D): CanvasRenderingContext2D {
+    this.mandelbrotData = this.calcAll();
+    return context;
+  }
   calcAll(): Array<Array<number>> {
     const numberArrayArray: Array<Array<number>> = [];
     const workSettings = this.workSettings;
@@ -130,6 +213,7 @@ export class FractalExplorer extends Work {
       p0: new Point(0, 0),
       zoom: 1
     };
+    this.workDataSubject.next(this.workData);
   }
   clearUndoData(): void {}
   onPointerDown(e: PointerEvent): void {
