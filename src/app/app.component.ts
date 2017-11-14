@@ -451,22 +451,22 @@ export class AppComponent implements OnInit {
         'PointsToPoint',
         {centerPoints: [], points: []},
         {centerPointDensity: 1, chosenColorSet: false, backgroundColor: 'white'}
-      // ),
-      // new WorkState(
-      //   'FractalExplorer',
-      //   { p0: new Point(null, null), zoom: 1 },
-      //   {
-      //     res: 200,
-      //     iMax: 1000,
-      //     escV: 2,
-      //     color: 223,
-      //     zInitial: new Point(0, 0),
-      //   }
-      // ),
-      // new WorkState(
-      //   'NNCreator',
-      //   {},
-      //   {}
+      ),
+      new WorkState(
+        'FractalExplorer',
+        { p0: new Point(null, null), zoom: 1 },
+        {
+          res: 0.3,
+          iMax: 1000,
+          escV: 2,
+          color: 223,
+          zInitial: new Point(0, 0),
+        }
+      ),
+      new WorkState(
+        'NNCreator',
+        {},
+        {}
       )
     ],
     workStatesChangeFlag: true

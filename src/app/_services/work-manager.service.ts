@@ -7,7 +7,7 @@ import { Work } from '../content/_works/work';
 import { ImmediateEllipse } from '../content/_works/immediate-ellipse';
 import { PointsToPoint } from '../content/_works/points-to-point';
 import { FractalExplorer } from '../content/_works/fractal-explorer';
-// import { NNCreator } from '../content/_works/nn-creator';
+import { NNCreator } from '../content/_works/nn-creator';
 
 @Injectable()
 export class WorkManagerService {
@@ -49,8 +49,8 @@ export class WorkManagerService {
         return new PointsToPoint(parentElement);
       case 'FractalExplorer':
         return new FractalExplorer(parentElement);
-      // case 'NNCreator':
-      //   return new NNCreator(parentElement);
+      case 'NNCreator':
+        return new NNCreator(parentElement);
       default:
         return null;
     }

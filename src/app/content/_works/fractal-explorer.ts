@@ -13,17 +13,19 @@ export class FractalExplorer extends Work {
   }
   resizeCanvas(canvas: HTMLCanvasElement = this.canvas, parentEl: Element = canvas.closest('.work-wrapper-view-container')): void {
     super.resizeCanvas(canvas, parentEl);
-    // this.setup(this.context);
+    this.setup(this.context);
   }
   init(): void {
     super.init();
   }
   setup(context: CanvasRenderingContext2D): void {
-    const res = this.workSettings ? (this.workSettings.res ? this.workSettings.res : 0.3) : 0.3;
+    const workSettings = this.workSettings;
+    const res = workSettings ? (workSettings.res ? workSettings.res : 0.3) : 0.3;
     const w = this.w;
     const h = this.h;
     const mData = [];
     const jData = [];
+    console.log(res);
     for (let i = 0; i < (res * w); i++) {
       mData.push([]);
       jData.push([]);
@@ -33,7 +35,7 @@ export class FractalExplorer extends Work {
       }
     }
     console.log(mData);
-    this.mandelbrotData = this.calcAll(mData);
+    this.mandelbrotData = this.calcAll(mData, workSettings);
     this.juliaData = jData;
     super.setup(context);
   }
@@ -45,9 +47,8 @@ export class FractalExplorer extends Work {
     const workSettings = this.workSettings;
     return context;
   }
-  calcAll(numberArrayArray: Array<Array<number>>): Array<Array<number>> {
+  calcAll(numberArrayArray: Array<Array<number>>, workSettings: FractalExplorerSettings = this.workSettings): Array<Array<number>> {
     if (numberArrayArray) {
-      const workSettings = this.workSettings;
       let z: Point;
       let zX: number;
       let zY: number;
@@ -70,6 +71,7 @@ export class FractalExplorer extends Work {
       const yLength = numberArrayArray[0].length;
       const yMid = Math.ceil(yLength / 2);
       const yScale = yLength / 4;
+      const calcPoint = this.calcPoint.bind(this);
       for (let iX = 0; iX < xLength; iX++) {
         const numberArray = numberArrayArray[iX];
         for (let iY = 0; iY < yLength; iY++) {
@@ -79,7 +81,7 @@ export class FractalExplorer extends Work {
           let i = 0;
           const c = new Point((iX - xMid) / xScale, (iY - yMid) / yScale);
           while ((Math.pow(zX, 2) + Math.pow(zY, 2) <= escVsq) && (i < iMax)) {
-            z = this.calcPoint(z, c);
+            z = calcPoint(z, c);
             zX = z.x;
             zY = z.y;
             i++;
