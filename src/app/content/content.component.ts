@@ -119,6 +119,9 @@ export class ContentComponent implements OnInit, OnDestroy {
   deleteWorkStateFunc(key: string): void {
     this.deleteWorkStateEvent.emit(key);
   }
+  requestColorsFunc(id: number) {
+    this._workManagerService.sendColors(id, this.colors);
+  }
   forceGridClass(): void {
     const elArray = document.getElementsByClassName('work-wrapper-view-container');
     const elArrayLength = elArray.length;

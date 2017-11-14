@@ -84,6 +84,8 @@ export class CustomCookieService extends CookieService {
         + this.fractalExplorerSettingsToString(workState.workSettings as FractalExplorerSettings);
       case 'NNCreator':
         return type;
+      case 'GradientR':
+        return type;
       default:
         return null;
     }
@@ -142,7 +144,7 @@ export class CustomCookieService extends CookieService {
     // return workString;
   }
   fractalExplorerDataToString(workData: FractalExplorerData): string {
-    return ((workData.p0.x && workData.p0.y) ? workData.p0.toString() : 'null|null') + '%'
+    return (workData.p0 ? (workData.p0.x && workData.p0.y) ? workData.p0.toString() : '|' : '|') + '%'
     + ((workData.zoom) ? workData.zoom.toString() : '');
   }
   fractalExplorerSettingsToString(workSettings: FractalExplorerSettings): string {
@@ -150,7 +152,7 @@ export class CustomCookieService extends CookieService {
     + ((workSettings.iMax) ? workSettings.iMax.toString() : '') + '%'
     + ((workSettings.escV) ? workSettings.escV.toString() : '') + '%'
     + ((workSettings.color) ? workSettings.color.toString() : '') + '%'
-    + ((workSettings.zInitial.x && workSettings.zInitial.y) ? workSettings.zInitial.toString() : 'null|null') + '%';
+    + (workSettings.zInitial ? (workSettings.zInitial.x && workSettings.zInitial.y) ? workSettings.zInitial.toString() : '|' : '|') + '%';
   }
   appStateToCookieString(appState: AppState): string {
     const appView = appState.appView;
@@ -192,6 +194,12 @@ export class CustomCookieService extends CookieService {
           workSettings: this.stringToFractalExplorerSettings(workStateData[1])
         };
       case 'NNCreator':
+        return {
+          type: type,
+          workData: {},
+          workSettings: {}
+        };
+      case 'GradientR':
         return {
           type: type,
           workData: {},
@@ -282,8 +290,10 @@ export class CustomCookieService extends CookieService {
     };
   }
   stringToPoint(pointString: string): Point {
-    const pointData = pointString.split('|');
-    return new Point(parseFloat(pointData[0]), parseFloat(pointData[1]));
+    if (pointString !== '|') {
+      const pointData = pointString.split('|');
+      return new Point(parseFloat(pointData[0]), parseFloat(pointData[1]));
+    }
   }
   stringToColorPoint(pointString: string): ColorPoint {
     const pointData = pointString.split('|');

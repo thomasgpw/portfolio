@@ -56,6 +56,7 @@ export class PointsToPoint extends Work {
     const workSettings = this.workSettings;
     return context;
   }
+  setColors(colors: {[key: string]: string}): void {}
   download(link: HTMLAnchorElement) {
     const context = this.context;
     const w = this.w;

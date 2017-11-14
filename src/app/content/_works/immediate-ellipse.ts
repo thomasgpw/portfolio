@@ -48,6 +48,7 @@ export class ImmediateEllipse extends Work {
     context.strokeStyle = workSettings.colors;
     return context;
   }
+  setColors(colors: {[key: string]: string}): void {}
   download(link: HTMLAnchorElement) {
     const context = this.context;
     const w = this.w;

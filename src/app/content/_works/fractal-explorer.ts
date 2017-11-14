@@ -108,6 +108,7 @@ export class FractalExplorer extends Work {
     this.mandelbrotData = this.calcAll();
     return context;
   }
+  setColors(colors: {[key: string]: string}): void {}
   calcAll(): Array<Array<number>> {
     const numberArrayArray: Array<Array<number>> = [];
     const workSettings = this.workSettings;

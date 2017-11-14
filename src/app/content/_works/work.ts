@@ -81,6 +81,7 @@ export abstract class Work {
   }
   abstract setupSettings(): HTMLElement;
   abstract applySettings(context: CanvasRenderingContext2D): CanvasRenderingContext2D;
+  abstract setColors(colors: {[key: string]: string}): void;
   abstract drawAll(context: CanvasRenderingContext2D): void;
   abstract undo(): void;
   abstract redo(): void;

@@ -9,19 +9,40 @@ class Perceptron {
   weightsChange: Array<number>;
   biasChange: number;
 
-  constructor(numWeights) {
-    this.bias = (Math.random() - 0.5) / 5;
-    this.biasChange = 0;
-    this.weights = [];
-    this.weightsChange = [];
-    for (let i = 0; i < numWeights; i++) {
-      this.weights.push((Math.random() - 0.5) / 5);
-      this.weightsChange.push(0);
+  constructor(
+    numWeights,
+    optArgs: {
+      activation: number;
+      delta: number;
+      weights: Array<number>;
+      bias: number;
+      weightsChange: Array<number>;
+      biasChange: number;
+    } = {
+      activation: 0,
+      delta: 0,
+      weights: [],
+      bias: (Math.random() - 0.5) / 5,
+      weightsChange: [],
+      biasChange: 0
+    }
+  ) {
+    this.activation = optArgs.activation;
+    this.delta = optArgs.delta;
+    this.bias = optArgs.bias;
+    this.biasChange = optArgs.biasChange;
+    this.weights = optArgs.weights;
+    this.weightsChange = optArgs.weightsChange;
+    if (optArgs.weights.length === 0) {
+      for (let i = 0; i < numWeights; i++) {
+        this.weights.push((Math.random() - 0.5) / 5);
+        this.weightsChange.push(0);
+      }
     }
   }
   propagate(activityIn: Array<number>): Promise<number> {
     let activitySum = 0;
-    const weights = this.getWeights();
+    const weights = this.weights;
     for (let i = 0; i < activityIn.length; i++) {
       activitySum += activityIn[i] * weights[i];
     }
@@ -29,47 +50,65 @@ class Perceptron {
     this.setActivation(activation);
     return Promise.resolve(activation);
   }
-  setActivation(newActivation: number): Promise<null> {
-    this.activation = newActivation;
-    return Promise.resolve(null);
+  setActivation(newActivation: number): Perceptron {
+    return new Perceptron(this.weights.length, {
+      activation: newActivation,
+      delta: this.delta,
+      weights: this.weights,
+      bias: this.bias,
+      weightsChange: this.weightsChange,
+      biasChange: this.biasChange
+    });
   }
-  setDelta(newDelta: number): Promise<null> {
-    this.delta = newDelta;
-    return Promise.resolve(null);
+  setDelta(newDelta: number): Perceptron {
+    return new Perceptron(this.weights.length, {
+      activation: this.activation,
+      delta: newDelta,
+      weights: this.weights,
+      bias: this.bias,
+      weightsChange: this.weightsChange,
+      biasChange: this.biasChange
+    });
   }
-  setWeights(newWeights: Array<number>): Promise<null> {
-    this.weights = newWeights;
-    return Promise.resolve(null);
+  setWeights(newWeights: Array<number>): Perceptron {
+    return new Perceptron(this.weights.length, {
+      activation: this.activation,
+      delta: this.delta,
+      weights: newWeights,
+      bias: this.bias,
+      weightsChange: this.weightsChange,
+      biasChange: this.biasChange
+    });
   }
-  setBias(newBias: number): Promise<null> {
-    this.bias = newBias;
-    return Promise.resolve(null);
+  setBias(newBias: number): Perceptron {
+    return new Perceptron(this.weights.length, {
+      activation: this.activation,
+      delta: this.delta,
+      weights: this.weights,
+      bias: newBias,
+      weightsChange: this.weightsChange,
+      biasChange: this.biasChange
+    });
   }
-  setBiasChange(newBiasChange: number): Promise<null> {
-    this.biasChange = newBiasChange;
-    return Promise.resolve(null);
+  setWeightsChange(newWeightsChange: Array<number>): Perceptron {
+    return new Perceptron(this.weights.length, {
+      activation: this.activation,
+      delta: this.delta,
+      weights: this.weights,
+      bias: this.bias,
+      weightsChange: newWeightsChange,
+      biasChange: this.biasChange
+    });
   }
-  setWeightsChange(newWeightsChange: Array<number>): Promise<null> {
-    this.weightsChange = newWeightsChange;
-    return Promise.resolve(null);
-  }
-  getActivation(): Promise<number> {
-    return Promise.resolve(this.activation);
-  }
-  getDelta(): Promise<number> {
-    return Promise.resolve(this.delta);
-  }
-  getWeights(): Promise<Array<number>> {
-    return Promise.resolve(this.weights);
-  }
-  getBias(): Promise<number> {
-    return Promise.resolve(this.bias);
-  }
-  getBiasChange(): Promise<Array<number>> {
-    return Promise.resolve(this.weightsChange);
-  }
-  getWeightsChange(): Promise<number> {
-    return Promise.resolve(this.biasChange);
+  setBiasChange(newBiasChange: number): Perceptron {
+    return new Perceptron(this.weights.length, {
+      activation: this.activation,
+      delta: this.delta,
+      weights: this.weights,
+      bias: this.bias,
+      weightsChange: this.weightsChange,
+      biasChange: newBiasChange
+    });
   }
 }
 
@@ -105,24 +144,32 @@ class NeuralNetwork {
     this.perceptrons = perceptrons;
   }
   propagate(perceptrons: Array<Array<Perceptron>>, pattern: Array<number>): Array<number> {
-    let activityIn = pattern;
+    let activityIn: Array<number>;
     for (let i = 0; i < perceptrons.length; i++) {
-      this.propagateLayer(perceptrons[i], activityIn).then(resolve => activityIn = resolve);
+      if (i === 0) {
+        activityIn = pattern;
+      } else {
+        activityIn = [];
+        for (const parentPercept of perceptrons[i - 1]) {
+          activityIn.push(parentPercept.activation);
+        }
+      }
+      this.propagateLayer(perceptrons[i], activityIn).then(resolve => perceptrons[i] = resolve);
     }
     return activityIn;
   }
-  propagateLayer(layer: Array<Perceptron>, activityIn: Array<number>): Promise<Array<number>> {
-    const newActivityIn: Array<number> = [];
-    const resultSubject: Subject<number> = new Subject();
+  propagateLayer(layer: Array<Perceptron>, activityIn: Array<number>): Promise<Array<Perceptron>> {
+    const layerSize = layer.length;
+    const newLayer: Array<Perceptron> = [];
+    // const resultSubject: Subject<number> = new Subject();
     // resultSubject.subscribe(results => this.countResults(results, layer.length));
-    for (let i1 = 0; i1 < layer.length; i1++) {
+    for (let i1 = 0; i1 < layerSize; i1++) {
       const percept = layer[i1];
-      percept.propagate(activityIn).then(resolve => newActivityIn.push(resolve));
-      for (const val of newActivityIn) {
-        console.log(val);
-      }
+      percept.propagate(activityIn).then(resolve => newLayer.push(percept.setActivation(resolve)));
     }
-    return Promise.resolve(newActivityIn);
+    while (newLayer.length < layerSize) {}
+    console.log(newLayer);
+    return Promise.resolve(newLayer);
   }
   // doLayer(perceptrons: Array<Array<Perceptron>>, index: number, activityIn: Array<number>): Promise<Array<Array<Perceptron>>> {
   //   const layer = perceptrons[index];
@@ -259,6 +306,7 @@ export class NNCreator extends Work {
   applySettings(context: CanvasRenderingContext2D): CanvasRenderingContext2D {
     return context;
   }
+  setColors(colors: {[key: string]: string}): void {}
   drawAll(context: CanvasRenderingContext2D): void {}
   undo(): void {}
   redo(): void {}

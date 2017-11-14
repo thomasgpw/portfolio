@@ -18,6 +18,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Output() setActiveEvent: EventEmitter<null> = new EventEmitter();
   @Output() unsetActiveEvent: EventEmitter<null> = new EventEmitter();
   @Output() setWorkStateEvent: EventEmitter<[number, WorkState]> = new EventEmitter();
+  @Output() requestColorsEvent: EventEmitter<null> = new EventEmitter();
   @Input() uLdcwx2: string;
   @Input() uLdchx2: string;
   @Input() uLd2cw: string;

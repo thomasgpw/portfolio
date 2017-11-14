@@ -467,6 +467,11 @@ export class AppComponent implements OnInit {
         'NNCreator',
         {},
         {}
+      ),
+      new WorkState(
+        'GradientR',
+        {},
+        {}
       )
     ],
     workStatesChangeFlag: true

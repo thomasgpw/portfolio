@@ -8,6 +8,7 @@ import { ImmediateEllipse } from '../content/_works/immediate-ellipse';
 import { PointsToPoint } from '../content/_works/points-to-point';
 import { FractalExplorer } from '../content/_works/fractal-explorer';
 import { NNCreator } from '../content/_works/nn-creator';
+import { GradientR } from '../content/_works/gradient-r';
 
 @Injectable()
 export class WorkManagerService {
@@ -51,9 +52,14 @@ export class WorkManagerService {
         return new FractalExplorer(parentElement);
       case 'NNCreator':
         return new NNCreator(parentElement);
+      case 'GradientR':
+        return new GradientR(parentElement);
       default:
         return null;
     }
+  }
+  sendColors(id: number, colors: {[key: string]: string}) {
+    this.WORK_WRAPPERS[id].work.setColors(colors);
   }
   activate(id: number): Promise<null> {
     const WORK_WRAPPERS = this.WORK_WRAPPERS;
