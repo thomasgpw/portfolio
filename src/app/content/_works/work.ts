@@ -88,5 +88,5 @@ export abstract class Work {
   abstract clearUndoData(): void;
   abstract onPointerDown(e: PointerEvent): void;
   abstract onPointerMove(e: PointerEvent): void;
-  abstract onPointerUp(): void;
+  abstract onPointerUp(e: PointerEvent): void;
 }

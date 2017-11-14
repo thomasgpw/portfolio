@@ -142,8 +142,8 @@ export class CustomCookieService extends CookieService {
     // return workString;
   }
   fractalExplorerDataToString(workData: FractalExplorerData): string {
-    return ((workData.p0.x && workData.p0.y) ? workData.p0.toString() : 'null|null')
-    + ((workData.zoom) ? workData.zoom.toString() : '') + '%';
+    return ((workData.p0.x && workData.p0.y) ? workData.p0.toString() : 'null|null') + '%'
+    + ((workData.zoom) ? workData.zoom.toString() : '');
   }
   fractalExplorerSettingsToString(workSettings: FractalExplorerSettings): string {
     return ((workSettings.res) ? workSettings.res.toString() : '') + '%'

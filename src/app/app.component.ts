@@ -454,7 +454,7 @@ export class AppComponent implements OnInit {
       ),
       new WorkState(
         'FractalExplorer',
-        { p0: new Point(null, null), zoom: 1 },
+        { p0: new Point(0, 0), zoom: 1 },
         {
           res: 0.3,
           iMax: 1000,

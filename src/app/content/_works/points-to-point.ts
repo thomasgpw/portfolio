@@ -184,7 +184,7 @@ export class PointsToPoint extends Work {
       this.workDataSubject.next(this.workData);
     }
   }
-  onPointerUp (): void {
+  onPointerUp (e: PointerEvent): void {
     this.pointerDown = false;
   }
 }
