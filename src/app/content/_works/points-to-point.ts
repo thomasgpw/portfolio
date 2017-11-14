@@ -21,7 +21,7 @@ export class PointsToPoint extends Work {
   }
   setupSettings(): HTMLElement {
     const workSettings = this.workSettings;
-    return null;
+    return document.createElement('div');
   }
   applySettings(context: CanvasRenderingContext2D = this.context): CanvasRenderingContext2D {
     const workSettings = this.workSettings;

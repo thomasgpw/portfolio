@@ -97,39 +97,48 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     return Promise.resolve(null);
   }
   styleUndoFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    const elStyle = el.style;
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     const rightOffset: string = this.isPortrait ? this.bWPdcwx3 : this.bWPdcwx2;
-    styleRightOffset(el.style, this.uLd2ch, rightOffset);
+    styleRightOffset(elStyle, this.uLd2ch, rightOffset);
   }
   styleRedoFunc(el: SVGElement) {
+    const elStyle = el.style;
     el.setAttribute('transform', 'scale(-1, 1)');
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     const redoOffset: string = this.isPortrait ? this.bWPdcwx2 : this.bWPdcw;
-    styleRedoOffset(el.style, this.uLd2cw, redoOffset);
+    styleRedoOffset(elStyle, this.uLd2cw, redoOffset);
   }
   styleSettingsFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
-    styleRightOffset(el.style, this.uLd2cw, '0');
-  }
-  styleCloseFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
-    styleRightOffset(el.style, this.uLd2cw, '0');
+    const elStyle = el.style;
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleRightOffset(elStyle, this.uLd2cw, '0');
   }
   styleDeleteFunc(el: SVGElement) {
+    const elStyle = el.style;
     const topOffset: string = this.isPortrait ? '0' : this.bWPdch;
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
     const rightOffset: string = this.isPortrait ? this.bWPdcw : '0';
-    styleRightOffset(el.style, this.uLd2cw, rightOffset);
+    styleRightOffset(elStyle, this.uLd2cw, rightOffset);
   }
   styleUploadFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
-    styleLeftOffset(el.style, this.uLd2cw, '0');
+    const elStyle = el.style;
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleLeftOffset(elStyle, this.uLd2cw, '0');
   }
   styleDownloadFunc(el: SVGElement) {
+    const elStyle = el.style;
     const topOffset: string = this.isPortrait ? '0' : this.bWPdch;
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
     const leftOffset: string = this.isPortrait ? this.bWPdcw : '0';
-    styleLeftOffset(el.style, this.uLd2cw, leftOffset);
+    styleLeftOffset(elStyle, this.uLd2cw, leftOffset);
+  }
+  styleCloseFunc(el: SVGElement) {
+    const elStyle = el.style;
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleRightOffset(elStyle, this.uLd2cw, '0');
+    el.setAttributeNS(null, 'fill', '#000');
+    el.setAttributeNS(null, 'stroke', '#888');
   }
 
   /* EVENT FUNCTIONS */

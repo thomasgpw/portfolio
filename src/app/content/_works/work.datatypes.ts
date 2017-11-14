@@ -47,6 +47,6 @@ export interface FractalExplorerSettings {
   color: number;
   zInitial: Point;
 }
-export interface NNCreatorData {}
-export interface NNCreatorSettings {}
+export interface EmptyData {}
+export interface EmptySettings {}
 
