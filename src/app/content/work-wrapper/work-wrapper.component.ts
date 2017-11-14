@@ -96,47 +96,56 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     work.drawAll(work.context);
     return Promise.resolve(null);
   }
-  styleUndoFunc(el: SVGElement) {
+  styleUndoFunc(el: SVGElement): void {
     const elStyle = el.style;
     styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     const rightOffset: string = this.isPortrait ? this.bWPdcwx3 : this.bWPdcwx2;
     styleRightOffset(elStyle, this.uLd2ch, rightOffset);
+    this.outlineSVG(el);
   }
-  styleRedoFunc(el: SVGElement) {
+  styleRedoFunc(el: SVGElement): void {
     const elStyle = el.style;
     el.setAttribute('transform', 'scale(-1, 1)');
     styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     const redoOffset: string = this.isPortrait ? this.bWPdcwx2 : this.bWPdcw;
     styleRedoOffset(elStyle, this.uLd2cw, redoOffset);
+    this.outlineSVG(el);
   }
-  styleSettingsFunc(el: SVGElement) {
+  styleSettingsFunc(el: SVGElement): void {
     const elStyle = el.style;
     styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     styleRightOffset(elStyle, this.uLd2cw, '0');
+    this.outlineSVG(el);
   }
-  styleDeleteFunc(el: SVGElement) {
+  styleDeleteFunc(el: SVGElement): void {
     const elStyle = el.style;
     const topOffset: string = this.isPortrait ? '0' : this.bWPdch;
     styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
     const rightOffset: string = this.isPortrait ? this.bWPdcw : '0';
     styleRightOffset(elStyle, this.uLd2cw, rightOffset);
+    this.outlineSVG(el);
   }
-  styleUploadFunc(el: SVGElement) {
+  styleUploadFunc(el: SVGElement): void {
     const elStyle = el.style;
     styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     styleLeftOffset(elStyle, this.uLd2cw, '0');
+    this.outlineSVG(el);
   }
-  styleDownloadFunc(el: SVGElement) {
+  styleDownloadFunc(el: SVGElement): void {
     const elStyle = el.style;
     const topOffset: string = this.isPortrait ? '0' : this.bWPdch;
     styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
     const leftOffset: string = this.isPortrait ? this.bWPdcw : '0';
     styleLeftOffset(elStyle, this.uLd2cw, leftOffset);
+    this.outlineSVG(el);
   }
-  styleCloseFunc(el: SVGElement) {
+  styleCloseFunc(el: SVGElement): void {
     const elStyle = el.style;
     styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     styleRightOffset(elStyle, this.uLd2cw, '0');
+    this.outlineSVG(el);
+  }
+  outlineSVG(el: SVGElement): void {
     el.setAttributeNS(null, 'fill', '#000');
     el.setAttributeNS(null, 'stroke', '#888');
   }
@@ -154,10 +163,10 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
       work.onPointerMove(event as PointerEvent);
     }
   }
-  @HostListener('window: pointerup') onPointerUp() {
+  @HostListener('window: pointerup', ['$event']) onPointerUp() {
     const work = this.work;
     if (work.active) {
-      work.onPointerUp();
+      work.onPointerUp(event as PointerEvent);
     }
   }
 }

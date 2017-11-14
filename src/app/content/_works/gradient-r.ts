@@ -86,7 +86,7 @@ export class GradientR extends Work {
   clearUndoData(): void {}
   onPointerDown(e: PointerEvent): void {}
   onPointerMove(e: PointerEvent): void {}
-  onPointerUp(): void {}
+  onPointerUp(e: PointerEvent): void {}
   // addStop(color: string, offset: number): SVGStopElement {
   //   const newStop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
   //   const setStopAttr = newStop.setAttributeNS.bind(newStop, null);

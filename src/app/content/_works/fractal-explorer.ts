@@ -33,8 +33,8 @@ export class FractalExplorer extends Work {
     resLabel.setAttribute('for', 'resInput');
     resLabel.innerHTML = 'View Resolution';
     const resInput = settingsEl.appendChild(document.createElement('input'));
-    resInput.name = 'resInput';
-    resInput.type = 'range';
+    resInput.id = 'resInput';
+    resInput.type = 'number';
     resInput.defaultValue = workSettings.res.toString();
     resInput.min = '0';
     resInput.max = '1';
@@ -45,7 +45,7 @@ export class FractalExplorer extends Work {
     iMaxLabel.setAttribute('for', 'iMaxInput');
     iMaxLabel.innerHTML = 'Maximum Iterations (Edge Detail)';
     const iMaxInput = settingsEl.appendChild(document.createElement('input'));
-    iMaxInput.name = 'iMaxInput';
+    iMaxInput.id = 'iMaxInput';
     iMaxInput.type = 'number';
     iMaxInput.defaultValue = (Math.sqrt(workSettings.iMax)).toString();
     iMaxInput.min = '0';
@@ -57,7 +57,7 @@ export class FractalExplorer extends Work {
     escVLabel.setAttribute('for', 'escVInput');
     escVLabel.innerHTML = 'Escape Velocity (Size of Blob)';
     const escVInput = settingsEl.appendChild(document.createElement('input'));
-    escVInput.name = 'escVInput';
+    escVInput.id = 'escVInput';
     escVInput.type = 'number';
     escVInput.defaultValue = workSettings.escV.toString();
     escVInput.min = '0';
@@ -69,7 +69,7 @@ export class FractalExplorer extends Work {
     hueLabel.setAttribute('for', 'hueInput');
     hueLabel.innerHTML = 'Coloration Hue';
     const hueInput = settingsEl.appendChild(document.createElement('input'));
-    hueInput.name = 'hueInput';
+    hueInput.id = 'hueInput';
     hueInput.type = 'range';
     hueInput.defaultValue = workSettings.color.toString();
     hueInput.min = '0';
@@ -81,9 +81,9 @@ export class FractalExplorer extends Work {
     zInitialLabel.setAttribute('for', 'zInitialInput');
     zInitialLabel.innerHTML = 'Initial Z Point';
     const zInitialInput = settingsEl.appendChild(document.createElement('form'));
-    zInitialInput.name = 'zInitialInput';
+    zInitialInput.id = 'zInitialInput';
     const zInitialX = zInitialInput.appendChild(document.createElement('input'));
-    zInitialX.name = 'zInitialX';
+    zInitialX.id = 'zInitialX';
     zInitialX.type = 'number';
     zInitialX.defaultValue = workSettings.escV.toString();
     zInitialX.min = '-2';
@@ -93,7 +93,7 @@ export class FractalExplorer extends Work {
       event => workSettings.zInitial = new Point(parseFloat((event.srcElement as HTMLInputElement).value), workSettings.zInitial.y)
     );
     const zInitialY = zInitialInput.appendChild(document.createElement('input'));
-    zInitialY.name = 'zInitialY';
+    zInitialY.id = 'zInitialY';
     zInitialY.type = 'number';
     zInitialY.defaultValue = workSettings.escV.toString();
     zInitialY.min = '-2';

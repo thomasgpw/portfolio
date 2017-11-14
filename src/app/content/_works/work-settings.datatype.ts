@@ -2,10 +2,10 @@ import {
   ImmediateEllipseSettings,
   PointsToPointSettings,
   FractalExplorerSettings,
-  NNCreatorSettings
+  EmptySettings
 } from './work.datatypes';
 export type WorkSettings
 = ImmediateEllipseSettings
 | PointsToPointSettings
 | FractalExplorerSettings
-| NNCreatorSettings;
+| EmptySettings;

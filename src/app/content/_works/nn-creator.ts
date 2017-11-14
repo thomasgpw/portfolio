@@ -270,5 +270,5 @@ export class NNCreator extends Work {
     }
   }
   onPointerMove(e: PointerEvent): void {}
-  onPointerUp(): void {}
+  onPointerUp(e: PointerEvent): void {}
 }

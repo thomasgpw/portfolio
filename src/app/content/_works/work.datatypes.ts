@@ -33,9 +33,19 @@ export class EllipseSet {
   }
 }
 export type ImmediateEllipseData = Array<EllipseSet>;
-export interface ImmediateEllipseSettings {colors: string; backgroundColor: string; }
-export interface PointsToPointData {centerPoints: Array<ColorPoint>; points: Array<Point>; }
-export interface PointsToPointSettings {centerPointDensity: number; chosenColorSet: boolean; backgroundColor: string; }
+export interface ImmediateEllipseSettings {
+  colors: string;
+  backgroundColor: string;
+}
+export interface PointsToPointData {
+  centerPoints: Array<ColorPoint>;
+  points: Array<Point>;
+}
+export interface PointsToPointSettings {
+  centerPointDensity: number;
+  chosenColorSet: boolean;
+  backgroundColor: string;
+}
 export interface FractalExplorerData {
   p0: Point;
   zoom: number;
