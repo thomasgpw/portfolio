@@ -4,6 +4,7 @@ import { WorkState } from '../content/_works/work-state.datatype';
 import { WorkStates } from '../content/_works/work-states.datatype';
 import { WorkWrapperComponent } from '../content/work-wrapper/work-wrapper.component';
 import { Work } from '../content/_works/work';
+import { CanvasWork } from '../content/_works/canvas-work';
 import { ImmediateEllipse } from '../content/_works/immediate-ellipse';
 import { PointsToPoint } from '../content/_works/points-to-point';
 import { FractalExplorer } from '../content/_works/fractal-explorer';
@@ -20,14 +21,15 @@ export class WorkManagerService {
     const WORK_WRAPPERS = this.WORK_WRAPPERS;
     const i = WORK_WRAPPERS.length;
     workWrapper.id = i;
-    workWrapper.work = this.assignWork(workWrapper.type, document.getElementsByClassName('canvas-wrapper')[i]);
+    const parentEl = document.getElementsByClassName('work-wrapper')[i];
+    workWrapper.work = this.assignWork(workWrapper.type, parentEl);
     WORK_WRAPPERS[i] = workWrapper;
     console.log(WORK_WRAPPERS);
     const work = workWrapper.work;
     work.setWorkState(workWrapper.workState);
     this.attachSubscription(i, workWrapper, work);
-    work.resizeCanvas();
-    work.setup(work.context);
+    work.resizeContents(parentEl);
+    // work.setup(work.context);
     return WORK_WRAPPERS.length;
   }
   attachSubscription(id: number, workWrapper: WorkWrapperComponent, work: Work): void {
@@ -59,7 +61,7 @@ export class WorkManagerService {
     }
   }
   sendColors(id: number, colors: {[key: string]: string}) {
-    this.WORK_WRAPPERS[id].work.setColors(colors);
+    (this.WORK_WRAPPERS[id].work as CanvasWork).setColors(colors);
   }
   activate(id: number): Promise<null> {
     const WORK_WRAPPERS = this.WORK_WRAPPERS;
@@ -73,8 +75,10 @@ export class WorkManagerService {
     return Promise.resolve(null);
   }
   resizeWork(id: number): void {
-    const work = this.WORK_WRAPPERS[id].work;
-    work.resizeCanvas();
-    work.drawAll(work.applySettings(work.context));
+    // const work = this.WORK_WRAPPERS[id].work;
+    this.WORK_WRAPPERS[id].work.resizeContents(
+      document.getElementsByClassName('work-wrapper')[id]
+    );
+    // work.drawAll(work.applySettings(work.context));
   }
 }

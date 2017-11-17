@@ -1,7 +1,7 @@
 import { Point, EllipseSet, ImmediateEllipseData, ImmediateEllipseSettings } from './work.datatypes';
-import { Work } from './work';
+import { CanvasWork } from './canvas-work';
 
-export class ImmediateEllipse extends Work {
+export class ImmediateEllipse extends CanvasWork {
 
   pointerDown = false;
   // setNum: number;
@@ -131,6 +131,9 @@ export class ImmediateEllipse extends Work {
     }
   }
   drawAll(context: CanvasRenderingContext2D): void {
+    const workSettings = this.workSettings;
+    context.fillStyle = workSettings.backgroundColor;
+    context.strokeStyle = workSettings.colors;
     this.fill(context);
     const workData = this.workData;
     const workDataLength = workData.length;

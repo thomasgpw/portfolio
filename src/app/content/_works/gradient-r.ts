@@ -1,39 +1,73 @@
+import { Subject } from 'rxjs/Subject';
 import { Work } from './work';
+import { WorkState } from './work-state.datatype';
+import {
+  EmptyData,
+  EmptySettings
+} from './work.datatypes';
 
-export class GradientR extends Work {
+export class GradientR implements Work {
+  type: string;
+  w: number;
+  h: number;
+  active: boolean;
+  workData: EmptyData;
+  workSettings: EmptySettings;
+  workDataSubject: Subject<EmptyData>;
   stopList: Array<number>;
   stopMax: number;
   equation: string;
   constructor (parentEl: Element) {
-    super(parentEl);
+    this.workDataSubject = new Subject();
+    this.type = 'GradientR';
     this.stopList = [0, 1];
     this.stopMax = 700;
     this.equation = 'arctan';
-    this.run(true);
+    // this.run(true);
+  }
+  resizeContents(parentEl: Element): void {
+    const w = parentEl.clientWidth;
+    const h = parentEl.clientHeight;
+    this.w = w;
+    this.h = h;
   }
   setupSettings(): HTMLElement {
     return document.createElement('div');
   }
-  applySettings(context: CanvasRenderingContext2D): CanvasRenderingContext2D {
-    return context;
+  activate(): Promise<null> {
+    this.active = true;
+    return Promise.resolve(null);
   }
-  setColors(colors: {[key: string]: string}): void {}
-  drawAll(context: CanvasRenderingContext2D): void {
-    const w = this.w;
-    const h = this.h;
-    const stopList = this.stopList;
-    const equation = this.equation;
-    for (const stop of stopList) {
-      this.draw(context, stop, equation, w, h);
-    }
+  deactivate(): Promise<null> {
+    this.active = false;
+    return Promise.resolve(null);
   }
-  draw(context: CanvasRenderingContext2D, stop: number, equation: string, w: number = this.w, h: number = this.h): void {
-    const color = this.getColor(equation, stop);
-    context.fillStyle = color;
-    const startX = stop ? w * stop : 0;
-    console.log(color, startX);
-    context.fillRect(startX, 0, w, h);
+  init(): void {
+
   }
+  setWorkState(workState: WorkState): void {
+
+  }
+  // applySettings(context: CanvasRenderingContext2D): CanvasRenderingContext2D {
+  //   return context;
+  // }
+  // setColors(colors: {[key: string]: string}): void {}
+  // drawAll(context: CanvasRenderingContext2D): void {
+  //   const w = this.w;
+  //   const h = this.h;
+  //   const stopList = this.stopList;
+  //   const equation = this.equation;
+  //   for (const stop of stopList) {
+  //     this.draw(context, stop, equation, w, h);
+  //   }
+  // }
+  // draw(context: CanvasRenderingContext2D, stop: number, equation: string, w: number = this.w, h: number = this.h): void {
+  //   const color = this.getColor(equation, stop);
+  //   context.fillStyle = color;
+  //   const startX = stop ? w * stop : 0;
+  //   console.log(color, startX);
+  //   context.fillRect(startX, 0, w, h);
+  // }
   getColor(equation: string, stop: number): string {
     let color = 'hsl(';
     switch (equation) {
@@ -92,26 +126,26 @@ export class GradientR extends Work {
       return Promise.resolve(newOffset);
     }
   }
-  run(fastMode: boolean): void {
-    const context = this.context;
-    const equation = this.equation;
-    const stopMax = this.stopMax;
-    let stopNum = this.stopList.length;
-    this.draw(context, 0, equation);
-    while (stopNum < stopMax) {
-      this.addStop(stopNum).then(resolve => {if (!fastMode) { setTimeout(() => this.draw(context, resolve, equation), 10); }});
-      stopNum = this.stopList.length;
-      // console.log(this.stopList);
-    }
-    this.drawAll(context);
-  }
+  // run(fastMode: boolean): void {
+  //   const context = this.context;
+  //   const equation = this.equation;
+  //   const stopMax = this.stopMax;
+  //   let stopNum = this.stopList.length;
+  //   this.draw(context, 0, equation);
+  //   while (stopNum < stopMax) {
+  //     this.addStop(stopNum).then(resolve => {if (!fastMode) { setTimeout(() => this.draw(context, resolve, equation), 10); }});
+  //     stopNum = this.stopList.length;
+  //     // console.log(this.stopList);
+  //   }
+  //   this.drawAll(context);
+  // }
   undo(): void {}
   redo(): void {}
   clearWorkData(): void {}
   clearUndoData(): void {}
   onPointerDown(e: PointerEvent): void {
     if (e.srcElement.closest('.button') === null) {
-      this.run(false);
+      // this.run(false);
     }
   }
   onPointerMove(e: PointerEvent): void {}

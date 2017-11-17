@@ -1,7 +1,7 @@
 import { Point, FractalExplorerData, FractalExplorerSettings } from './work.datatypes';
-import { Work } from './work';
+import { CanvasWork } from './canvas-work';
 
-export class FractalExplorer extends Work {
+export class FractalExplorer extends CanvasWork {
   pointerDown: boolean;
   mandelbrotData: Array<Array<number>>;
   juliaData: Array<Array<number>>;
@@ -14,8 +14,8 @@ export class FractalExplorer extends Work {
     this.type = 'FractalExplorer';
     this.init();
   }
-  resizeCanvas(canvas: HTMLCanvasElement = this.canvas, parentEl: Element = canvas.closest('.work-wrapper-view-container')): void {
-    super.resizeCanvas(canvas, parentEl);
+  resizeCanvas(canvas: HTMLCanvasElement = this.canvas, w: number, h: number): void {
+    super.resizeCanvas(canvas, w, h);
     this.mandelbrotData = this.calcAll();
   }
   init(): void {

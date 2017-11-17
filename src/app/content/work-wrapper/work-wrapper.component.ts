@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { WorkState } from '../_works/work-state.datatype';
 import { Work } from '../_works/work';
+import { CanvasWork } from '../_works/canvas-work';
 import {
   styleWorkWrapperButton,
   styleRightOffset,
@@ -65,12 +66,13 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     this.work.deactivate().then(resolve => this.unsetActiveEvent.emit(null));
   }
   download(): void {
-    this.work.download(document.getElementById('downloadLink') as HTMLAnchorElement);
+    (this.work as CanvasWork).download(document.getElementById('downloadLink') as HTMLAnchorElement);
   }
   openSettings(): void {
     const work = this.work;
     if (work.active) {
-      this.activateSettings().then(resolve => setTimeout(() => this.attachSettings(work)));
+      this.activateSettings()
+      .then(resolve => setTimeout(() => this.attachSettings(work)));
     }
   }
   activateSettings(): Promise<null> {
@@ -83,20 +85,20 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   }
   closeSettings(): void {
     const work = this.work;
-    const context = work.context;
+    // const context = work.context;
     this.setWorkStateFunc(this.id, {
       type: work.type,
       workData: work.workData,
       workSettings: work.workSettings
     });
-    work.drawAll(work.applySettings(context));
+    // work.drawAll(work.applySettings(context));
     this.settingsOpen = false;
   }
-  drawAll(values: number[]): Promise<null> {
-    const work = this.work;
-    work.drawAll(work.context);
-    return Promise.resolve(null);
-  }
+  // drawAll(values: number[]): Promise<null> {
+  //   const work = this.work;
+  //   work.drawAll(work.context);
+  //   return Promise.resolve(null);
+  // }
   styleUndoFunc(el: SVGElement): void {
     const elStyle = el.style;
     styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');

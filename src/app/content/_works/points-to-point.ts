@@ -1,7 +1,7 @@
 import { Point, ColorPoint, PointsToPointData, PointsToPointSettings } from './work.datatypes';
-import { Work } from './work';
+import { CanvasWork } from './canvas-work';
 
-export class PointsToPoint extends Work {
+export class PointsToPoint extends CanvasWork {
 
   pointerDown = false;
   workData: PointsToPointData;

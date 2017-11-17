@@ -1,11 +1,9 @@
 import {
-  ImmediateEllipseData,
-  PointsToPointData,
-  FractalExplorerData,
   EmptyData
 } from './work.datatypes';
+import {
+  CanvasWorkData
+} from './canvas-work-data.datatype';
 export type WorkData
-= ImmediateEllipseData
-| PointsToPointData
-| FractalExplorerData
+= CanvasWorkData
 | EmptyData;

@@ -1,4 +1,4 @@
-<div class="canvas-overlay" *ngIf='work.active && !settingsOpen'>
+<div class="work-overlay" *ngIf='work.active && !settingsOpen'>
   <a id="downloadLink" hidden></a>
   <div class="undo button"
   [inlineSVG]=undoPath
@@ -36,9 +36,9 @@
   >
   </div>
 </div>
-<div class="canvas-wrapper">
+<div class="work-wrapper">
 </div>
-<div class="canvas-settings" *ngIf='settingsOpen'>
+<div class="work-settings" *ngIf='settingsOpen'>
   <div class='close button'
   [inlineSVG]=closePath
   (onSVGInserted)='styleCloseFunc($event)'

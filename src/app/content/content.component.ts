@@ -72,11 +72,18 @@ export class ContentComponent implements OnInit, OnDestroy {
   updateView(): void {
     this.createTab();
     if (this.gridButton) {
-      this.styleGridButtonFunc(document.getElementById('gridButton').children[0] as SVGElement);
+      this.styleGridButtonFunc(
+        document.getElementById('gridButton').children[0] as SVGElement
+      );
     }
   }
   createTab(): void {
-    this.tab = generateSvgTab(document.getElementById('svgTab'), window.innerWidth, this.unitLength, this.unitLength * 2);
+    this.tab = generateSvgTab(
+      document.getElementById('svgTab'),
+      window.innerWidth,
+      this.unitLength,
+      this.unitLength * 2
+    );
     this.tab.firstElementChild.setAttributeNS(null, 'fill',
       this.shutterView0Alive
       ? this.colors['welcomeColor']
@@ -104,7 +111,8 @@ export class ContentComponent implements OnInit, OnDestroy {
   workInitFunc(): void {
     const workActive = this.workActive;
     if (workActive !== null) {
-      this._workManagerService.activate(workActive).then(resolve => this.activateClass(workActive));
+      this._workManagerService.activate(workActive)
+      .then(resolve => this.activateClass(workActive));
     }
   }
   setAppViewFunc(): void {
@@ -134,7 +142,8 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.gridButton = false;
   }
   viewGridFunc(): void {
-    this._workManagerService.deactivate(this.workActive).then(resolve => this.forceGridClass());
+    this._workManagerService.deactivate(this.workActive)
+    .then(resolve => this.forceGridClass());
   }
   resizeWork(e): void {
     this._workManagerService.resizeWork(parseInt(e.element.id, 10));
@@ -147,6 +156,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     }
   }
   deactivateClass(id: number): void {
+    console.log('deactivate class', id);
     const classes = document.getElementsByClassName('work-wrapper-view-container')[id].classList;
     classes.remove('wwActive');
     classes.add('wwRow');
@@ -178,10 +188,12 @@ export class ContentComponent implements OnInit, OnDestroy {
       if (id === workActive) {
         // this._workManagerService.handleClick(workActive, e);
       } else {
-        if (workActive) {
-          this._workManagerService.deactivate(workActive).then(resolve => this.deactivateClass(workActive));
+        if (workActive !== null) {
+          this._workManagerService.deactivate(workActive)
+          .then(resolve => this.deactivateClass(workActive));
         }
-        this._workManagerService.activate(id).then(resolve => this.activateClass(id));
+        this._workManagerService.activate(id)
+        .then(resolve => this.activateClass(id));
       }
     }
   }
