@@ -145,16 +145,23 @@ class NeuralNetwork {
   }
   propagate(perceptrons: Array<Array<Perceptron>>, pattern: Array<number>): Array<number> {
     let activityIn: Array<number>;
-    for (let i = 0; i < perceptrons.length; i++) {
+    const numLayers = perceptrons.length;
+    for (let i = 0; i < numLayers; i++) {
       if (i === 0) {
         activityIn = pattern;
       } else {
         activityIn = [];
         for (const parentPercept of perceptrons[i - 1]) {
+          console.log('activity,', parentPercept);
           activityIn.push(parentPercept.activation);
         }
       }
+      console.log('activityIn', activityIn);
       this.propagateLayer(perceptrons[i], activityIn).then(resolve => perceptrons[i] = resolve);
+    }
+    activityIn = [];
+    for (const percept of perceptrons[numLayers - 1]) {
+      activityIn.push(percept.activation);
     }
     return activityIn;
   }
@@ -167,7 +174,7 @@ class NeuralNetwork {
       const percept = layer[i1];
       percept.propagate(activityIn).then(resolve => newLayer.push(percept.setActivation(resolve)));
     }
-    while (newLayer.length < layerSize) {}
+    // while (newLayer.length < layerSize) {}
     console.log(newLayer);
     return Promise.resolve(newLayer);
   }
@@ -196,7 +203,7 @@ class NeuralNetwork {
       const result = this.propagate(this.perceptrons, patterns[i]);
       let numIncorrect = 0;
       for (let i1 = 0; i1 < result.length; i1++) {
-        console.log(result[i1], targets[i][i1]);
+        console.log('results', result[i1], targets[i][i1]);
         numIncorrect += (Math.abs(result[i1]) - Math.abs(targets[i][i1]));
       }
       TSS += Math.pow(numIncorrect, 2);
@@ -270,16 +277,15 @@ class NeuralNetwork {
     while (percent < 1 && iEpoch < maxEpoch) {
       const errors = calcError();
       percent = errors[1];
-      console.log(iEpoch);
       const statsString =
       'Epoch #' + iEpoch.toString()
       + ': TSS error is ' + errors[0].toString()
       + ', percent correct is ' + percent.toString();
       console.log(statsString);
       iEpoch++;
-      for (let i = 0; i < patterns.length; i++) {
-        adjustWeights(patterns[i], targets[i]);
-      }
+      // for (let i = 0; i < patterns.length; i++) {
+      //   adjustWeights(patterns[i], targets[i]);
+      // }
     }
     return iEpoch;
   }

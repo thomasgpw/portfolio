@@ -8,7 +8,7 @@ export class GradientR extends Work {
     super(parentEl);
     this.stopList = [0, 1];
     this.stopMax = 700;
-    this.equation = 'sine';
+    this.equation = 'arctan';
     this.run(true);
   }
   setupSettings(): HTMLElement {
@@ -62,6 +62,9 @@ export class GradientR extends Work {
         break;
       case 'tangent':
         color += Math.floor(Math.abs(Math.tan(stop * Math.PI * 2) * 360) % 360);
+        break;
+      case'arctan':
+        color += Math.atan(stop * Math.PI * 2) * (720 / Math.PI);
         break;
       default:
         color += (stop * 3.6).toString();
