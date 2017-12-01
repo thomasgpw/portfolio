@@ -1,4 +1,7 @@
-.work-wrapper-view-container{
+#work-wrapper-all-container {
+  top: 10%;
+}
+.work-wrapper-view-container {
   margin: 2.5%;
   float:left;
   border: 3px solid #777;
@@ -6,6 +9,7 @@
   background: white;
   position: relative;
   overflow: hidden;
+  pointer-events: initial;
 }
 .work-wrapper-view-container:hover {
   box-shadow: 0 0 3px 5px #555
@@ -17,13 +21,16 @@
 .wwRow {
   height:10%;
   width:10%;
-  top:85%;
+  float: right;
+  clear: both;
+  /*top:85%;*/
   /*background: blue;*/
 }
 .wwActive {
+  margin: 0;
   height: 80%;
   width: 80%;
   position: fixed;
-  top: 0;
+  top: 0%;
   /*background: red;*/
 }

@@ -1,6 +1,27 @@
-<svg class="arrowSvg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="209.4" width="313.55" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 293.9493 196.31073">
- <g fill-opacity=".50196" transform="translate(-42.062 -43.555)">
-  <rect id="rect3210" transform="rotate(45)" height="207.85" width="69.767" y="-171.91" x="233.51"/>
-  <rect id="rect3212" transform="rotate(135)" height="138.09" width="69.767" y="-233.51" x="-33.828"/>
- </g>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  class="arrowSvg"
+  width="4"
+  height="3"
+  version="1.1"
+  viewBox="0 0 4 3"
+>
+  <g
+  >
+    <path
+      fill-opacity=".5"
+      stroke-style='none'
+      fill-style='black'
+      id='arrowPath'
+      d='
+      M 0 1
+      L 2 3
+      L 4 1
+      L 3 0
+      L 2 1.5
+      L 1 0
+      L 0 1
+      '
+    /> 
+  </g>
 </svg>

@@ -7,32 +7,34 @@
   (click)=viewGridFunc()
   >
   </div>
-  <div id="svgTab"> </div>
-  <div *ngFor='let workState of workStates; let i = index'
-  [id]='i' class='work-wrapper-view-container wwGrid'
-  [@workAnimations]='getStatus(i)'
-  (@workAnimations.done)='resizeWork($event)'
-  (click)='workClickFunc($event)'
-  >
-    <app-work-wrapper
-    [uLdcwx2]='uLdcwx2'
-    [uLdchx2]='uLdchx2'
-    [uLd2cw]='uLd2cw'
-    [uLd2ch]='uLd2ch'
-    [bWPdcw]='bWPdcw'
-    [bWPdcwx2]='bWPdcwx2'
-    [bWPdcwx3]='bWPdcwx3'
-    [bWPdch]='bWPdch'
-    [isPortrait]='isPortrait'
-    [workState]='workState'
-    [type]='workState.type'
-    (workWrapperInitEvent)='addWorkWrapperFunc($event)'
-    (setActiveEvent)='setWorkActiveFunc(i)'
-    (unsetActiveEvent)='setWorkActiveFunc(null)'
-    (setWorkStateEvent)='setWorkStateFunc($event)'
-    (requestColorsEvent)='requestColorsFunc(i)'
+  <div id="svgTab" class="z-index2"> </div>
+  <div id="work-wrapper-all-container" class="page click-through">
+    <div *ngFor='let workState of workStates; let i = index'
+    [id]='i' class='work-wrapper-view-container wwGrid'
+    [@workAnimations]='getStatus(i)'
+    (@workAnimations.done)='resizeWork($event)'
+    (click)='workClickFunc($event)'
     >
-      loading
-    </app-work-wrapper>
+      <app-work-wrapper
+      [uLdcwx2]='uLdcwx2'
+      [uLdchx2]='uLdchx2'
+      [uLd2cw]='uLd2cw'
+      [uLd2ch]='uLd2ch'
+      [bWPdcw]='bWPdcw'
+      [bWPdcwx2]='bWPdcwx2'
+      [bWPdcwx3]='bWPdcwx3'
+      [bWPdch]='bWPdch'
+      [isPortrait]='isPortrait'
+      [workState]='workState'
+      [type]='workState.type'
+      (workWrapperInitEvent)='addWorkWrapperFunc($event)'
+      (setActiveEvent)='setWorkActiveFunc(i)'
+      (unsetActiveEvent)='setWorkActiveFunc(null)'
+      (setWorkStateEvent)='setWorkStateFunc($event)'
+      (requestColorsEvent)='requestColorsFunc(i)'
+      >
+        loading
+      </app-work-wrapper>
+    </div>
   </div>
 </div>
