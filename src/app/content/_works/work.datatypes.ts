@@ -57,6 +57,10 @@ export interface FractalExplorerSettings {
   color: number;
   zInitial: Point;
 }
+export interface GradientRSettings {
+  equation: string;
+  variable: string;
+}
 export interface EmptyData {}
 export interface EmptySettings {}
 

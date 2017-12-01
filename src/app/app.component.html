@@ -35,6 +35,13 @@
     >
       app-shutter error
     </app-shutter>
+    <div
+    id='shutterDetails'
+    class = 'page click-through z-index2'
+    [inlineSVG]=shutterDetailsPath
+    (onSVGInserted)='styleShutterDetailsFunc($event)'
+    >
+    </div>
   </div>
   <div id='downArrowWrapper' class='page click-through z-index2' 
   [@downArrow]='((appAnimationState$ | async) + "state").toString()'

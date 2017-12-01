@@ -33,7 +33,7 @@ export class PointsToPoint extends CanvasWork {
     centerPointDensityInput.max = '5';
     centerPointDensityInput.step = '0.5';
     centerPointDensityInput.onchange = (
-      event => workSettings.centerPointDensity = parseFloat((event.srcElement as HTMLInputElement).value)
+      event => workSettings.centerPointDensity = parseFloat((event.target as HTMLInputElement).value)
     );
     settingsEl.appendChild(document.createElement('br'));
     const colorSetInput = settingsEl.appendChild(document.createElement('input'));
@@ -49,7 +49,7 @@ export class PointsToPoint extends CanvasWork {
     bgColorInput.id = 'bgColorInput';
     bgColorInput.type = 'color';
     bgColorInput.value = workSettings.backgroundColor;
-    bgColorInput.onchange = (event  => workSettings.backgroundColor = (event.srcElement as HTMLInputElement).value);
+    bgColorInput.onchange = (event  => workSettings.backgroundColor = (event.target as HTMLInputElement).value);
     return settingsEl;
   }
   applySettings(context: CanvasRenderingContext2D = this.context): CanvasRenderingContext2D {
@@ -204,7 +204,7 @@ export class PointsToPoint extends CanvasWork {
     this.undoData = {centerPoints: [], points: []};
   }
   onPointerDown (e: PointerEvent): void {
-    if (e.srcElement.closest('.button') === null) {
+    if ((e.target as Element).closest('.button') === null) {
       this.pointerDown = true;
       this.clearUndoData();
       console.log('P2PpointerDown');

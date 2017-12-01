@@ -30,7 +30,7 @@ export class ImmediateEllipse extends CanvasWork {
     colorInput.id = 'colorInput';
     colorInput.type = 'color';
     colorInput.value = workSettings.colors;
-    colorInput.onchange = (event  => workSettings.colors = (event.srcElement as HTMLInputElement).value);
+    colorInput.onchange = (event  => workSettings.colors = (event.target as HTMLInputElement).value);
     settingsEl.appendChild(document.createElement('br'));
     const bgColorLabel = settingsEl.appendChild(document.createElement('label'));
     bgColorLabel.setAttribute('for', 'bgColorInput');
@@ -39,7 +39,7 @@ export class ImmediateEllipse extends CanvasWork {
     bgColorInput.id = 'bgColorInput';
     bgColorInput.type = 'color';
     bgColorInput.value = workSettings.backgroundColor;
-    bgColorInput.onchange = (event  => workSettings.backgroundColor = (event.srcElement as HTMLInputElement).value);
+    bgColorInput.onchange = (event  => workSettings.backgroundColor = (event.target as HTMLInputElement).value);
     return settingsEl;
   }
   applySettings(context: CanvasRenderingContext2D): CanvasRenderingContext2D {
@@ -158,7 +158,7 @@ export class ImmediateEllipse extends CanvasWork {
     this.undoData = [];
   }
   onPointerDown (e: PointerEvent): void {
-    if (e.srcElement.closest('.button') === null) {
+    if ((e.target as Element).closest('.button') === null) {
       const w = this.w;
       const h = this.h;
       const offsetX = e.offsetX;

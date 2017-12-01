@@ -39,7 +39,7 @@ export class FractalExplorer extends CanvasWork {
     resInput.min = '0';
     resInput.max = '1';
     resInput.step = '0.05';
-    resInput.onchange = (event => workSettings.res = parseFloat((event.srcElement as HTMLInputElement).value));
+    resInput.onchange = (event => workSettings.res = parseFloat((event.target as HTMLInputElement).value));
     settingsEl.appendChild(document.createElement('br'));
     const iMaxLabel = settingsEl.appendChild(document.createElement('label'));
     iMaxLabel.setAttribute('for', 'iMaxInput');
@@ -51,7 +51,7 @@ export class FractalExplorer extends CanvasWork {
     iMaxInput.min = '0';
     iMaxInput.max = '300';
     iMaxInput.step = '1';
-    iMaxInput.onchange = (event => workSettings.iMax = Math.pow(parseFloat((event.srcElement as HTMLInputElement).value), 2));
+    iMaxInput.onchange = (event => workSettings.iMax = Math.pow(parseFloat((event.target as HTMLInputElement).value), 2));
     settingsEl.appendChild(document.createElement('br'));
     const escVLabel = settingsEl.appendChild(document.createElement('label'));
     escVLabel.setAttribute('for', 'escVInput');
@@ -63,7 +63,7 @@ export class FractalExplorer extends CanvasWork {
     escVInput.min = '0';
     escVInput.max = '10';
     escVInput.step = '0.1';
-    escVInput.onchange = (event => workSettings.escV = parseFloat((event.srcElement as HTMLInputElement).value));
+    escVInput.onchange = (event => workSettings.escV = parseFloat((event.target as HTMLInputElement).value));
     settingsEl.appendChild(document.createElement('br'));
     const hueLabel = settingsEl.appendChild(document.createElement('label'));
     hueLabel.setAttribute('for', 'hueInput');
@@ -75,7 +75,7 @@ export class FractalExplorer extends CanvasWork {
     hueInput.min = '0';
     hueInput.max = '360';
     hueInput.step = '1';
-    hueInput.onchange = (event => workSettings.color = parseInt((event.srcElement as HTMLInputElement).value, 10));
+    hueInput.onchange = (event => workSettings.color = parseInt((event.target as HTMLInputElement).value, 10));
     settingsEl.appendChild(document.createElement('br'));
     const zInitialLabel = settingsEl.appendChild(document.createElement('label'));
     zInitialLabel.setAttribute('for', 'zInitialInput');
@@ -90,7 +90,7 @@ export class FractalExplorer extends CanvasWork {
     zInitialX.max = '2';
     zInitialX.step = '0.05';
     zInitialX.onchange = (
-      event => workSettings.zInitial = new Point(parseFloat((event.srcElement as HTMLInputElement).value), workSettings.zInitial.y)
+      event => workSettings.zInitial = new Point(parseFloat((event.target as HTMLInputElement).value), workSettings.zInitial.y)
     );
     const zInitialY = zInitialInput.appendChild(document.createElement('input'));
     zInitialY.id = 'zInitialY';
@@ -100,7 +100,7 @@ export class FractalExplorer extends CanvasWork {
     zInitialY.max = '2';
     zInitialY.step = '0.05';
     zInitialY.onchange = (
-      event => workSettings.zInitial = new Point(workSettings.zInitial.x, parseFloat((event.srcElement as HTMLInputElement).value))
+      event => workSettings.zInitial = new Point(workSettings.zInitial.x, parseFloat((event.target as HTMLInputElement).value))
     );
     return settingsEl;
   }
@@ -218,7 +218,7 @@ export class FractalExplorer extends CanvasWork {
   }
   clearUndoData(): void {}
   onPointerDown(e: PointerEvent): void {
-    if (e.srcElement.closest('.button') === null) {
+    if ((e.target as Element).closest('.button') === null) {
       const w = this.w;
       const h = this.h;
       const zScale = this.zScale;

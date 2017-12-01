@@ -128,7 +128,7 @@ export class NeuralNetwork {
     this.learningRate = learningRate;
     this.momentum = momentum;
     this.sigmoidPrimeOffset = sigmoidPrimeOffset;
-    this.maxEpoch = 300;
+    this.maxEpoch = 30;
     const perceptrons = [];
     for (let i = 1; i < blueprint.length; i++) {
       perceptrons.push([]);
@@ -149,12 +149,16 @@ export class NeuralNetwork {
       } else {
         activityIn = [];
         for (const parentPercept of perceptrons[i - 1]) {
-          console.log('activity,', parentPercept);
+          console.log('parentactivity,', parentPercept.activation);
           activityIn.push(parentPercept.activation);
         }
+        console.log('propagate', activityIn);
       }
-      console.log('activityIn', activityIn);
-      this.propagateLayer(perceptrons[i], activityIn).then(resolve => perceptrons[i] = resolve);
+      // console.log('activityIn', activityIn);
+      console.log('before propageatelayer', perceptrons[i]);
+      this.propagateLayer(perceptrons[i], activityIn).then(resolve => {perceptrons[i] = resolve;
+        console.log('after propageatelayer', perceptrons[i]);
+      });
     }
     activityIn = [];
     for (const percept of perceptrons[numLayers - 1]) {
@@ -172,7 +176,7 @@ export class NeuralNetwork {
       percept.propagate(activityIn).then(resolve => newLayer.push(percept.setActivation(resolve)));
     }
     // while (newLayer.length < layerSize) {}
-    console.log(newLayer);
+    // console.log(newLayer);
     return Promise.resolve(newLayer);
   }
   // doLayer(perceptrons: Array<Array<Perceptron>>, index: number, activityIn: Array<number>): Promise<Array<Array<Perceptron>>> {
@@ -194,24 +198,27 @@ export class NeuralNetwork {
   calcError(patterns: Array<Array<number>>, targets: Array<Array<number>>): [number, number] {
     const tolerance = this.tolerance;
     const numPatts = patterns.length;
+    console.log('calcErrors', 'patterns', patterns, 'targets', targets);
     let TSS = 0;
     let error = 0;
     for (let i = 0; i < numPatts; i++) {
       const result = this.propagate(this.perceptrons, patterns[i]);
+      console.log('calcError propagate done', result);
       let numIncorrect = 0;
       for (let i1 = 0; i1 < result.length; i1++) {
-        console.log('results', result[i1], targets[i][i1]);
+        // console.log('results', result[i1], targets[i][i1]);
         numIncorrect += (Math.abs(result[i1]) - Math.abs(targets[i][i1]));
       }
       TSS += Math.pow(numIncorrect, 2);
       error += (tolerance >= numIncorrect && numIncorrect >= -tolerance) ? 1 : 0;
-      console.log(result, numIncorrect, TSS, error);
+      // console.log(result, numIncorrect, TSS, error);
     }
     const percentCorrect = Math.round(error) / numPatts;
     return [TSS, percentCorrect];
   }
   adjustWeights(pattern: Array<number>, target: Array<number>): void {
     const result = this.propagate(this.perceptrons, pattern);
+    console.log('adjustWeights propagate done', result);
     this.calcDeltas(this.perceptrons, result, target).then(resolve => this.calcWeightAdjustments(resolve, pattern));
   }
   calcDeltas(perceptrons: Array<Array<Perceptron>>, result: Array<number>, target: Array<number>): Promise<Array<Array<Perceptron>>> {
@@ -273,6 +280,7 @@ export class NeuralNetwork {
     const maxEpoch = this.maxEpoch;
     while (percent < 1 && iEpoch < maxEpoch) {
       const errors = calcError();
+      console.log('calcErrorDone', errors);
       percent = errors[1];
       const statsString =
       'Epoch #' + iEpoch.toString()
@@ -280,9 +288,10 @@ export class NeuralNetwork {
       + ', percent correct is ' + percent.toString();
       console.log(statsString);
       iEpoch++;
-      // for (let i = 0; i < patterns.length; i++) {
-      //   adjustWeights(patterns[i], targets[i]);
-      // }
+      for (let i = 0; i < patterns.length; i++) {
+        console.log('adjustWeights', patterns[i], targets[i]);
+        adjustWeights(patterns[i], targets[i]);
+      }
     }
     return iEpoch;
   }

@@ -6,7 +6,10 @@ import { Store } from '@ngrx/store';
 
 import { environment } from '../environments/environment';
 import { AppState, ViewState, IterableStringInstance, IterableStringMap } from './app.datatypes';
-import { styleDownArrow } from '../apply-styles';
+import {
+  programShutterDetails,
+  styleDownArrow
+} from '../apply-styles';
 import { CustomCookieService } from './_services/custom-cookie.service';
 import { ViewControlService } from './_services/view-control.service';
 import { StringManagerService } from './_services/string-manager.service';
@@ -128,6 +131,7 @@ export class AppComponent implements OnInit {
   fullRhyme: string;
   colors: {[key: string]: string} = {};
   arrowPath = '../assets/arrow.svg';
+  shutterDetailsPath = '../assets/shutter-details.svg';
 
   /* LIFECYCLE HOOK FUNCTIONS */
   constructor(
@@ -405,6 +409,9 @@ export class AppComponent implements OnInit {
   //       this.setShutterView(true);
   //     }
   //   }
+  }
+  styleShutterDetailsFunc(el: SVGElement): void {
+    programShutterDetails(el, window.innerWidth, window.innerHeight);
   }
   styleDownArrowFunc(el: SVGElement): void {
     const unitLengthReferences = this.unitLengthReferences;

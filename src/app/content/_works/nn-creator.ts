@@ -55,7 +55,8 @@ export class NNCreator implements Work {
     n.train(this.inputs, this.XORtargets);
   }
   onPointerDown(e: PointerEvent): void {
-    if (e.srcElement.closest('.button') === null) {
+    console.log('clicked');
+    if ((e.target as Element).closest('.button') === null) {
       this.start();
     }
   }

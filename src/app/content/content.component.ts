@@ -181,7 +181,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     }
   }
   workClickFunc(e: Event): void {
-    const clickedEl = e.srcElement.closest('.work-wrapper-view-container');
+    const clickedEl = (e.target as Element).closest('.work-wrapper-view-container');
     if (clickedEl) {
       const id = parseInt(clickedEl.id, 10);
       const workActive = this.workActive;
