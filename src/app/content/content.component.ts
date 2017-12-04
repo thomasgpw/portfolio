@@ -4,7 +4,6 @@ import { trigger, state, animate, transition} from '@angular/animations';
 import { WorkState } from './_works/work-state.datatype';
 import { WorkStates } from './_works/work-states.datatype';
 import { WorkManagerService } from '../_services/work-manager.service';
-import { generateSvgTab } from '../../assets/generate-svg-tab';
 import {
   styleGridButton,
   styleTab

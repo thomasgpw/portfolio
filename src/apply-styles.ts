@@ -70,8 +70,8 @@ export function styleGridButton(elStyle: CSSStyleDeclaration,
   elStyle.position = 'fixed';
   elStyle.width = uLdwx3;
   elStyle.height = uLdhx3;
-  elStyle.right = '0';
-  elStyle.top = uLdhOffset;
+  elStyle.right = '5%'; // Needs to be centered
+  elStyle.top = '10%';
 }
 export function styleWorkWrapperButton(elStyle: CSSStyleDeclaration,
   uLdwx2: string, uLdhx2: string, uLd2h: string, topOffset: string): void {

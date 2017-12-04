@@ -57,6 +57,6 @@ export function downArrowShutterStyle(): AnimationStyleMetadata {
 export function downArrowContentStyle(): AnimationStyleMetadata {
   return style({
   transform: 'translateY('
-  + (100 * Math.pow(window.innerWidth * window.innerHeight * 6, 1 / 4) / window.innerHeight)
+  + ((100 * Math.pow(window.innerWidth * window.innerHeight * 6, 1 / 4) / window.innerHeight) + 10 / 8)
   + '%)'
 }); }
