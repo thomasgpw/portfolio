@@ -5,7 +5,10 @@ import { WorkState } from './_works/work-state.datatype';
 import { WorkStates } from './_works/work-states.datatype';
 import { WorkManagerService } from '../_services/work-manager.service';
 import { generateSvgTab } from '../../assets/generate-svg-tab';
-import { styleGridButton } from '../../apply-styles';
+import {
+  styleGridButton,
+  styleTab
+  } from '../../apply-styles';
 import { workTransitionConfig, gridWorkStyle, activeWorkStyle, rowWorkStyle } from '../_animations/styles';
 import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
 
@@ -36,9 +39,10 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() shutterView0Alive: boolean;
   @Input() unitLength: number;
   @Input() uLdwx3: string;
+  @Input() uLdwx6: string;
   @Input() uLdhx2: string;
   @Input() uLdhx3: string;
-  @Input() uLdwOffset: string;
+  @Input() uLdwx5Offset: string;
   @Input() uLdhOffset: string;
   @Input() uLdcwx2: string;
   @Input() uLdchx2: string;
@@ -54,7 +58,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() colors: {[key: string]: string};
 
   gridButton = false;
-  tab: SVGElement;
+  tabPath = '../../assets/tab.svg';
   gridButtonPath = '../../assets/gridbutton.svg';
   constructor(readonly _workManagerService: WorkManagerService) {
   }
@@ -62,7 +66,6 @@ export class ContentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const contentEl = document.getElementById('content');
     (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
-    this.createTab();
     this.workInitFunc();
   }
   ngOnDestroy(): void {
@@ -70,25 +73,21 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
   updateView(): void {
-    this.createTab();
+    this.styleTabFunc(document.getElementById('svgTab').children[0] as SVGElement);
     if (this.gridButton) {
       this.styleGridButtonFunc(
         document.getElementById('gridButton').children[0] as SVGElement
       );
     }
   }
-  createTab(): void {
-    this.tab = generateSvgTab(
-      document.getElementById('svgTab'),
-      window.innerWidth,
-      this.unitLength,
-      this.unitLength * 2
-    );
-    this.tab.firstElementChild.setAttributeNS(null, 'fill',
+  styleTabFunc(el: SVGElement): void {
+    styleTab(el.style, this.uLdwx6, this.uLdhx3, this.uLdwx5Offset);
+    const color =
       this.shutterView0Alive
       ? this.colors['welcomeColor']
-      : this.colors['aboutColor']
-    );
+      : this.colors['aboutColor'];
+    el.setAttributeNS(null, 'fill', color);
+    (document.getElementsByClassName('shutter-bar')[0] as HTMLElement).style.backgroundColor = color;
   }
   styleGridButtonFunc(el: SVGElement): void {
     styleGridButton(el.style, this.uLdwx3, this.uLdhx3, this. uLdhOffset);

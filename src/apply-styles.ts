@@ -57,6 +57,14 @@ export function styleRightArrow(elStyle: CSSStyleDeclaration,
   elStyle.right = '0';
   elStyle.top = uLdhOffset;
 }
+export function styleTab(elStyle: CSSStyleDeclaration,
+  uLdwx6: string, uLdhx3: string, uLdwx5Offset: string): void {
+  elStyle.position = 'fixed';
+  // elStyle.width = uLdwx6;
+  elStyle.height = uLdhx3;
+  elStyle.top = '5%';
+  elStyle.left = uLdwx5Offset;
+}
 export function styleGridButton(elStyle: CSSStyleDeclaration,
   uLdwx3: string, uLdhx3: string, uLdhOffset: string): void {
   elStyle.position = 'fixed';

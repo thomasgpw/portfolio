@@ -103,6 +103,7 @@ export class AppComponent implements OnInit {
     uLdhx2: string,
     uLdhx3: string,
     uLdwOffset: string,
+    uLdwx5Offset: string,
     uLdhOffset: string,
     uLdcwx2: string,
     uLdchx2: string,
@@ -117,6 +118,7 @@ export class AppComponent implements OnInit {
     uLdhx2: null,
     uLdhx3: null,
     uLdwOffset: null,
+    uLdwx5Offset: null,
     uLdhOffset: null,
     uLdcwx2: null,
     uLdchx2: null,
@@ -372,6 +374,7 @@ export class AppComponent implements OnInit {
     this.unitLengthReferences.uLdhx2 = (uLdh * 2) + percent;
     this.unitLengthReferences.uLdhx3 = uLdhx3 + percent;
     this.unitLengthReferences.uLdwOffset = (50 - (uLdwx3 / 2)) + percent;
+    this.unitLengthReferences.uLdwx5Offset = (50 - (uLdw * 5 / 2)) + percent;
     this.unitLengthReferences.uLdhOffset = (50 - (uLdhx3 / 2)) + percent;
     const uLdcw = unitLength / (windowWidth * 0.8);
     const uLdch = unitLength / (windowHeight * 0.8);

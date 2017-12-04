@@ -1,10 +1,17 @@
+.shutter-bar {
+  width: 100%;
+  height: 5%;
+}
 #work-wrapper-all-container {
   top: 10%;
 }
 .work-wrapper-view-container {
   margin: 2.5%;
   float:left;
-  border: 3px solid #777;
+  border-right: 3px solid #777;
+  border-left: 3px solid #777;
+  border-top: 3px solid #777;
+  border-bottom: 3px solid #777;
   border-radius: 5%;
   background: white;
   position: relative;
@@ -28,9 +35,13 @@
 }
 .wwActive {
   margin: 0;
-  height: 80%;
-  width: 80%;
+  border-left-width: 0;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  border-radius: 0;
+  height: 95%;
+  width: 85%;
   position: fixed;
-  top: 0%;
+  top: 5%;
   /*background: red;*/
 }

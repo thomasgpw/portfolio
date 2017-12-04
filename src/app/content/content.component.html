@@ -7,7 +7,15 @@
   (click)=viewGridFunc()
   >
   </div>
-  <div id="svgTab" class="z-index2"> </div>
+  <div id="contentDetails" class="page click-through">
+    <div class="shutter-bar">
+    </div>
+    <div id="svgTab"
+    [inlineSVG]='tabPath'
+    (onSVGInserted)='styleTabFunc($event)'
+    >  
+    </div>
+  </div>
   <div id="work-wrapper-all-container" class="page click-through">
     <div *ngFor='let workState of workStates; let i = index'
     [id]='i' class='work-wrapper-view-container wwGrid'

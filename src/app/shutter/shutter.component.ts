@@ -46,7 +46,6 @@ export class ShutterComponent implements OnInit {
   @Input() unitLength: number;
   @Input() uLdwx3: string;
   @Input() uLdhx2: string;
-  @Input() uLdwOffset: string;
   @Input() uLdhOffset: string;
   @Input() color: number;
   @Input() colors: {[key: string]: string};
