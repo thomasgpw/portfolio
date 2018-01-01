@@ -147,9 +147,9 @@ export class ContentComponent implements OnInit, OnDestroy {
     this._workManagerService.resizeWork(parseInt(e.element.id, 10));
   }
   addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
-    console.log(workWrapperComponentInstance);
     const count = this._workManagerService.addWorkWrapper(workWrapperComponentInstance);
     if (count === this.workStates.length) {
+      this._workManagerService.marryWorkWappers();
       this.workInitFunc();
     }
   }
@@ -195,58 +195,4 @@ export class ContentComponent implements OnInit, OnDestroy {
       }
     }
   }
-    // const workWrapperInstance = this.getWorkWrapper(this.workTypes.indexOf(e.element.id.toString()));
-    // console.log(e);
-    // if (workWrapperInstance.work) {
-    //   const work = workWrapperInstance.work;
-    //   work.resizeCanvas();
-    //   work.drawAll(work.context);
-    // }
-  // activateWorkHandler(clickedEl: Element): void {
-  //   const id = parseInt(clickedEl.id, 10);
-  //   this.getWorkWrapper(id).work.activate().then(resolve => this.activateWorkActuator(clickedEl, id));
-  // }
-
-  // FUNCTION SHOULD BE SPLIT. VIEW SETTING AWAY FROM MODEL LOGIC
-  // activateWorkActuator(clickedEl: Element, id: number): void {
-  //   let classes = clickedEl.classList;
-  //   this.setWorkActiveFunc(id);
-  //   classes.remove('wwGrid');
-  //   classes.remove('wwRow');
-  //   classes.add('wwActive');
-  //   (clickedEl as HTMLElement).style.left = '7.5%';
-  //   const elArray = document.getElementsByClassName('work-wrapper-view-container');
-  //   const elArrayLength = elArray.length;
-  //   let rowOffset = 0;
-  //   for (let i = 0; i < elArrayLength; ++i) {
-  //     const loopEl = elArray[i];
-  //     const loopId = parseInt(loopEl.id, 10);
-  //     if (id !== loopId) {
-  //       classes = loopEl.classList;
-  //       classes.remove('wwGrid');
-  //       classes.add('wwRow');
-  //       (loopEl as HTMLElement).style.left = (((loopId + rowOffset) * 15) + '%');
-  //     } else {
-  //       rowOffset = -1;
-  //     }
-  //   }
-  //   this.gridButton = true;
-  // }
-  // deactivateWorkHandler(activeEl: Element): Promise<null> {
-  //   this.getWorkWrapper(parseInt(activeEl.id, 10)).work.deactivate().then(resolve => this.deactivateWorkActuator(activeEl));
-  //   return Promise.resolve(null);
-  //   this.setWorkActiveFunc(null);
-  // }
-    // const clickedWorkWrapper = this.getWorkWrapper(parseInt(clickedEl.id, 10));
-    // if (clickedEl.classList.contains('wwActive')) {
-    //   // clickedWorkWrapper.work.clickInteract(e);
-    // } else {
-    //   const activeEl = document.getElementsByClassName('wwActive')[0];
-    //   if (activeEl) {
-    //     this.deactivateWorkHandler(activeEl)
-    //       .then(resolve => this.activateWorkHandler(clickedEl));
-    //   } else {
-    //     this.activateWorkHandler(clickedEl);
-    //   }
-    // }
 }

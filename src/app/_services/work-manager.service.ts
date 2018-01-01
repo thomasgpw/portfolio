@@ -20,17 +20,23 @@ export class WorkManagerService {
   addWorkWrapper(workWrapper: WorkWrapperComponent): number {
     const WORK_WRAPPERS = this.WORK_WRAPPERS;
     const i = WORK_WRAPPERS.length;
-    workWrapper.id = i;
-    const parentEl = document.getElementsByClassName('work-wrapper')[i];
-    workWrapper.work = this.assignWork(workWrapper.type, parentEl);
     WORK_WRAPPERS[i] = workWrapper;
     console.log(WORK_WRAPPERS);
-    const work = workWrapper.work;
-    work.setWorkState(workWrapper.workState);
-    this.attachSubscription(i, workWrapper, work);
-    work.resizeContents(parentEl);
     // work.setup(work.context);
     return WORK_WRAPPERS.length;
+  }
+  marryWorkWappers(): void {
+    const WORK_WRAPPERS = this.WORK_WRAPPERS;
+    for (let i = 0; i < WORK_WRAPPERS.length; i++) {
+      const workWrapper = WORK_WRAPPERS[i];
+      workWrapper.id = i;
+      const parentEl = document.getElementsByClassName('work-wrapper')[i];
+      workWrapper.work = this.assignWork(workWrapper.type, parentEl);
+      const work = workWrapper.work;
+      work.setWorkState(workWrapper.workState);
+      this.attachSubscription(i, workWrapper, work);
+      work.resizeContents(parentEl);
+    }
   }
   attachSubscription(id: number, workWrapper: WorkWrapperComponent, work: Work): void {
     work.workDataSubject.subscribe(
@@ -75,10 +81,13 @@ export class WorkManagerService {
     return Promise.resolve(null);
   }
   resizeWork(id: number): void {
-    // const work = this.WORK_WRAPPERS[id].work;
-    this.WORK_WRAPPERS[id].work.resizeContents(
-      document.getElementsByClassName('work-wrapper')[id]
-    );
+    console.log(id, this.WORK_WRAPPERS);
+    const work = this.WORK_WRAPPERS[id].work;
+    if (work) {
+      work.resizeContents(
+        document.getElementsByClassName('work-wrapper')[id]
+      );
+    }
     // work.drawAll(work.applySettings(work.context));
   }
 }

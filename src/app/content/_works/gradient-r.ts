@@ -10,7 +10,6 @@ export class GradientR implements Work {
   type: string;
   w: number;
   h: number;
-  active: boolean;
   workData: EmptyData;
   workSettings: GradientRSettings;
   workDataSubject: Subject<EmptyData>;
@@ -71,14 +70,6 @@ export class GradientR implements Work {
     const variableInput = settingsEl.appendChild(document.createElement('input'));
     variableInput.id = 'variableInput';
     return settingsEl;
-  }
-  activate(): Promise<null> {
-    this.active = true;
-    return Promise.resolve(null);
-  }
-  deactivate(): Promise<null> {
-    this.active = false;
-    return Promise.resolve(null);
   }
   init(): void {
 

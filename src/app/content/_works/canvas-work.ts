@@ -10,7 +10,6 @@ export abstract class CanvasWork implements Work {
   h: number;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
-  active: boolean;
   workData: CanvasWorkData;
   workDataSubject: Subject<CanvasWorkData>;
   undoData: CanvasWorkData;
@@ -20,7 +19,6 @@ export abstract class CanvasWork implements Work {
     const canvas = document.createElement('canvas');
     this.context = canvas.getContext('2d');
     parentEl.appendChild(canvas);
-    this.active = false;
     this.canvas = canvas;
     this.workDataSubject = new Subject();
     this.resizeContents(parentEl);
@@ -40,18 +38,6 @@ export abstract class CanvasWork implements Work {
     if (this.workData) {
       this.drawAll(this.context);
     }
-  }
-  activate(): Promise<null> {
-    const context = this.context;
-    this.drawAll(context);
-    // this.drawAll(this.applySettings(context));
-    this.active = true;
-    return Promise.resolve(null);
-  }
-  deactivate(): Promise<null> {
-    this.clearCanvas();
-    this.active = false;
-    return Promise.resolve(null);
   }
   setup(context: CanvasRenderingContext2D): void {
     this.drawAll(context);

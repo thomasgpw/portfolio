@@ -33,6 +33,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Input() type: string;
   id: number;
   work: Work;
+  active = false;
   settingsOpen = false;
   undoPath = '../../../assets/iconmonstr-undo-2.svg';
   settingsPath = '../../../assets/iconmonstr-volume-control-9.svg';
@@ -52,7 +53,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   //   if (!this.work) {
   //     return false;
   //   } else {
-  //     return this.work.active;
+  //     return this.active;
   //   }
   // }
   /* ON CHANGE SPECIFIC FUNCTIONS */
@@ -60,19 +61,20 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
     this.setWorkStateEvent.emit([id, workState]);
   }
   activate(): void {
-    this.work.activate().then(resolve => this.setActiveEvent.emit(null));
+    this.active = true;
+    this.setActiveEvent.emit(null);
   }
   deactivate(): void {
-    this.work.deactivate().then(resolve => this.unsetActiveEvent.emit(null));
+    this.active = false;
+    this.unsetActiveEvent.emit(null);
   }
   download(): void {
     (this.work as CanvasWork).download(document.getElementById('downloadLink') as HTMLAnchorElement);
   }
   openSettings(): void {
-    const work = this.work;
-    if (work.active) {
+    if (this.active) {
       this.activateSettings()
-      .then(resolve => setTimeout(() => this.attachSettings(work)));
+      .then(resolve => setTimeout(() => this.attachSettings(this.work)));
     }
   }
   activateSettings(): Promise<null> {
@@ -155,21 +157,18 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
 
   /* EVENT FUNCTIONS */
   @HostListener('pointerdown', ['$event']) onPointerDown() {
-    const work = this.work;
-    if (work.active) {
-      work.onPointerDown(event as PointerEvent);
+    if (this.active) {
+      this.work.onPointerDown(event as PointerEvent);
     }
   }
   @HostListener('window: pointermove', ['$event']) onPointerMove() {
-    const work = this.work;
-    if (work.active) {
-      work.onPointerMove(event as PointerEvent);
+    if (this.active) {
+      this.work.onPointerMove(event as PointerEvent);
     }
   }
   @HostListener('window: pointerup', ['$event']) onPointerUp() {
-    const work = this.work;
-    if (work.active) {
-      work.onPointerUp(event as PointerEvent);
+    if (this.active) {
+      this.work.onPointerUp(event as PointerEvent);
     }
   }
 }

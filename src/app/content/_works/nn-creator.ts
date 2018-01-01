@@ -11,7 +11,6 @@ export class NNCreator implements Work {
   type: string;
   w: number;
   h: number;
-  active: boolean;
   workData: EmptyData;
   workSettings: EmptySettings;
   workDataSubject: Subject<EmptyData>;
@@ -35,14 +34,6 @@ export class NNCreator implements Work {
   setupSettings(): HTMLElement {
     const settingsEl = document.createElement('div');
     return settingsEl;
-  }
-  activate(): Promise<null> {
-    this.active = true;
-    return Promise.resolve(null);
-  }
-  deactivate(): Promise<null> {
-    this.active = false;
-    return Promise.resolve(null);
   }
   init(): void {
 

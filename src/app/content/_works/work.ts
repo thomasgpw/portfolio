@@ -7,14 +7,11 @@ export interface Work {
   type: string;
   w: number;
   h: number;
-  active: boolean;
   workData: WorkData;
   workDataSubject: Subject<WorkData>;
   // undoData: WorkData;
   workSettings: WorkSettings;
   resizeContents(parentEl: Element): void;
-  activate(): Promise<null>;
-  deactivate(): Promise<null>;
   init(): void;
   setWorkState(workState: WorkState): void;
   setupSettings(): HTMLElement;
