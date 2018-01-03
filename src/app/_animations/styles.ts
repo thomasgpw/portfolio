@@ -38,10 +38,7 @@ export const activeWorkStyle = style({
   margin: 0,
   borderLeftWidth: 0,
   borderTopWidth: 0,
-  borderBottomWidth: 0,
   borderRadius: 0,
-  height: '95%',
-  width: '85%',
   position: 'fixed',
   top: '5%'
 });

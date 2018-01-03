@@ -73,10 +73,37 @@ export class ContentComponent implements OnInit, OnDestroy {
   /* ON CHANGE SPECIFIC FUNCTIONS */
   updateView(): void {
     this.styleTabFunc(document.getElementById('svgTab').children[0] as SVGElement);
+    this.updateIsPortrait();
     if (this.gridButton) {
       this.styleGridButtonFunc(
         document.getElementById('gridButton').children[0] as SVGElement
       );
+    }
+  }
+  updateIsPortrait(): void {
+    const workWrapperViewContainers = document.getElementsByClassName('work-wrapper-view-container');
+    let classList = workWrapperViewContainers[0].classList;
+    if (!classList.contains('wwGrid')) {
+      const isPortrait = this.isPortrait;
+      const oldIsPortrait = classList.contains('wwRowP') || classList.contains('wwActiveP');
+      console.log('oldIsPortrait', oldIsPortrait);
+      console.log('isPortrait', isPortrait);
+      if (oldIsPortrait !== isPortrait) {
+        const frontPattern = /^ww.*/;
+        const toReplace = oldIsPortrait ? 'P' : 'L';
+        const replacement = isPortrait ? 'P' : 'L';
+        for (let iWrapper = 0; iWrapper < workWrapperViewContainers.length; iWrapper++) {
+          if (iWrapper !== 0) {
+            classList = workWrapperViewContainers[iWrapper].classList;
+          }
+          for (let iClass = 0; iClass < classList.length; iClass++) {
+            const classFocus = classList[iClass];
+            if (classFocus.match(frontPattern)) {
+              classFocus.replace(toReplace, replacement);
+            }
+          }
+        }
+      }
     }
   }
   styleTabFunc(el: SVGElement): void {
@@ -89,13 +116,22 @@ export class ContentComponent implements OnInit, OnDestroy {
     (document.getElementsByClassName('shutter-bar')[0] as HTMLElement).style.backgroundColor = color;
   }
   styleGridButtonFunc(el: SVGElement): void {
-    styleGridButton(el.style, this.uLdwx3, this.uLdhx3, this. uLdhOffset);
+    const elStyle = el.style;
+    styleGridButton(elStyle, this.uLdwx3, this.uLdhx3);
+    console.log('gridIsPortrait', this.isPortrait);
+    if (this.isPortrait) {
+      elStyle.right = '85%';
+      elStyle.top = '90%';
+    } else {
+      elStyle.right = '5%';
+      elStyle.top = '10%';
+    }
   }
   getWorkWrappers(): any {
     return this._workManagerService.getWorkWrappers();
   }
   getStatus(id: number): string {
-    const pattern = /^ww/;
+    const pattern = /^ww.*/;
     const elClassList = document.getElementsByClassName('work-wrapper-view-container')[id].classList;
     const elClassListLength = elClassList.length;
     for (let c = 0; c < elClassListLength; ++c) {
@@ -110,7 +146,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     const workActive = this.workActive;
     if (workActive !== null) {
       this._workManagerService.activate(workActive)
-      .then(resolve => this.activateClass(workActive));
+      .then(resolve => this.activateClass(workActive, this.isPortrait));
     }
   }
   setAppViewFunc(): void {
@@ -134,7 +170,11 @@ export class ContentComponent implements OnInit, OnDestroy {
     for (let i = 0; i < elArrayLength; ++i) {
       const classes = elArray[i].classList;
       classes.remove('wwActive');
+      classes.remove('wwActiveL');
+      classes.remove('wwActiveP');
       classes.remove('wwRow');
+      classes.remove('wwRowL');
+      classes.remove('wwRowP');
       classes.add('wwGrid');
     }
     this.gridButton = false;
@@ -153,28 +193,36 @@ export class ContentComponent implements OnInit, OnDestroy {
       this.workInitFunc();
     }
   }
-  deactivateClass(id: number): void {
+  deactivateClass(id: number, isPortrait: boolean): void {
     console.log('deactivate class', id);
     const classes = document.getElementsByClassName('work-wrapper-view-container')[id].classList;
     classes.remove('wwActive');
+    classes.remove('wwActiveL');
+    classes.remove('wwActiveP');
     classes.add('wwRow');
+    classes.add(isPortrait ? 'wwRowP' : 'wwRowL');
   }
-  activateClass(id: number): void {
+  activateClass(id: number, isPortrait: boolean): void {
     const classes = document.getElementsByClassName('work-wrapper-view-container')[id].classList;
     this.gridButton = true;
     classes.remove('wwRow');
+    classes.remove('wwRowL');
+    classes.remove('wwRowP');
     classes.remove('wwGrid');
     classes.add('wwActive');
-    this.setRowClass(id);
+    classes.add(isPortrait ? 'wwActiveP' : 'wwActiveL');
+    this.setRowClass(id, isPortrait);
   }
-  setRowClass(exceptionId: number): void {
+  setRowClass(exceptionId: number, isPortrait: boolean): void {
     const elList = document.getElementsByClassName('work-wrapper-view-container');
     const elListLength = elList.length;
+    const rowClass = isPortrait ? 'wwRowP' : 'wwRowL';
     for (let c = 0; c < elListLength; ++c) {
       if (c !== exceptionId) {
         const classes = elList[c].classList;
         classes.remove('wwGrid');
         classes.add('wwRow');
+        classes.add(rowClass);
       }
     }
   }
@@ -186,12 +234,14 @@ export class ContentComponent implements OnInit, OnDestroy {
       if (id === workActive) {
         // this._workManagerService.handleClick(workActive, e);
       } else {
+        const isPortrait = this.isPortrait;
+        console.log(isPortrait);
         if (workActive !== null) {
           this._workManagerService.deactivate(workActive)
-          .then(resolve => this.deactivateClass(workActive));
+          .then(resolve => this.deactivateClass(workActive, isPortrait));
         }
         this._workManagerService.activate(id)
-        .then(resolve => this.activateClass(id));
+        .then(resolve => this.activateClass(id, isPortrait));
       }
     }
   }

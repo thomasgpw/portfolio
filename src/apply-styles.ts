@@ -66,12 +66,10 @@ export function styleTab(elStyle: CSSStyleDeclaration,
   elStyle.left = uLdwx5Offset;
 }
 export function styleGridButton(elStyle: CSSStyleDeclaration,
-  uLdwx3: string, uLdhx3: string, uLdhOffset: string): void {
+  uLdwx3: string, uLdhx3: string): void {
   elStyle.position = 'fixed';
   elStyle.width = uLdwx3;
   elStyle.height = uLdhx3;
-  elStyle.right = '5%'; // Needs to be centered
-  elStyle.top = '10%';
 }
 export function styleWorkWrapperButton(elStyle: CSSStyleDeclaration,
   uLdwx2: string, uLdhx2: string, uLd2h: string, topOffset: string): void {
@@ -95,3 +93,13 @@ export function styleRedoOffset(elStyle: CSSStyleDeclaration,
   elStyle.right = rightOffset;
   elStyle.marginLeft = uLd2w;
 }
+// export function styleRowRule(isPortrait: boolean): CSSStyleRule {
+//   return {
+//     selectorText: '.wwRow',
+//     style: '',
+//     readOnly,
+//     cssText,
+//     parentRule,
+//     parentStyleSheet,
+//   }
+// }

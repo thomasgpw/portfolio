@@ -28,20 +28,34 @@
 .wwRow {
   height:10%;
   width:10%;
+}
+.wwRowL {
   float: right;
   clear: both;
   top:10%;
   /*background: blue;*/
 }
+.wwRowP {
+  top: 85%;
+  left: 20%;
+  float: left;
+}
 .wwActive {
   margin: 0;
   border-left-width: 0;
   border-top-width: 0;
-  border-bottom-width: 0;
   border-radius: 0;
-  height: 95%;
-  width: 85%;
   position: fixed;
   top: 5%;
   /*background: red;*/
+}
+.wwActiveL {
+  border-bottom-width: 0;
+  height: 95%;
+  width: 85%;
+}
+.wwActiveP {
+  border-right-width: 0;
+  height: 80%;
+  width: 100%;
 }

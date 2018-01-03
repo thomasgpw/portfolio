@@ -193,6 +193,7 @@ export class AppComponent implements OnInit {
     this.rhyme$.subscribe(state => this.concatRhyme(state));
     this.color$.subscribe(state => this.getColors(state));
     this.unitLength$.subscribe(state => this.setUnitLengthReferences(state));
+    this.isPortrait$.subscribe(state => this.updateView());
     // Observable.combineLatest(this.createWorkStatesObservableArray()).subscribe(state => )
     this._appViewControlService.payloadStream.subscribe(state => this.setAppView(state));
     this._shutterViewControlService.payloadStream.subscribe(state => this.setShutterView(state));
@@ -351,14 +352,15 @@ export class AppComponent implements OnInit {
   setViewAspects(): void {
     const w: number = window.innerWidth;
     const h: number = window.innerHeight;
-    this.calcUnitLength(w, h);
     this.calcIsPortrait(w, h);
-    this.updateView();
+    this.calcUnitLength(w, h);
+    // this.updateView();
   }
   calcUnitLength(w: number, h: number): void {
     this.setUnitLength(Math.pow(w * h / 6, 1 / 4));
   }
   calcIsPortrait(w: number, h: number): void {
+    console.log('isPortrait', w, h, w < h);
     this.setIsPortrait(w < h);
   }
   setUnitLengthReferences(unitLength: number): void {
@@ -391,6 +393,7 @@ export class AppComponent implements OnInit {
     this.unitLengthReferences.bWPdcwx2 = (bWPcw * 2) + percent;
     this.unitLengthReferences.bWPdcwx3 = (bWPcw * 3) + percent;
     this.unitLengthReferences.bWPdch = (uLdchx2 + uLd2ch) + percent;
+    this.updateView();
     // this.unitLengthReferences.bWP = uLx2 + uLd2;
   }
 
