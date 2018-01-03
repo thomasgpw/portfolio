@@ -1,0 +1,90 @@
+/* You can add global styles to this file, and also import other style files */
+/* make our pages be full width and full height */
+/* positioned absolutely so that the pages can overlap each other as they enter and leave */
+html { /*overflow-x: hidden;*/ }
+body { padding:0; margin:0; }
+.page {
+    bottom:0; 
+    top:0;  
+    width:100%;
+    position:fixed; 
+    text-align:center;
+    overflow-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.text-box {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+.content {
+  overflow-y: auto;
+  overflow-x: auto;
+  z-index: -1;
+}
+.shutter {
+  z-index: 1;
+}
+.click-through {
+  pointer-events: none;
+}
+.clickable {
+  pointer-events: auto;
+}
+.button {
+  cursor: pointer;
+  z-index: 2;
+<<<<<<< HEAD
+}
+.button-arrow {
+  position: absolute;
+}
+=======
+}
+.button-arrow {
+  position: relative;
+}
+>>>>>>> maindev
+.svg-highlight-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.svg-highlight-rect {
+  fill: white;
+}
+.svg-tab {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+svg {
+  z-index: inherit;
+}
+.color-display {
+  float: left;
+}
+.color-display-box {
+  height: 80%;
+  width: 50%;
+}
+.color-display-point {
+  height: 20%;
+  width: 25%;
+}
+.color-display-container {
+  height: 15%;
+  width: 20%;
+  position: relative;
+  left: 40%;
+}
+.z-index2 {
+  z-index: 2;
+<<<<<<< HEAD
+}
+=======
+}
+>>>>>>> maindev

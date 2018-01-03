@@ -1,0 +1,58 @@
+<<<<<<< HEAD
+<div class="canvas-overlay" *ngIf='work.active'>
+=======
+<div class="work-overlay" *ngIf='active && !settingsOpen'>
+>>>>>>> maindev
+  <a id="downloadLink" hidden></a>
+  <div class="undo button"
+  [inlineSVG]=undoPath
+  (onSVGInserted)='styleUndoFunc($event)'
+  (click)='work.undo()'
+  >
+  </div>
+  <div class="redo button"
+  [inlineSVG]=undoPath
+  (onSVGInserted)='styleRedoFunc($event)'
+  (click)='work.redo()'
+  >
+  </div>
+  <div class="settings button"
+  [inlineSVG]=settingsPath
+  (onSVGInserted)='styleSettingsFunc($event)'
+  (click)='openSettings()'
+  >
+  </div>
+  <div class="delete button"
+  [inlineSVG]=deletePath
+  (onSVGInserted)='styleDeleteFunc($event)'
+  (click)='work.init()'
+  >
+  </div>
+  <div class="upload button"
+  [inlineSVG]=uploadPath
+  (onSVGInserted)='styleUploadFunc($event)'
+  >
+  </div>
+  <div class="download button"
+  [inlineSVG]=downloadPath
+  (onSVGInserted)='styleDownloadFunc($event)'
+  (click)='download()'
+  >
+  </div>
+</div>
+<<<<<<< HEAD
+<div class="canvas-wrapper">
+=======
+<div class="work-wrapper">
+>>>>>>> maindev
+</div>
+<div class="work-settings" *ngIf='settingsOpen'>
+  <div class='close button'
+  [inlineSVG]=closePath
+  (onSVGInserted)='styleCloseFunc($event)'
+  (click)='closeSettings()'
+  >
+  </div>
+  <div id="settingsWrapper">
+  </div>
+</div>

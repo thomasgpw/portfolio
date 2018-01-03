@@ -21,14 +21,18 @@ export class WorkManagerService {
     const WORK_WRAPPERS = this.WORK_WRAPPERS;
     const i = WORK_WRAPPERS.length;
     workWrapper.id = i;
-    workWrapper.work = this.assignWork(workWrapper.type, document.getElementsByClassName('work-wrapper')[i]);
+    workWrapper.work = this.assignWork(workWrapper.type, document.getElementsByClassName('canvas-wrapper')[i]);
     WORK_WRAPPERS[i] = workWrapper;
     console.log(WORK_WRAPPERS);
+<<<<<<< HEAD
     const work = workWrapper.work;
-    // work.setWorkData(workWrapper.workData);
-    // this.attachSubscription(i, workWrapper, work);
-    // work.resizeCanvas();
-    // work.drawAll(work.context);
+    work.setWorkData(workWrapper.workData);
+    this.attachSubscription(i, workWrapper, work);
+    work.resizeCanvas();
+    work.drawAll(work.context);
+=======
+    // work.setup(work.context);
+>>>>>>> maindev
     return WORK_WRAPPERS.length;
   }
   marryWorkWappers(): void {

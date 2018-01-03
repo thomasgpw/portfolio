@@ -1,0 +1,89 @@
+<div id='app-window'
+(wheel)='scrollFunc($event)'
+(window:resize)='setViewAspects()'
+>
+  <div id="devButtons" 
+  >
+    <button id="clearCookie" class="button" (click)='clearAppStateCookie()'> Clear cookies </button>
+    <button id="readAppState" class="button" (click)='getAppState()'> Read app state </button>
+  </div>
+  <div class='page shutter'
+  *ngIf='(appView0Alive$ | async)'
+  [@shutterView]='((appAnimationState$ | async) + "state").toString()'
+  >
+    <app-shutter
+    [shutterView0Alive]='(shutterView0Alive$ | async)'
+    [shutterAnimationState]='(shutterAnimationState$ | async)'
+    [shutterView1Alive]='(shutterView1Alive$ | async)'
+    [fullGreeting]='fullGreeting'
+    [tip]='tip$ | async'
+    [rhyme]='fullRhyme'
+    [unitLength]='unitLength$ | async'
+    [uLdwx3]='unitLengthReferences.uLdwx3'
+    [uLdhx2]='unitLengthReferences.uLdhx2'
+    [uLdhOffset]='unitLengthReferences.uLdhOffset'
+    [color]='color$ | async'
+    [colors]='colors'
+    (setShutterViewEvent)='goShutterView($event)'
+    (getNextGreetingEvent)='getNextGreeting()'
+    (getRandomNameEvent)='getRandomName()'
+    (setNameEvent)='setName($event)'
+    (getNextTipEvent)='getNextTip()'
+    (getNextRhymeEvent)='getNextRhyme()'
+    (setColorEvent)='setColor($event)'
+    >
+      app-shutter error
+    </app-shutter>
+    <!-- <div
+    id='shutterDetails'
+    class = 'page click-through z-index2'
+    [inlineSVG]=shutterDetailsPath
+    (onSVGInserted)='styleShutterDetailsFunc($event)'
+    >
+    </div> -->
+  </div>
+<<<<<<< HEAD
+  <div id='downArrowWrapper' class='page click-through z-index2'
+=======
+  <div id='downArrowWrapper' class='page click-through z-index2' 
+>>>>>>> maindev
+  [@downArrow]='((appAnimationState$ | async) + "state").toString()'
+  >
+    <div
+    id='downArrow' class='button button-arrow clickable'
+    [inlineSVG]=arrowPath
+    (onSVGInserted)='styleDownArrowFunc($event)'
+    (click)=setAppViewFunc()>
+    </div>
+  </div>
+  <div class='page content'
+  *ngIf='appView1Alive$ | async'
+  [@contentView]='((!(appAnimationState$ | async)) + "state").toString()'
+  >
+    <app-content
+    [shutterView0Alive]='(shutterView0Alive$ | async)'
+    [unitLength]='(unitLength$ | async)'
+    [uLdwx3]='unitLengthReferences.uLdwx3'
+    [uLdhx2]='unitLengthReferences.uLdhx2'
+    [uLdhx3]='unitLengthReferences.uLdhx3'
+    [uLdwx5Offset]='unitLengthReferences.uLdwx5Offset'
+    [uLdhOffset]='unitLengthReferences.uLdhOffset'
+    [uLdcwx2]='unitLengthReferences.uLdcwx2'
+    [uLdchx2]='unitLengthReferences.uLdchx2'
+    [uLd2cw]='unitLengthReferences.uLd2cw'
+    [uLd2ch]='unitLengthReferences.uLd2ch'
+    [bWPdcw]='unitLengthReferences.bWPdcw'
+    [bWPdcwx2]='unitLengthReferences.bWPdcwx2'
+    [bWPdcwx3]='unitLengthReferences.bWPdcwx3'
+    [bWPdch]='unitLengthReferences.bWPdch'
+    [isPortrait]='(isPortrait$ | async)'
+    [workActive]='(workActive$ | async)'
+    [workStates]='(workStates$ | async)'
+    [colors]='colors'
+    (setWorkActiveEvent)='setWorkActive($event)'
+    (setWorkStateEvent)='setWorkState($event)'
+    >
+      app-content error
+    </app-content>
+  </div>
+</div>
