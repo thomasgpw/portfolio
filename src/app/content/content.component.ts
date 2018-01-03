@@ -4,8 +4,10 @@ import { trigger, state, animate, transition} from '@angular/animations';
 import { WorkState } from './_works/work-state.datatype';
 import { WorkStates } from './_works/work-states.datatype';
 import { WorkManagerService } from '../_services/work-manager.service';
-import { generateSvgTab } from '../../assets/generate-svg-tab';
-import { styleGridButton } from '../../apply-styles';
+import {
+  styleGridButton,
+  styleTab
+  } from '../../apply-styles';
 import { workTransitionConfig, gridWorkStyle, activeWorkStyle, rowWorkStyle } from '../_animations/styles';
 import { WorkWrapperComponent } from './work-wrapper/work-wrapper.component';
 
@@ -36,9 +38,10 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() shutterView0Alive: boolean;
   @Input() unitLength: number;
   @Input() uLdwx3: string;
+  @Input() uLdwx6: string;
   @Input() uLdhx2: string;
   @Input() uLdhx3: string;
-  @Input() uLdwOffset: string;
+  @Input() uLdwx5Offset: string;
   @Input() uLdhOffset: string;
   @Input() uLdcwx2: string;
   @Input() uLdchx2: string;
@@ -54,7 +57,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() colors: {[key: string]: string};
 
   gridButton = false;
-  tab: SVGElement;
+  tabPath = '../../assets/tab.svg';
   gridButtonPath = '../../assets/gridbutton.svg';
   constructor(readonly _workManagerService: WorkManagerService) {
   }
@@ -62,7 +65,6 @@ export class ContentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const contentEl = document.getElementById('content');
     (contentEl as HTMLElement).style.backgroundColor = this.colors['contentColor'];
-    this.createTab();
     this.workInitFunc();
   }
   ngOnDestroy(): void {
@@ -70,27 +72,66 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
   updateView(): void {
-    this.createTab();
+    this.styleTabFunc(document.getElementById('svgTab').children[0] as SVGElement);
+    this.updateIsPortrait();
     if (this.gridButton) {
-      this.styleGridButtonFunc(document.getElementById('gridButton').children[0] as SVGElement);
+      this.styleGridButtonFunc(
+        document.getElementById('gridButton').children[0] as SVGElement
+      );
     }
   }
-  createTab(): void {
-    this.tab = generateSvgTab(document.getElementById('svgTab'), window.innerWidth, this.unitLength, this.unitLength * 2);
-    this.tab.firstElementChild.setAttributeNS(null, 'fill',
+  updateIsPortrait(): void {
+    const workWrapperViewContainers = document.getElementsByClassName('work-wrapper-view-container');
+    let classList = workWrapperViewContainers[0].classList;
+    if (!classList.contains('wwGrid')) {
+      const isPortrait = this.isPortrait;
+      const oldIsPortrait = classList.contains('wwRowP') || classList.contains('wwActiveP');
+      console.log('oldIsPortrait', oldIsPortrait);
+      console.log('isPortrait', isPortrait);
+      if (oldIsPortrait !== isPortrait) {
+        const frontPattern = /^ww.*/;
+        const toReplace = oldIsPortrait ? 'P' : 'L';
+        const replacement = isPortrait ? 'P' : 'L';
+        for (let iWrapper = 0; iWrapper < workWrapperViewContainers.length; iWrapper++) {
+          if (iWrapper !== 0) {
+            classList = workWrapperViewContainers[iWrapper].classList;
+          }
+          for (let iClass = 0; iClass < classList.length; iClass++) {
+            const classFocus = classList[iClass];
+            if (classFocus.match(frontPattern)) {
+              classFocus.replace(toReplace, replacement);
+            }
+          }
+        }
+      }
+    }
+  }
+  styleTabFunc(el: SVGElement): void {
+    styleTab(el.style, this.uLdwx6, this.uLdhx3, this.uLdwx5Offset);
+    const color =
       this.shutterView0Alive
       ? this.colors['welcomeColor']
-      : this.colors['aboutColor']
-    );
+      : this.colors['aboutColor'];
+    el.setAttributeNS(null, 'fill', color);
+    (document.getElementsByClassName('shutter-bar')[0] as HTMLElement).style.backgroundColor = color;
   }
   styleGridButtonFunc(el: SVGElement): void {
-    styleGridButton(el.style, this.uLdwx3, this.uLdhx3, this. uLdhOffset);
+    const elStyle = el.style;
+    styleGridButton(elStyle, this.uLdwx3, this.uLdhx3);
+    console.log('gridIsPortrait', this.isPortrait);
+    if (this.isPortrait) {
+      elStyle.right = '85%';
+      elStyle.top = '90%';
+    } else {
+      elStyle.right = '5%';
+      elStyle.top = '10%';
+    }
   }
   getWorkWrappers(): any {
     return this._workManagerService.getWorkWrappers();
   }
   getStatus(id: number): string {
-    const pattern = /^ww/;
+    const pattern = /^ww.*/;
     const elClassList = document.getElementsByClassName('work-wrapper-view-container')[id].classList;
     const elClassListLength = elClassList.length;
     for (let c = 0; c < elClassListLength; ++c) {
@@ -104,7 +145,8 @@ export class ContentComponent implements OnInit, OnDestroy {
   workInitFunc(): void {
     const workActive = this.workActive;
     if (workActive !== null) {
-      this._workManagerService.activate(workActive).then(resolve => this.activateClass(workActive));
+      this._workManagerService.activate(workActive)
+      .then(resolve => this.activateClass(workActive, this.isPortrait));
     }
   }
   setAppViewFunc(): void {
@@ -119,119 +161,88 @@ export class ContentComponent implements OnInit, OnDestroy {
   deleteWorkStateFunc(key: string): void {
     this.deleteWorkStateEvent.emit(key);
   }
+  requestColorsFunc(id: number) {
+    this._workManagerService.sendColors(id, this.colors);
+  }
   forceGridClass(): void {
     const elArray = document.getElementsByClassName('work-wrapper-view-container');
     const elArrayLength = elArray.length;
     for (let i = 0; i < elArrayLength; ++i) {
       const classes = elArray[i].classList;
       classes.remove('wwActive');
+      classes.remove('wwActiveL');
+      classes.remove('wwActiveP');
       classes.remove('wwRow');
+      classes.remove('wwRowL');
+      classes.remove('wwRowP');
       classes.add('wwGrid');
     }
     this.gridButton = false;
   }
   viewGridFunc(): void {
-    this._workManagerService.deactivate(this.workActive).then(resolve => this.forceGridClass());
+    this._workManagerService.deactivate(this.workActive)
+    .then(resolve => this.forceGridClass());
   }
   resizeWork(e): void {
     this._workManagerService.resizeWork(parseInt(e.element.id, 10));
   }
   addWorkWrapperFunc(workWrapperComponentInstance: WorkWrapperComponent): void {
-    console.log(workWrapperComponentInstance);
     const count = this._workManagerService.addWorkWrapper(workWrapperComponentInstance);
     if (count === this.workStates.length) {
+      this._workManagerService.marryWorkWappers();
       this.workInitFunc();
     }
   }
-  deactivateClass(id: number): void {
+  deactivateClass(id: number, isPortrait: boolean): void {
+    console.log('deactivate class', id);
     const classes = document.getElementsByClassName('work-wrapper-view-container')[id].classList;
     classes.remove('wwActive');
+    classes.remove('wwActiveL');
+    classes.remove('wwActiveP');
     classes.add('wwRow');
+    classes.add(isPortrait ? 'wwRowP' : 'wwRowL');
   }
-  activateClass(id: number): void {
+  activateClass(id: number, isPortrait: boolean): void {
     const classes = document.getElementsByClassName('work-wrapper-view-container')[id].classList;
     this.gridButton = true;
     classes.remove('wwRow');
+    classes.remove('wwRowL');
+    classes.remove('wwRowP');
     classes.remove('wwGrid');
     classes.add('wwActive');
-    this.setRowClass(id);
+    classes.add(isPortrait ? 'wwActiveP' : 'wwActiveL');
+    this.setRowClass(id, isPortrait);
   }
-  setRowClass(exceptionId: number): void {
+  setRowClass(exceptionId: number, isPortrait: boolean): void {
     const elList = document.getElementsByClassName('work-wrapper-view-container');
     const elListLength = elList.length;
+    const rowClass = isPortrait ? 'wwRowP' : 'wwRowL';
     for (let c = 0; c < elListLength; ++c) {
       if (c !== exceptionId) {
         const classes = elList[c].classList;
         classes.remove('wwGrid');
         classes.add('wwRow');
+        classes.add(rowClass);
       }
     }
   }
   workClickFunc(e: Event): void {
-    const clickedEl = e.srcElement.closest('.work-wrapper-view-container');
-    const id = parseInt(clickedEl.id, 10);
-    const workActive = this.workActive;
-    if (id === workActive) {
-      // this._workManagerService.handleClick(workActive, e);
-    } else {
-      if (workActive) {
-        this._workManagerService.deactivate(workActive).then(resolve => this.deactivateClass(workActive));
+    const clickedEl = (e.target as Element).closest('.work-wrapper-view-container');
+    if (clickedEl) {
+      const id = parseInt(clickedEl.id, 10);
+      const workActive = this.workActive;
+      if (id === workActive) {
+        // this._workManagerService.handleClick(workActive, e);
+      } else {
+        const isPortrait = this.isPortrait;
+        console.log(isPortrait);
+        if (workActive !== null) {
+          this._workManagerService.deactivate(workActive)
+          .then(resolve => this.deactivateClass(workActive, isPortrait));
+        }
+        this._workManagerService.activate(id)
+        .then(resolve => this.activateClass(id, isPortrait));
       }
-      this._workManagerService.activate(id).then(resolve => this.activateClass(id));
     }
   }
-    // const workWrapperInstance = this.getWorkWrapper(this.workTypes.indexOf(e.element.id.toString()));
-    // console.log(e);
-    // if (workWrapperInstance.work) {
-    //   const work = workWrapperInstance.work;
-    //   work.resizeCanvas();
-    //   work.drawAll(work.context);
-    // }
-  // activateWorkHandler(clickedEl: Element): void {
-  //   const id = parseInt(clickedEl.id, 10);
-  //   this.getWorkWrapper(id).work.activate().then(resolve => this.activateWorkActuator(clickedEl, id));
-  // }
-
-  // FUNCTION SHOULD BE SPLIT. VIEW SETTING AWAY FROM MODEL LOGIC
-  // activateWorkActuator(clickedEl: Element, id: number): void {
-  //   let classes = clickedEl.classList;
-  //   this.setWorkActiveFunc(id);
-  //   classes.remove('wwGrid');
-  //   classes.remove('wwRow');
-  //   classes.add('wwActive');
-  //   (clickedEl as HTMLElement).style.left = '7.5%';
-  //   const elArray = document.getElementsByClassName('work-wrapper-view-container');
-  //   const elArrayLength = elArray.length;
-  //   let rowOffset = 0;
-  //   for (let i = 0; i < elArrayLength; ++i) {
-  //     const loopEl = elArray[i];
-  //     const loopId = parseInt(loopEl.id, 10);
-  //     if (id !== loopId) {
-  //       classes = loopEl.classList;
-  //       classes.remove('wwGrid');
-  //       classes.add('wwRow');
-  //       (loopEl as HTMLElement).style.left = (((loopId + rowOffset) * 15) + '%');
-  //     } else {
-  //       rowOffset = -1;
-  //     }
-  //   }
-  //   this.gridButton = true;
-  // }
-  // deactivateWorkHandler(activeEl: Element): Promise<null> {
-  //   this.getWorkWrapper(parseInt(activeEl.id, 10)).work.deactivate().then(resolve => this.deactivateWorkActuator(activeEl));
-  //   return Promise.resolve(null);
-  //   this.setWorkActiveFunc(null);
-  // }
-    // const clickedWorkWrapper = this.getWorkWrapper(parseInt(clickedEl.id, 10));
-    // if (clickedEl.classList.contains('wwActive')) {
-    //   // clickedWorkWrapper.work.clickInteract(e);
-    // } else {
-    //   const activeEl = document.getElementsByClassName('wwActive')[0];
-    //   if (activeEl) {
-    //     this.deactivateWorkHandler(activeEl)
-    //       .then(resolve => this.activateWorkHandler(clickedEl));
-    //   } else {
-    //     this.activateWorkHandler(clickedEl);
-    //   }
-    // }
 }

@@ -15,6 +15,7 @@ const SET_WORK_ACTIVE = 'SET_WORK_ACTIVE';
 const SET_WORK_STATES = 'SET_WORK_STATES';
 const SET_WORK_STATE = 'SET_WORK_STATE';
 const DELETE_WORK_STATE = 'DELETE_WORK_STATE';
+const TOGGLE_WORK_STATES_CHANGE_FLAG = 'TOGGLE_WORK_STATES_CHANGE_FLAG';
 
 export const VIEW0_ALIVE = 'VIEW0_ALIVE';
 export const VIEW1_ALIVE = 'VIEW1_ALIVE';
@@ -65,6 +66,10 @@ export class SetWorkStateAction implements Action {
 export class DeleteWorkStateAction implements Action {
   readonly type = DELETE_WORK_STATE;
   constructor(public payload: string) {}
+}
+export class ToggleWorkStatesChangeFlagAction implements Action {
+  readonly type = TOGGLE_WORK_STATES_CHANGE_FLAG;
+  constructor(public payload?) {}
 }
 
 /* REDUCERS */
@@ -184,6 +189,14 @@ export function workStatesReducer(state: WorkStates, action: Actions): WorkState
       return state;
   }
 }
+export function workStatesChangeFlagReducer(state: boolean, action: Actions): boolean {
+  switch (action.type) {
+    case TOGGLE_WORK_STATES_CHANGE_FLAG:
+      return !state;
+    default:
+      return state;
+  }
+}
 
 export type Actions
   = DummyAction
@@ -196,7 +209,8 @@ export type Actions
   | SetWorkActiveAction
   | SetWorkStatesAction
   | SetWorkStateAction
-  | DeleteWorkStateAction;
+  | DeleteWorkStateAction
+  | ToggleWorkStatesChangeFlagAction;
 
 export const reducers: ActionReducerMap<AppState> = {
   appView: appViewReducer,
@@ -206,7 +220,8 @@ export const reducers: ActionReducerMap<AppState> = {
   unitLength: unitLengthReducer,
   isPortrait: isPortraitReducer,
   workActive: workActiveReducer,
-  workStates: workStatesReducer
+  workStates: workStatesReducer,
+  workStatesChangeFlag: workStatesChangeFlagReducer
 };
 
 

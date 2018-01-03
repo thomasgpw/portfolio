@@ -9,7 +9,6 @@ body { padding:0; margin:0; }
     width:100%;
     position:fixed; 
     text-align:center;
-    overflow-wrap: break-word;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -36,7 +35,7 @@ body { padding:0; margin:0; }
   z-index: 2;
 }
 .button-arrow {
-  position: absolute;
+  position: relative;
 }
 .svg-highlight-bar {
   position: fixed;

@@ -6,7 +6,10 @@ import { Store } from '@ngrx/store';
 
 import { environment } from '../environments/environment';
 import { AppState, ViewState, IterableStringInstance, IterableStringMap } from './app.datatypes';
-import { styleDownArrow } from '../apply-styles';
+import {
+  programShutterDetails,
+  styleDownArrow
+} from '../apply-styles';
 import { CustomCookieService } from './_services/custom-cookie.service';
 import { ViewControlService } from './_services/view-control.service';
 import { StringManagerService } from './_services/string-manager.service';
@@ -19,6 +22,7 @@ import {
   downArrowContentStyle,
   downArrowShutterStyle
 } from './_animations/styles';
+import { Point } from './content/_works/work.datatypes';
 import { WorkData } from './content/_works/work-data.datatype';
 import { WorkState } from './content/_works/work-state.datatype';
 import { WorkStates } from './content/_works/work-states.datatype';
@@ -32,7 +36,8 @@ import {
   SetWorkActiveAction,
   SetWorkStatesAction,
   SetWorkStateAction,
-  DeleteWorkStateAction
+  DeleteWorkStateAction,
+  ToggleWorkStatesChangeFlagAction
 } from './app.reducers';
 import { ShutterComponent } from './shutter/shutter.component';
 import { ContentComponent } from './content/content.component';
@@ -92,11 +97,13 @@ export class AppComponent implements OnInit {
   isPortrait$: Observable<boolean>;
   workActive$: Observable<number>;
   workStates$: Observable<WorkStates>;
+  workStatesChangeFlag$: Observable<boolean>;
   unitLengthReferences: {
     uLdwx3: string,
     uLdhx2: string,
     uLdhx3: string,
     uLdwOffset: string,
+    uLdwx5Offset: string,
     uLdhOffset: string,
     uLdcwx2: string,
     uLdchx2: string,
@@ -111,6 +118,7 @@ export class AppComponent implements OnInit {
     uLdhx2: null,
     uLdhx3: null,
     uLdwOffset: null,
+    uLdwx5Offset: null,
     uLdhOffset: null,
     uLdcwx2: null,
     uLdchx2: null,
@@ -125,6 +133,7 @@ export class AppComponent implements OnInit {
   fullRhyme: string;
   colors: {[key: string]: string} = {};
   arrowPath = '../assets/arrow.svg';
+  shutterDetailsPath = '../assets/shutter-details.svg';
 
   /* LIFECYCLE HOOK FUNCTIONS */
   constructor(
@@ -151,6 +160,7 @@ export class AppComponent implements OnInit {
     this.isPortrait$ = store.select(state => state.isPortrait);
     this.workActive$ = store.select(state => state.workActive);
     this.workStates$ = store.select(state => state.workStates);
+    this.workStatesChangeFlag$ = store.select(state => state.workStatesChangeFlag);
   }
   ngOnInit(): void {
     Observable.combineLatest(
@@ -183,14 +193,20 @@ export class AppComponent implements OnInit {
     this.rhyme$.subscribe(state => this.concatRhyme(state));
     this.color$.subscribe(state => this.getColors(state));
     this.unitLength$.subscribe(state => this.setUnitLengthReferences(state));
+    this.isPortrait$.subscribe(state => this.updateView());
     // Observable.combineLatest(this.createWorkStatesObservableArray()).subscribe(state => )
     this._appViewControlService.payloadStream.subscribe(state => this.setAppView(state));
     this._shutterViewControlService.payloadStream.subscribe(state => this.setShutterView(state));
+    // const observableArray: Array<Observable<WorkData>> = [];
+    // let workStates: WorkStates;
+    // this.workStates$.take(1).subscribe(state => workStates = state);
+    // for (const workData of workStates) {}
     Observable.combineLatest(
       this.appView0Alive$,
       this.shutterView0Alive$,
       this.color$,
-      this.workActive$
+      this.workActive$,
+      this.workStatesChangeFlag$
     ).subscribe(state => this.setAppStateCookie());
     // if (!environment.production) {
       const cachedState = this.getAppStateCookie();
@@ -336,14 +352,15 @@ export class AppComponent implements OnInit {
   setViewAspects(): void {
     const w: number = window.innerWidth;
     const h: number = window.innerHeight;
-    this.calcUnitLength(w, h);
     this.calcIsPortrait(w, h);
-    this.updateView();
+    this.calcUnitLength(w, h);
+    // this.updateView();
   }
   calcUnitLength(w: number, h: number): void {
     this.setUnitLength(Math.pow(w * h / 6, 1 / 4));
   }
   calcIsPortrait(w: number, h: number): void {
+    console.log('isPortrait', w, h, w < h);
     this.setIsPortrait(w < h);
   }
   setUnitLengthReferences(unitLength: number): void {
@@ -359,6 +376,7 @@ export class AppComponent implements OnInit {
     this.unitLengthReferences.uLdhx2 = (uLdh * 2) + percent;
     this.unitLengthReferences.uLdhx3 = uLdhx3 + percent;
     this.unitLengthReferences.uLdwOffset = (50 - (uLdwx3 / 2)) + percent;
+    this.unitLengthReferences.uLdwx5Offset = (50 - (uLdw * 5 / 2)) + percent;
     this.unitLengthReferences.uLdhOffset = (50 - (uLdhx3 / 2)) + percent;
     const uLdcw = unitLength / (windowWidth * 0.8);
     const uLdch = unitLength / (windowHeight * 0.8);
@@ -375,6 +393,7 @@ export class AppComponent implements OnInit {
     this.unitLengthReferences.bWPdcwx2 = (bWPcw * 2) + percent;
     this.unitLengthReferences.bWPdcwx3 = (bWPcw * 3) + percent;
     this.unitLengthReferences.bWPdch = (uLdchx2 + uLd2ch) + percent;
+    this.updateView();
     // this.unitLengthReferences.bWP = uLx2 + uLd2;
   }
 
@@ -396,6 +415,9 @@ export class AppComponent implements OnInit {
   //       this.setShutterView(true);
   //     }
   //   }
+  }
+  styleShutterDetailsFunc(el: SVGElement): void {
+    programShutterDetails(el, window.innerWidth, window.innerHeight);
   }
   styleDownArrowFunc(el: SVGElement): void {
     const unitLengthReferences = this.unitLengthReferences;
@@ -437,9 +459,35 @@ export class AppComponent implements OnInit {
     isPortrait: null,
     workActive: null,
     workStates: [
-      new WorkState([], 'ImmediateEllipse'),
-      new WorkState({centerPoints: [], points: []}, 'PointsToPoint')
-    ]
+      new WorkState('ImmediateEllipse', [], {colors: 'black', backgroundColor: 'white'}),
+      new WorkState(
+        'PointsToPoint',
+        {centerPoints: [], points: []},
+        {centerPointDensity: 1, chosenColorSet: false, backgroundColor: 'white'}
+      ),
+      new WorkState(
+        'FractalExplorer',
+        { p0: new Point(0, 0), zoom: 1 },
+        {
+          res: 0.3,
+          iMax: 1000,
+          escV: 2,
+          color: 223,
+          zInitial: new Point(0, 0),
+        }
+      ),
+      new WorkState(
+        'NNCreator',
+        {},
+        {}
+      ),
+      new WorkState(
+        'GradientR',
+        {},
+        {}
+      )
+    ],
+    workStatesChangeFlag: true
   }): void {
     console.log('setAppState', appState);
     this.goAppView(appState.appView.view0Alive);
@@ -484,8 +532,13 @@ export class AppComponent implements OnInit {
   }
   setWorkState(payload: [number, WorkState]): void {
     this.store.dispatch(new SetWorkStateAction(payload));
+    this.toggleWorkStatesChangeFlag();
   }
   deleteWorkState(key: string): void {
     this.store.dispatch(new DeleteWorkStateAction(key));
+    this.toggleWorkStatesChangeFlag();
+  }
+  toggleWorkStatesChangeFlag(): void {
+    this.store.dispatch(new ToggleWorkStatesChangeFlagAction());
   }
 }

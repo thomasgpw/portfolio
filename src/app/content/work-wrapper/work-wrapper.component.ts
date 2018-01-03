@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener, OnInit, OnDestroy } from '@angular/core';
-import { WorkData } from '../_works/work-data.datatype';
 import { WorkState } from '../_works/work-state.datatype';
 import { Work } from '../_works/work';
+import { CanvasWork } from '../_works/canvas-work';
 import {
   styleWorkWrapperButton,
   styleRightOffset,
@@ -19,6 +19,7 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Output() setActiveEvent: EventEmitter<null> = new EventEmitter();
   @Output() unsetActiveEvent: EventEmitter<null> = new EventEmitter();
   @Output() setWorkStateEvent: EventEmitter<[number, WorkState]> = new EventEmitter();
+  @Output() requestColorsEvent: EventEmitter<null> = new EventEmitter();
   @Input() uLdcwx2: string;
   @Input() uLdchx2: string;
   @Input() uLd2cw: string;
@@ -28,12 +29,15 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   @Input() bWPdcwx3: string;
   @Input() bWPdch: string;
   @Input() isPortrait: boolean;
-  @Input() workData: WorkData;
+  @Input() workState: WorkState;
   @Input() type: string;
   id: number;
   work: Work;
+  active = false;
+  settingsOpen = false;
   undoPath = '../../../assets/iconmonstr-undo-2.svg';
   settingsPath = '../../../assets/iconmonstr-volume-control-9.svg';
+  closePath = '../../../assets/iconmonstr-x-mark-1.svg';
   deletePath = '../../../assets/iconmonstr-trash-can-2.svg';
   uploadPath = '../../../assets/iconmonstr-upload-17.svg';
   downloadPath = '../../../assets/iconmonstr-download-7-edited.svg';
@@ -49,80 +53,122 @@ export class WorkWrapperComponent implements OnInit, OnDestroy {
   //   if (!this.work) {
   //     return false;
   //   } else {
-  //     return this.work.active;
+  //     return this.active;
   //   }
   // }
   /* ON CHANGE SPECIFIC FUNCTIONS */
-  setWorkStateFunc(id: number, workData: WorkData): void {
-    this.setWorkStateEvent.emit([id, {type: this.type, workData: workData}]);
+  setWorkStateFunc(id: number, workState: WorkState): void {
+    this.setWorkStateEvent.emit([id, workState]);
   }
   activate(): void {
-    this.work.activate().then(resolve => this.setActiveEvent.emit(null));
+    this.active = true;
+    this.setActiveEvent.emit(null);
   }
   deactivate(): void {
-    this.work.deactivate().then(resolve => this.unsetActiveEvent.emit(null));
+    this.active = false;
+    this.unsetActiveEvent.emit(null);
   }
-  download(instance: WorkWrapperComponent) {
-    const work = this.work;
-    const link = document.getElementById('downloadLink') as HTMLAnchorElement;
-    link.href = work.canvas.toDataURL();
-    link.download = 'canvas.png';
-    link.click();
+  download(): void {
+    (this.work as CanvasWork).download(document.getElementById('downloadLink') as HTMLAnchorElement);
   }
-  drawAll(values: number[]): Promise<null> {
-    const work = this.work;
-    work.drawAll(work.context);
+  openSettings(): void {
+    if (this.active) {
+      this.activateSettings()
+      .then(resolve => setTimeout(() => this.attachSettings(this.work)));
+    }
+  }
+  activateSettings(): Promise<null> {
+    this.settingsOpen = true;
     return Promise.resolve(null);
   }
-  styleUndoFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+  attachSettings(work: Work): void {
+    const settingsEl = work.setupSettings();
+    document.getElementById('settingsWrapper').appendChild(settingsEl);
+  }
+  closeSettings(): void {
+    const work = this.work;
+    // const context = work.context;
+    this.setWorkStateFunc(this.id, {
+      type: work.type,
+      workData: work.workData,
+      workSettings: work.workSettings
+    });
+    // work.drawAll(work.applySettings(context));
+    this.settingsOpen = false;
+  }
+  // drawAll(values: number[]): Promise<null> {
+  //   const work = this.work;
+  //   work.drawAll(work.context);
+  //   return Promise.resolve(null);
+  // }
+  styleUndoFunc(el: SVGElement): void {
+    const elStyle = el.style;
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     const rightOffset: string = this.isPortrait ? this.bWPdcwx3 : this.bWPdcwx2;
-    styleRightOffset(el.style, this.uLd2ch, rightOffset);
+    styleRightOffset(elStyle, this.uLd2ch, rightOffset);
+    this.outlineSVG(el);
   }
-  styleRedoFunc(el: SVGElement) {
+  styleRedoFunc(el: SVGElement): void {
+    const elStyle = el.style;
     el.setAttribute('transform', 'scale(-1, 1)');
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
     const redoOffset: string = this.isPortrait ? this.bWPdcwx2 : this.bWPdcw;
-    styleRedoOffset(el.style, this.uLd2cw, redoOffset);
+    styleRedoOffset(elStyle, this.uLd2cw, redoOffset);
+    this.outlineSVG(el);
   }
-  styleSettingsFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
-    styleRightOffset(el.style, this.uLd2cw, '0');
+  styleSettingsFunc(el: SVGElement): void {
+    const elStyle = el.style;
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleRightOffset(elStyle, this.uLd2cw, '0');
+    this.outlineSVG(el);
   }
-  styleDeleteFunc(el: SVGElement) {
+  styleDeleteFunc(el: SVGElement): void {
+    const elStyle = el.style;
     const topOffset: string = this.isPortrait ? '0' : this.bWPdch;
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
     const rightOffset: string = this.isPortrait ? this.bWPdcw : '0';
-    styleRightOffset(el.style, this.uLd2cw, rightOffset);
+    styleRightOffset(elStyle, this.uLd2cw, rightOffset);
+    this.outlineSVG(el);
   }
-  styleUploadFunc(el: SVGElement) {
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
-    styleLeftOffset(el.style, this.uLd2cw, '0');
+  styleUploadFunc(el: SVGElement): void {
+    const elStyle = el.style;
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleLeftOffset(elStyle, this.uLd2cw, '0');
+    this.outlineSVG(el);
   }
-  styleDownloadFunc(el: SVGElement) {
+  styleDownloadFunc(el: SVGElement): void {
+    const elStyle = el.style;
     const topOffset: string = this.isPortrait ? '0' : this.bWPdch;
-    styleWorkWrapperButton(el.style, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, topOffset);
     const leftOffset: string = this.isPortrait ? this.bWPdcw : '0';
-    styleLeftOffset(el.style, this.uLd2cw, leftOffset);
+    styleLeftOffset(elStyle, this.uLd2cw, leftOffset);
+    this.outlineSVG(el);
+  }
+  styleCloseFunc(el: SVGElement): void {
+    const elStyle = el.style;
+    styleWorkWrapperButton(elStyle, this.uLdcwx2, this.uLdchx2, this.uLd2ch, '0');
+    styleRightOffset(elStyle, this.uLd2cw, '0');
+    this.outlineSVG(el);
+  }
+  outlineSVG(el: SVGElement): void {
+    el.setAttributeNS(null, 'fill', '#000');
+    el.setAttributeNS(null, 'stroke', '#888');
   }
 
   /* EVENT FUNCTIONS */
   @HostListener('pointerdown', ['$event']) onPointerDown() {
-    const work = this.work;
-    if (work.active) {
-      work.onPointerDown(event as PointerEvent);
+    if (this.active) {
+      this.work.onPointerDown(event as PointerEvent);
     }
   }
   @HostListener('window: pointermove', ['$event']) onPointerMove() {
-    const work = this.work;
-    if (work.active) {
-      work.onPointerMove(event as PointerEvent);
+    if (this.active) {
+      this.work.onPointerMove(event as PointerEvent);
     }
   }
-  @HostListener('window: pointerup') onPointerUp() {
-    const work = this.work;
-    if (work.active) {
-      work.onPointerUp();
+  @HostListener('window: pointerup', ['$event']) onPointerUp() {
+    if (this.active) {
+      this.work.onPointerUp(event as PointerEvent);
     }
   }
 }

@@ -1,4 +1,9 @@
-import { PointsToPointData, ImmediateEllipseData } from './work.datatypes';
+import {
+  EmptyData
+} from './work.datatypes';
+import {
+  CanvasWorkData
+} from './canvas-work-data.datatype';
 export type WorkData
-= PointsToPointData
-| ImmediateEllipseData;
+= CanvasWorkData
+| EmptyData;

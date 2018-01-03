@@ -14,7 +14,6 @@ export class AboutComponent implements OnInit {
   @Input() rhyme: string;
   @Input() uLdwx3: string;
   @Input() uLdhx2: string;
-  @Input() uLdwOffset: string;
   @Input() uLdhOffset: string;
   @Input() color: number;
   @Input() colors: {[key: string]: string};

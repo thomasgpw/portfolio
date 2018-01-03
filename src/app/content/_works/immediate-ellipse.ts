@@ -1,13 +1,14 @@
-import { Point, EllipseSet, ImmediateEllipseData } from './work.datatypes';
-import { Work } from './work';
+import { Point, EllipseSet, ImmediateEllipseData, ImmediateEllipseSettings } from './work.datatypes';
+import { CanvasWork } from './canvas-work';
 
-export class ImmediateEllipse extends Work {
+export class ImmediateEllipse extends CanvasWork {
 
   pointerDown = false;
   // setNum: number;
   // undoSetNum: number;
   workData: ImmediateEllipseData;
   undoData: ImmediateEllipseData;
+  workSettings: ImmediateEllipseSettings;
   readonly type: string;
   constructor (parentElement: Element) {
     super(parentElement);
@@ -17,6 +18,53 @@ export class ImmediateEllipse extends Work {
   }
   init(): void {
     super.init();
+    this.fill();
+  }
+  setupSettings(): HTMLElement {
+    const workSettings = this.workSettings;
+    const settingsEl = document.createElement('div');
+    const colorLabel = settingsEl.appendChild(document.createElement('label'));
+    colorLabel.setAttribute('for', 'colorInput');
+    colorLabel.innerHTML = 'Line color:';
+    const colorInput = settingsEl.appendChild(document.createElement('input'));
+    colorInput.id = 'colorInput';
+    colorInput.type = 'color';
+    colorInput.value = workSettings.colors;
+    colorInput.onchange = (event  => workSettings.colors = (event.target as HTMLInputElement).value);
+    settingsEl.appendChild(document.createElement('br'));
+    const bgColorLabel = settingsEl.appendChild(document.createElement('label'));
+    bgColorLabel.setAttribute('for', 'bgColorInput');
+    bgColorLabel.innerHTML = 'Background color:';
+    const bgColorInput = settingsEl.appendChild(document.createElement('input'));
+    bgColorInput.id = 'bgColorInput';
+    bgColorInput.type = 'color';
+    bgColorInput.value = workSettings.backgroundColor;
+    bgColorInput.onchange = (event  => workSettings.backgroundColor = (event.target as HTMLInputElement).value);
+    return settingsEl;
+  }
+  applySettings(context: CanvasRenderingContext2D): CanvasRenderingContext2D {
+    const workSettings = this.workSettings;
+    context.fillStyle = workSettings.backgroundColor;
+    context.strokeStyle = workSettings.colors;
+    return context;
+  }
+  setColors(colors: {[key: string]: string}): void {}
+  download(link: HTMLAnchorElement) {
+    const context = this.context;
+    const w = this.w;
+    const h = this.h;
+    super.download(link);
+    this.clearCanvas(context, w, h);
+    this.drawAll(context);
+  }
+  setWorkSettings(workSettings: ImmediateEllipseSettings, context: CanvasRenderingContext2D) {
+    if (!workSettings.backgroundColor) {
+      workSettings.backgroundColor = 'white';
+    }
+    if (!workSettings.colors) {
+      workSettings.colors = 'black';
+    }
+    super.setWorkSettings(workSettings, context);
   }
   moveLastPoint(fromData: ImmediateEllipseData, toData: ImmediateEllipseData): Promise<boolean> {
     const fromSetLastIndex = fromData.length - 1;
@@ -83,6 +131,10 @@ export class ImmediateEllipse extends Work {
     }
   }
   drawAll(context: CanvasRenderingContext2D): void {
+    const workSettings = this.workSettings;
+    context.fillStyle = workSettings.backgroundColor;
+    context.strokeStyle = workSettings.colors;
+    this.fill(context);
     const workData = this.workData;
     const workDataLength = workData.length;
     const drawEllipseSet = this.drawEllipseSet.bind(this, context);
@@ -106,7 +158,7 @@ export class ImmediateEllipse extends Work {
     this.undoData = [];
   }
   onPointerDown (e: PointerEvent): void {
-    if (e.srcElement.closest('.button') === null) {
+    if ((e.target as Element).closest('.button') === null) {
       const w = this.w;
       const h = this.h;
       const offsetX = e.offsetX;
@@ -126,9 +178,7 @@ export class ImmediateEllipse extends Work {
       this.workDataSubject.next(workData);
     }
   }
-  onPointerUp (): void {
-    if (this.pointerDown) {
-      this.pointerDown = false;
-    }
+  onPointerUp (e: PointerEvent): void {
+    this.pointerDown = false;
   }
 }

@@ -1,9 +1,22 @@
-.work-wrapper-view-container{
+.shutter-bar {
+  width: 100%;
+  height: 5%;
+}
+#work-wrapper-all-container {
+  top: 10%;
+}
+.work-wrapper-view-container {
   margin: 2.5%;
   float:left;
-  border: 3px solid #777;
+  border-right: 3px solid #777;
+  border-left: 3px solid #777;
+  border-top: 3px solid #777;
+  border-bottom: 3px solid #777;
   border-radius: 5%;
   background: white;
+  position: relative;
+  overflow: hidden;
+  pointer-events: initial;
 }
 .work-wrapper-view-container:hover {
   box-shadow: 0 0 3px 5px #555
@@ -15,14 +28,34 @@
 .wwRow {
   height:10%;
   width:10%;
-  position: absolute;
-  top:85%;
+}
+.wwRowL {
+  float: right;
+  clear: both;
+  top:10%;
   /*background: blue;*/
 }
+.wwRowP {
+  top: 85%;
+  left: 20%;
+  float: left;
+}
 .wwActive {
-  height: 80%;
-  width: 80%;
+  margin: 0;
+  border-left-width: 0;
+  border-top-width: 0;
+  border-radius: 0;
   position: fixed;
-  top: 0;
+  top: 5%;
   /*background: red;*/
+}
+.wwActiveL {
+  border-bottom-width: 0;
+  height: 95%;
+  width: 85%;
+}
+.wwActiveP {
+  border-right-width: 0;
+  height: 80%;
+  width: 100%;
 }

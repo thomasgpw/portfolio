@@ -9,6 +9,7 @@ export function generateSvgTab (el: HTMLElement, wView: number, unitLength: numb
   // SVG Element
   const svgEl = el.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'svg'));
   svgEl.classList.add('svg-tab');
+  svgEl.classList.add('z-index2');
   const setSvgElAttr = svgEl.setAttributeNS.bind(svgEl);
   setSvgElAttr(null, 'width', wViewString);
   setSvgElAttr(null, 'height', hTotalString);

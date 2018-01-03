@@ -1,11 +1,12 @@
-import { Point, ColorPoint, PointsToPointData } from './work.datatypes';
-import { Work } from './work';
+import { Point, ColorPoint, PointsToPointData, PointsToPointSettings } from './work.datatypes';
+import { CanvasWork } from './canvas-work';
 
-export class PointsToPoint extends Work {
+export class PointsToPoint extends CanvasWork {
 
   pointerDown = false;
   workData: PointsToPointData;
   undoData: PointsToPointData;
+  workSettings: PointsToPointSettings;
   r: number;
   readonly type: string;
   constructor (parentElement: Element) {
@@ -18,24 +19,99 @@ export class PointsToPoint extends Work {
     super.init();
     this.generateCenterPoints();
   }
+  setupSettings(): HTMLElement {
+    const workSettings = this.workSettings;
+    const settingsEl = document.createElement('div');
+    const centerPointDensityLabel = settingsEl.appendChild(document.createElement('label'));
+    centerPointDensityLabel.setAttribute('for', 'centerPointDensityInput');
+    centerPointDensityLabel.innerHTML = 'Center Point Density';
+    const centerPointDensityInput = settingsEl.appendChild(document.createElement('input'));
+    centerPointDensityInput.id = 'centerPointDensityInput';
+    centerPointDensityInput.type = 'number';
+    centerPointDensityInput.defaultValue = workSettings.centerPointDensity.toString();
+    centerPointDensityInput.min = '0';
+    centerPointDensityInput.max = '5';
+    centerPointDensityInput.step = '0.5';
+    centerPointDensityInput.onchange = (
+      event => workSettings.centerPointDensity = parseFloat((event.target as HTMLInputElement).value)
+    );
+    settingsEl.appendChild(document.createElement('br'));
+    const colorSetInput = settingsEl.appendChild(document.createElement('input'));
+    colorSetInput.type = 'checkbox';
+    const colorSetLabel = settingsEl.appendChild(document.createElement('label'));
+    colorSetLabel.setAttribute('for', 'colorSetInput');
+    colorSetLabel.innerHTML = 'Use App Colors?';
+    settingsEl.appendChild(document.createElement('br'));
+    const bgColorLabel = settingsEl.appendChild(document.createElement('label'));
+    bgColorLabel.setAttribute('for', 'bgColorInput');
+    bgColorLabel.innerHTML = 'Background color:';
+    const bgColorInput = settingsEl.appendChild(document.createElement('input'));
+    bgColorInput.id = 'bgColorInput';
+    bgColorInput.type = 'color';
+    bgColorInput.value = workSettings.backgroundColor;
+    bgColorInput.onchange = (event  => workSettings.backgroundColor = (event.target as HTMLInputElement).value);
+    return settingsEl;
+  }
+  applySettings(context: CanvasRenderingContext2D = this.context): CanvasRenderingContext2D {
+    const workSettings = this.workSettings;
+    return context;
+  }
+  setColors(colors: {[key: string]: string}): void {}
+  download(link: HTMLAnchorElement) {
+    const context = this.context;
+    const w = this.w;
+    const h = this.h;
+    context.fillStyle = this.workSettings.backgroundColor;
+    this.fill(context, w, h);
+    this.drawAll(context);
+    super.download(link);
+    this.clearCanvas(context, w, h);
+    this.drawAll(context);
+  }
+  setWorkData(workData: PointsToPointData, context: CanvasRenderingContext2D) {
+    super.setWorkData(workData, context);
+    if (workData.centerPoints.length === 0) {
+      this.generateCenterPoints();
+    }
+  }
+  setWorkSettings(workSettings: PointsToPointSettings, context: CanvasRenderingContext2D) {
+    if (!workSettings.backgroundColor) {
+      workSettings.backgroundColor = 'white';
+    }
+    if (!workSettings.chosenColorSet) {
+      workSettings.chosenColorSet = true;
+    }
+    if (!workSettings.centerPointDensity) {
+      workSettings.centerPointDensity = 1;
+    }
+    super.setWorkSettings(workSettings, context);
+  }
   generateCenterPoints(): void {
-    this.workData.centerPoints = [];
     const workData = this.workData;
+    workData.centerPoints = [];
     const centerPoints = workData.centerPoints;
+    const workSettings = this.workSettings;
+    const centerPointDensity = workSettings ? workSettings.centerPointDensity ? workSettings.centerPointDensity : 1 : 1;
     this.r = 10;
-    const dotNum = Math.floor(Math.sqrt(window.innerWidth * window.innerHeight * 0.64 /* 80% squared is 64% */) / 200);
+    const dotNum = Math.floor(
+      Math.sqrt(window.innerWidth * window.innerHeight * 0.64 /* 80% squared is 64% */) / 200
+    );
     console.log(dotNum);
+    const getRandomColor = this.getRandomColor.bind(this);
     for (let i = 0; i < dotNum ; i++) {
       centerPoints.push(new ColorPoint(
         Math.random(),
         Math.random(),
-        '#'
-        + (Math.floor(Math.random() * 256)).toString(16)
-        + (Math.floor(Math.random() * 256)).toString(16)
-        + (Math.floor(Math.random() * 256)).toString(16)
+        getRandomColor()
       ));
     }
     this.workDataSubject.next(workData);
+  }
+  getRandomColor(): string {
+    return '#'
+      + (Math.floor(Math.random() * 256)).toString(16)
+      + (Math.floor(Math.random() * 256)).toString(16)
+      + (Math.floor(Math.random() * 256)).toString(16);
   }
   moveLastPoint(fromPoints: Array<Point>, toPoints: Array<Point>): Promise<boolean> {
     console.log(fromPoints, toPoints);
@@ -95,12 +171,6 @@ export class PointsToPoint extends Work {
     context.fill();
     context.closePath();
   }
-  setWorkData(workData: PointsToPointData) {
-    super.setWorkData(workData);
-    if (workData.centerPoints.length === 0) {
-      this.generateCenterPoints();
-    }
-  }
   drawPoint(context: CanvasRenderingContext2D, point: Point) {
     const pointX = point.x;
     const pointY = point.y;
@@ -134,7 +204,7 @@ export class PointsToPoint extends Work {
     this.undoData = {centerPoints: [], points: []};
   }
   onPointerDown (e: PointerEvent): void {
-    if (e.srcElement.closest('.button') === null) {
+    if ((e.target as Element).closest('.button') === null) {
       this.pointerDown = true;
       this.clearUndoData();
       console.log('P2PpointerDown');
@@ -148,9 +218,7 @@ export class PointsToPoint extends Work {
       this.workDataSubject.next(this.workData);
     }
   }
-  onPointerUp (): void {
-    if (this.pointerDown) {
-      this.pointerDown = false;
-    }
+  onPointerUp (e: PointerEvent): void {
+    this.pointerDown = false;
   }
 }

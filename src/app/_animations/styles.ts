@@ -34,7 +34,14 @@ export const rightOfScreenStyle = style({ transform: 'translateX(100%)' });
 // Animation style defining the size of work wrapper elements when in the grid state.
 export const gridWorkStyle = style({ height: '25%', width: '25%' });
 // Animation style defining the size of work wrapper elements when in the active state.
-export const activeWorkStyle = style({ height: '80%', width: '80%' });
+export const activeWorkStyle = style({
+  margin: 0,
+  borderLeftWidth: 0,
+  borderTopWidth: 0,
+  borderRadius: 0,
+  position: 'fixed',
+  top: '5%'
+});
 // Animation style defining the size of work wrapper elements when in the row state.
 export const rowWorkStyle = style({ height: '10%', width: '10%' });
 

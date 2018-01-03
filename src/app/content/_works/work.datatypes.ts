@@ -1,3 +1,7 @@
+// http://www.jacklmoore.com/notes/rounding-in-javascript/
+function round(value: number, decimals: number): number {
+  return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}
 export class Point {
   x: number;
   y: number;
@@ -7,7 +11,7 @@ export class Point {
     this.y = y;
   }
   toString(): string {
-    return this.x.toString() + '|' + this.y.toString();
+    return round(this.x, 3).toString() + '|' + round(this.y, 3).toString();
   }
 }
 export class ColorPoint extends Point {
@@ -28,5 +32,35 @@ export class EllipseSet {
     this.points = [];
   }
 }
-export interface PointsToPointData {centerPoints: Array<ColorPoint>; points: Array<Point>; }
 export type ImmediateEllipseData = Array<EllipseSet>;
+export interface ImmediateEllipseSettings {
+  colors: string;
+  backgroundColor: string;
+}
+export interface PointsToPointData {
+  centerPoints: Array<ColorPoint>;
+  points: Array<Point>;
+}
+export interface PointsToPointSettings {
+  centerPointDensity: number;
+  chosenColorSet: boolean;
+  backgroundColor: string;
+}
+export interface FractalExplorerData {
+  p0: Point;
+  zoom: number;
+}
+export interface FractalExplorerSettings {
+  res: number;
+  iMax: number;
+  escV: number;
+  color: number;
+  zInitial: Point;
+}
+export interface GradientRSettings {
+  equation: string;
+  variable: string;
+}
+export interface EmptyData {}
+export interface EmptySettings {}
+
