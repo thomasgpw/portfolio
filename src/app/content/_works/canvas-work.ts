@@ -16,6 +16,7 @@ export abstract class CanvasWork implements Work {
   workSettings: CanvasWorkSettings;
 
   constructor (parentEl: Element) {
+    console.log('creating canvas for', parentEl);
     const canvas = document.createElement('canvas');
     this.context = canvas.getContext('2d');
     parentEl.appendChild(canvas);

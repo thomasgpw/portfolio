@@ -20,11 +20,11 @@ export class WorkManagerService {
   addWorkWrapper(workWrapper: WorkWrapperComponent): number {
     const WORK_WRAPPERS = this.WORK_WRAPPERS;
     const i = WORK_WRAPPERS.length;
-    workWrapper.id = i;
-    workWrapper.work = this.assignWork(workWrapper.type, document.getElementsByClassName('work-wrapper')[i]);
+    // workWrapper.id = i;
+    // workWrapper.work = this.assignWork(workWrapper.type, document.getElementsByClassName('work-wrapper')[i]);
     WORK_WRAPPERS[i] = workWrapper;
     console.log(WORK_WRAPPERS);
-    const work = workWrapper.work;
+    // const work = workWrapper.work;
     // work.setWorkData(workWrapper.workData);
     // this.attachSubscription(i, workWrapper, work);
     // work.resizeCanvas();
