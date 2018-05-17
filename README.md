@@ -18,7 +18,7 @@ Both [node](https://nodejs.org) version 8.3.0 or greater and [npm](https://www.n
 
 ### Installing dev version
 
-Clone the project at 'clone target'. I have to figure out what else you need to do.  Running 'ng serve' in the root folder will start the dev server if all dependencies and devDependencies are installed
+Clone the project at 'clone target'. At the root run 'npm install'.  Running 'ng serve' in the root folder will start the dev server if all dependencies and devDependencies are installed
 
 ## Running tests
 
