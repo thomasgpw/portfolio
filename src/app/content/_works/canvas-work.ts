@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { WorkState } from './work-state.datatype';
 import { CanvasWorkData } from './canvas-work-data.datatype';
 import { CanvasWorkSettings } from './canvas-work-settings.datatype';

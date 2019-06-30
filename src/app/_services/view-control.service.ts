@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { ViewState } from '../app.datatypes';
 import {
   VIEW0_ALIVE,

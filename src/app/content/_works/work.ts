@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { WorkState } from './work-state.datatype';
 import { WorkData } from './work-data.datatype';
 import { WorkSettings } from './work-settings.datatype';

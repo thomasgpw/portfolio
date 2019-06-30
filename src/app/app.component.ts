@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition } from '@angular/animations';
-import { Observable } from 'rxjs/Rx';
+import { Observable, combineLatest } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import { environment } from '../environments/environment';
@@ -80,8 +81,8 @@ import { ContentComponent } from './content/content.component';
   ]
 })
 export class AppComponent implements OnInit {
-  @ViewChild(ShutterComponent) shutterInstance: ShutterComponent;
-  @ViewChild(ContentComponent) contentInstance: ContentComponent;
+  @ViewChild(ShutterComponent, {static: true}) shutterInstance: ShutterComponent;
+  @ViewChild(ContentComponent, {static: false}) contentInstance: ContentComponent;
   _appViewControlService: ViewControlService;
   _shutterViewControlService: ViewControlService;
   appView0Alive$: Observable<boolean>;
@@ -163,7 +164,7 @@ export class AppComponent implements OnInit {
     this.workStatesChangeFlag$ = store.select(state => state.workStatesChangeFlag);
   }
   ngOnInit(): void {
-    Observable.combineLatest(
+    combineLatest(
       this.appView0Alive$,
       this.appView1Alive$,
       this.appAnimationState$,
@@ -175,7 +176,7 @@ export class AppComponent implements OnInit {
         transitionActive: state[3]
       });
     });
-    Observable.combineLatest(
+    combineLatest(
       this.shutterView0Alive$,
       this.shutterView1Alive$,
       this.shutterAnimationState$,
@@ -186,7 +187,7 @@ export class AppComponent implements OnInit {
       animationState: state[2],
       transitionActive: state[3]
     }));
-    Observable.combineLatest(
+    combineLatest(
       this.store.select(state => state.texts.greeting.payload),
       this.store.select(state => state.texts.name.payload)
     ).subscribe(state => this.concatGreeting(state));
@@ -194,29 +195,29 @@ export class AppComponent implements OnInit {
     this.color$.subscribe(state => this.getColors(state));
     this.unitLength$.subscribe(state => this.setUnitLengthReferences(state));
     this.isPortrait$.subscribe(state => this.updateView());
-    // Observable.combineLatest(this.createWorkStatesObservableArray()).subscribe(state => )
+    // combineLatest(this.createWorkStatesObservableArray()).subscribe(state => )
     this._appViewControlService.payloadStream.subscribe(state => this.setAppView(state));
     this._shutterViewControlService.payloadStream.subscribe(state => this.setShutterView(state));
     // const observableArray: Array<Observable<WorkData>> = [];
     // let workStates: WorkStates;
     // this.workStates$.take(1).subscribe(state => workStates = state);
     // for (const workData of workStates) {}
-    Observable.combineLatest(
+    combineLatest(
       this.appView0Alive$,
       this.shutterView0Alive$,
       this.color$,
       this.workActive$,
       this.workStatesChangeFlag$
     ).subscribe(state => this.setAppStateCookie());
-    // if (!environment.production) {
-      const cachedState = this.getAppStateCookie();
-      if (cachedState) {
-        this.setAppState(cachedState);
-      } else {
-        this.setAppState();
-      }
-      this.setAppStateCookie();
-    // }
+  // if (!environment.production) {
+    const cachedState = this.getAppStateCookie();
+    if (cachedState) {
+      this.setAppState(cachedState);
+    } else {
+      this.setAppState();
+    }
+    this.setAppStateCookie();
+  // }
   }
 
   /* ON CHANGE SPECIFIC FUNCTIONS */
@@ -431,7 +432,7 @@ export class AppComponent implements OnInit {
   }
   getAppState(): AppState {
     let appState: AppState;
-    this.store.take(1).subscribe(state => appState = state);
+    this.store.pipe(take(1)).subscribe(state => appState = state);
     console.log('getAppState', appState);
     return appState;
   }

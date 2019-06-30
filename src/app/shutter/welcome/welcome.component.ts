@@ -40,7 +40,7 @@ export class WelcomeComponent implements OnInit {
     }
   }
   greetingClickFunc (e: Event) {
-    const elId = e.srcElement.id;
+    const elId = (e.target as HTMLElement).id;
     if (elId === 'prename' || elId === 'postname') {
       this.getNextGreetingFunc();
     } else if (elId === 'name') {

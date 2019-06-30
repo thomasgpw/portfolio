@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { Work } from './work';
 import { WorkState } from './work-state.datatype';
 import { Perceptron, NeuralNetwork } from './neural-network';

@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, Input, EventEmitter, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { trigger, state, animate, transition} from '@angular/animations';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { viewTransitionTime, viewTransitionConfig, onScreenXStyle, leftOfScreenStyle, rightOfScreenStyle } from '../_animations/styles';
 import { generateSvgHighlightBar } from '../../assets/generate-svg-highlight-bar';
 import { WelcomeComponent } from './welcome/welcome.component';
@@ -49,8 +49,8 @@ export class ShutterComponent implements OnInit {
   @Input() uLdhOffset: string;
   @Input() color: number;
   @Input() colors: {[key: string]: string};
-  @ViewChild(WelcomeComponent) welcomeInstance: WelcomeComponent;
-  @ViewChild(AboutComponent) aboutInstance: AboutComponent;
+  @ViewChild(WelcomeComponent, {static: true}) welcomeInstance: WelcomeComponent;
+  @ViewChild(AboutComponent, {static: true}) aboutInstance: AboutComponent;
 
   bar: SVGElement;
 

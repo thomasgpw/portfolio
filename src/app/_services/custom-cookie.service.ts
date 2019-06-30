@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
-import { CookieOptionsProvider } from '../../../node_modules/ngx-cookie/src/cookie-options-provider';
 import { WorkState } from '../content/_works/work-state.datatype';
 import {
   Point,
@@ -20,9 +19,6 @@ import { AppState, IterableStringInstance } from '../app.datatypes';
 */
 @Injectable()
 export class CustomCookieService extends CookieService {
-  constructor(private _cookieOptionsProvider: CookieOptionsProvider) {
-    super(_cookieOptionsProvider);
-  }
   getAppStateCookie(): AppState {
     const cookieString = this.pullCookieString();
     if (cookieString)  {

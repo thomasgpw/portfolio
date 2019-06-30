@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { Work } from './work';
 import { WorkState } from './work-state.datatype';
 import {
@@ -19,7 +19,7 @@ export class GradientR implements Work {
   equation: string;
   variable: string;
   gradEl: SVGGradientElement;
-  constructor (parentEl: Element) {
+  constructor(parentEl: Element) {
     const svgEl = parentEl.appendChild(
       document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     );
