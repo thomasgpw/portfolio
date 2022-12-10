@@ -33,7 +33,7 @@
     "@ngrx/core": "^1.2.0",
     "@ngrx/store": "^8.0.1",
     "core-js": "^3.1.4",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "ng-inline-svg": "^8.5.1",
     "ngx-cookie": "4.0.2",
     "rxjs": "^6.5.2",
